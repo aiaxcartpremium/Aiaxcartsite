@@ -58,14 +58,15 @@
     </div>
 </header>
 
-<!-- Floating Owner Verification Modal -->
-<div id="owner-modal">
-    <div class="modal-card">
-        <h2>🔐 Owner Verification</h2>
-        <input type="text" id="owner-uid" placeholder="Enter Owner UID" class="input-field">
-        <button onclick="verifyUID()" class="btn btn-primary full-width">Verify Access</button>
-        <div id="uid-error" class="error-message"></div>
-    </div>
+<div class="owner-veri-overlay" id="ownerVeriOverlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.37);display:none;align-items:center;justify-content:center;z-index:9999;">
+  <div style="background:white;padding:1.5rem 2rem;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,0.10);">
+  <div style="position:relative;background:white;padding:1.5rem 2rem;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,0.10);min-width:300px;">
+    <button onclick="closeOwnerModal()" style="position:absolute;top:0.5rem;right:0.5rem;border:none;background:none;font-size:1.5rem;line-height:1;cursor:pointer;color: #ff7a7a;">&times;</button>
+    <h2 style="margin-bottom:1rem;">🔐 Owner Verification</h2>
+    <input type="text" id="ownerUidInput" placeholder="Enter Owner UID" style="padding:0.75rem;margin-bottom:1rem;width:100%;">
+    <button onclick="verifyOwnerUID()" style="background:#FFB0B5;color:white;border:none;padding:0.6rem 1.5rem;border-radius:12px;margin-top:0.5rem;width:100%;">Verify Access</button>
+    <div id="ownerVeriMsg" style="color:red;margin-top:0.7rem;"></div>
+  </div>
 </div>
 
 <div class="container" id="admin-dashboard" style="display:none;">
