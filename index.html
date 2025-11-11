@@ -2,77 +2,2401 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aiaxcart Premium Shop</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #fefaf7;
+            color: #5a3e36;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: #FFD3D6;
+            padding: 1rem 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+
+        nav ul li a {
+            color: #5a3e36;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .auth-buttons button {
+            padding: 0.6rem 1.5rem;
+            border: 1px solid #5a3e36;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #FFD3D6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Search Container */
+        .search-container {
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        #product-search {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid #F9E6E4;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        #product-search:focus {
+            outline: 2px solid #FFB0B5;
+            outline-offset: 2px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        /* TABS SECTION */
+        .tabs {
+            display: flex;
+            margin: 0;
+            background: white;
+            border-radius: 0 0 12px 12px;
+            padding: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-top: 1px solid #F9E6E4;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .tab.active {
+            background: #FFD3D6;
+        }
+
+        .tab:hover {
+            background: #FFE5E7;
+        }
+
+        /* PRODUCTS SECTION */
+        .products-section {
+            margin: 2rem 0;
+        }
+
+        .products-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .category-section {
+            margin-bottom: 3rem;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            border-bottom: 2px solid #FFD3D6;
+            padding-bottom: 0.5rem;
+        }
+
+        .view-all-btn {
+            background: #FFD3D6;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-all-btn:hover {
+            background: #FFB0B5;
+        }
+
+        .products-category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            height: 120px;
+            background: #F9E6E4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-stock {
+            background: #d4edda;
+            color: #155724;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .stock-out {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .product-sold {
+            background: #e2e3e5;
+            color: #383d41;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+
+        .account-type-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .account-type-btn {
+            padding: 0.5rem 0.8rem;
+            border: 1px solid #F9E6E4;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            text-align: center;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .account-type-btn.active {
+            background: #FFD3D6;
+            border-color: #FFB0B5;
+            font-weight: 600;
+        }
+
+        .account-type-btn:hover {
+            background: #FFE5E7;
+        }
+
+        .duration-scroll {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+        }
+
+        .duration-btn {
+            flex-shrink: 0;
+            padding: 0.5rem 0.8rem;
+            border: 1px solid #F9E6E4;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            text-align: center;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .duration-btn.active {
+            background: #F9DCC0;
+            border-color: #FFB0B5;
+            font-weight: 600;
+        }
+
+        .duration-btn:hover {
+            background: #F9E6E4;
+        }
+
+        .price-display {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #FFB0B5;
+            margin: 1rem 0;
+            text-align: center;
+            min-height: 2rem;
+        }
+
+        .select-price-message {
+            color: #666;
+            font-style: italic;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #FFB0B5;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background: #FF8A90;
+        }
+
+        .btn-primary:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .btn-primary:focus {
+            outline: 2px solid #FFB0B5;
+            outline-offset: 2px;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* TAB CONTENTS */
+        .tab-content {
+            display: none;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        /* AUTHENTICATION MODAL */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .auth-overlay.active {
+            display: flex;
+        }
+
+        .auth-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            width: 90%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .auth-header {
+            background: #FFD3D6;
+            padding: 1.5rem;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid #F9E6E4;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .auth-tab.active {
+            background: #FFD3D6;
+            font-weight: 600;
+        }
+
+        .auth-body {
+            padding: 1.5rem;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        /* CHECKOUT MODAL */
+        .checkout-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .checkout-overlay.active {
+            display: flex;
+        }
+
+        .checkout-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .checkout-header {
+            background: #FFD3D6;
+            padding: 1.5rem;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-checkout {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .close-checkout:focus {
+            outline: 2px solid #FFB0B5;
+            outline-offset: 2px;
+        }
+
+        .checkout-body {
+            padding: 1.5rem;
+        }
+
+        .selected-product-checkout {
+            background: #F9E6E4;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .product-icon-checkout {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price-checkout {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #FFB0B5;
+        }
+
+        .ownership-type-checkout {
+            background: #FFD3D6;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #F9E6E4;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: 2px solid #FFB0B5;
+            outline-offset: 2px;
+        }
+
+        .file-upload {
+            border: 2px dashed #F9E6E4;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover {
+            border-color: #FFD3D6;
+        }
+
+        .file-preview {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .file-preview img {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 8px;
+        }
+
+        .payment-guide {
+            background: #F9E6E4;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #F9DCC0;
+            margin: 1rem 0;
+        }
+
+        /* CUSTOM NOTIFICATION MODAL */
+        .notification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .notification-overlay.active {
+            display: flex;
+        }
+
+        .notification-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .notification-header {
+            background: #FFD3D6;
+            padding: 1.5rem;
+        }
+
+        .notification-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .notification-body {
+            padding: 2rem 1.5rem;
+        }
+
+        .notification-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #5a3e36;
+        }
+
+        .notification-message {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .notification-footer {
+            padding: 1rem 1.5rem 1.5rem;
+        }
+
+        /* FEEDBACK SECTION */
+        .feedback-item {
+            border-bottom: 1px solid #F9E6E4;
+            padding: 1.5rem 0;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .feedback-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #FFD3D6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .feedback-user {
+            font-weight: 600;
+        }
+
+        .feedback-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .feedback-content {
+            margin-bottom: 1rem;
+        }
+
+        .feedback-image {
+            max-width: 200px;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .feedback-form {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        /* RULES SECTION */
+        .rules-search {
+            margin-bottom: 1.5rem;
+        }
+
+        .rules-category {
+            margin-bottom: 2rem;
+        }
+
+        .rules-category h3 {
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #FFD3D6;
+        }
+
+        .rule-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #F9E6E4;
+            border-radius: 8px;
+        }
+
+        /* SIMPLIFIED FOOTER */
+        footer {
+            background: #5a3e36;
+            color: white;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0.25rem;
+            }
+            
+            .products-category-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                padding: 0.25rem;
+            }
+            
+            .tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .category-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <div class="header-brand">
-            <span class="logo">🛒</span>
-            <span class="shop-title">Aiaxcart Premium</span>
-        </div>
-        <div class="header-links">
-            <span>Home</span>
-            <span>Admin</span>
-        </div>
-        <div id="auth-section">
-            <button id="login-btn">Login / Sign up</button>
-        </div>
-        <div id="user-section" style="display:none">
-            <span id="current-user"></span>
-            <button id="logout-btn">Logout</button>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    🛒 Aiaxcart Premium
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html" class="active">Home</a></li>
+                        <li><a href="admin.html">Admin</a></li>
+                    </ul>
+                </nav>
+                <div id="auth-buttons" class="auth-buttons">
+                    <button id="login-btn">Login / Sign up</button>
+                </div>
+                <div id="user-info" class="user-info" style="display: none;">
+                    <div class="user-avatar" id="user-avatar"></div>
+                    <span id="user-name"></span>
+                    <button id="logout-btn">Logout</button>
+                </div>
+            </div>
         </div>
     </header>
-    <nav class="tab-navbar">
-        <button class="tab active" onclick="switchTab('products')">Products</button>
-        <button class="tab" onclick="switchTab('account')">My Account</button>
-        <button class="tab" onclick="switchTab('payments')">Payments</button>
-        <button class="tab" onclick="switchTab('rules')">Rules</button>
-        <button class="tab" onclick="switchTab('feedback')">Feedback</button>
-        <button class="tab" onclick="switchTab('about')">About</button>
-    </nav>
+
+    <!-- TABS SECTION -->
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-tab="products">Products</div>
+            <div class="tab" data-tab="accounts">My Account</div>
+            <div class="tab" data-tab="payments">Payments</div>
+            <div class="tab" data-tab="rules">Rules</div>
+            <div class="tab" data-tab="feedback">Feedback</div>
+            <div class="tab" data-tab="about">About</div>
+        </div>
+    </div>
+
     <main>
-        <section id="products-tab" class="tab-content active">
-            <h2>Premium Accounts</h2>
-            <div class="searchbar">
-                <input id="search-input" type="text" placeholder="🔍 Search products...">
+        <div class="container">
+            <!-- SEARCH BAR -->
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="product-search" placeholder="Search products...">
             </div>
-            <div class="categories-wrapper"></div>
-        </section>
-        <section id="account-tab" class="tab-content">
-            <h2>My Account</h2>
-            <div class="tab-inner">Your orders and account info here</div>
-        </section>
-        <section id="payments-tab" class="tab-content">
-            <h2>Payment Methods</h2>
-            <div class="payments-list">
-                <div class="payment-card"><b>GCash</b><p>Send to: <b>0962 554 4105</b></p></div>
-                <div class="payment-card"><b>Maya</b><p>Send to: <b>0929 984 3629</b></p></div>
+
+            <!-- PRODUCTS SECTION -->
+            <section class="products-section" id="products-content">
+                <h2 style="margin-bottom: 1rem;">Premium Accounts</h2>
+                <div class="products-grid" id="products-grid">
+                    <!-- Products will be loaded here -->
+                </div>
+            </section>
+
+            <!-- TAB CONTENTS -->
+            <div class="tab-content" id="accounts-content">
+                <h2 style="margin-bottom: 1rem;">Account Information</h2>
+                <div class="card">
+                    <p>Login to view your account details and order history.</p>
+                    <button class="btn-primary" style="margin-top: 1rem; width: auto;" onclick="openAuthModal()">Go to My Account</button>
+                </div>
             </div>
-        </section>
-        <section id="rules-tab" class="tab-content">
-            <h2>Store Rules</h2>
-            <div class="rule-card">All accounts are premium quality and verified</div>
-            <div class="rule-card">No refunds after delivery</div>
-        </section>
-        <section id="feedback-tab" class="tab-content">
-            <h2>Feedback</h2>
-            <div class="tab-inner">Send suggestions or problems for better service!</div>
-        </section>
-        <section id="about-tab" class="tab-content">
-            <h2>About</h2>
-            <div class="tab-inner">Aiaxcart Premium is your trusted shop for streaming, AI, and e-learning accounts.</div>
-        </section>
+
+            <div class="tab-content" id="payments-content">
+                <h2 style="margin-bottom: 1rem;">Payment Methods</h2>
+                <div class="card">
+                    <h3>GCash</h3>
+                    <p>Send payment to: <strong>0962 554 4105</strong></p>
+                </div>
+                <div class="card">
+                    <h3>Maya</h3>
+                    <p>Send payment to: <strong>0929 984 3629</strong></p>
+                </div>
+            </div>
+
+            <div class="tab-content" id="rules-content">
+                <h2 style="margin-bottom: 1rem;">Store Rules</h2>
+                <div class="rules-search">
+                    <input type="text" id="rules-search" class="form-control" placeholder="Search for product rules...">
+                </div>
+                <div id="rules-container">
+                    <!-- Rules will be loaded here -->
+                </div>
+            </div>
+
+            <div class="tab-content" id="feedback-content">
+                <h2 style="margin-bottom: 1rem;">Customer Feedback</h2>
+                
+                <div class="feedback-form">
+                    <h3>Leave Your Feedback</h3>
+                    <p id="feedback-login-message" style="margin-bottom: 1rem;">Please login to leave feedback.</p>
+                    <div id="feedback-form-content" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Your Feedback</label>
+                            <textarea id="feedback-text" class="form-control" rows="4" placeholder="Share your experience..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Upload Image (Optional)</label>
+                            <div class="file-upload" onclick="document.getElementById('feedback-image').click()">
+                                <div>📁 Click to upload image</div>
+                                <div style="font-size: 0.9rem; color: #666;">PNG, JPG up to 5MB</div>
+                                <input type="file" id="feedback-image" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+                        <button class="btn-primary" onclick="submitFeedback()">Submit Feedback</button>
+                    </div>
+                </div>
+                
+                <div id="feedback-list">
+                    <!-- Feedback will be loaded here -->
+                </div>
+            </div>
+
+            <div class="tab-content" id="about-content">
+                <h2 style="margin-bottom: 1rem;">About Us</h2>
+                <div class="card">
+                    <p>Aiaxcart Premium - Your trusted source for premium digital accounts.</p>
+                </div>
+            </div>
+
+            <!-- AUTHENTICATION MODAL -->
+            <div class="auth-overlay" id="auth-overlay">
+                <div class="auth-container">
+                    <div class="auth-header">
+                        <h2 id="auth-title">Login</h2>
+                        <button class="close-checkout" onclick="closeAuthModal()" aria-label="Close authentication modal">×</button>
+                    </div>
+                    <div class="auth-tabs">
+                        <div class="auth-tab active" data-auth-tab="login">Login</div>
+                        <div class="auth-tab" data-auth-tab="signup">Sign Up</div>
+                    </div>
+                    <div class="auth-body">
+                        <form id="login-form" class="auth-form active">
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" id="login-email" class="form-control" placeholder="your@email.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Password</label>
+                                <input type="password" id="login-password" class="form-control" placeholder="Your password" required>
+                            </div>
+                            <button type="button" class="btn-primary" onclick="login()">Login</button>
+                        </form>
+                        
+                        <form id="signup-form" class="auth-form">
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" id="signup-name" class="form-control" placeholder="Your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" id="signup-email" class="form-control" placeholder="your@email.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Password</label>
+                                <input type="password" id="signup-password" class="form-control" placeholder="Create a password" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Confirm Password</label>
+                                <input type="password" id="signup-confirm-password" class="form-control" placeholder="Confirm your password" required>
+                            </div>
+                            <button type="button" class="btn-primary" onclick="signup()">Sign Up</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHECKOUT MODAL -->
+            <div class="checkout-overlay" id="checkout-overlay">
+                <div class="checkout-container">
+                    <div class="checkout-header">
+                        <h2>Checkout</h2>
+                        <button class="close-checkout" onclick="closeCheckout()" aria-label="Close checkout modal">×</button>
+                    </div>
+                    <div class="checkout-body">
+                        <div id="selected-product-checkout" class="selected-product-checkout">
+                            <!-- Selected product will be loaded here -->
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Your Email</label>
+                            <input type="email" id="customer-email" class="form-control" placeholder="your@email.com" required disabled>
+                        </div>
+
+                        <!-- PAYMENT METHOD FIRST -->
+                        <div class="form-group">
+                            <label class="form-label">Payment Method</label>
+                            <select id="payment-method" class="form-control">
+                                <option value="gcash">GCash</option>
+                                <option value="maya">Maya</option>
+                            </select>
+                        </div>
+
+                        <div id="payment-instructions" class="payment-guide">
+                            <!-- Payment instructions will be loaded here -->
+                        </div>
+
+                        <!-- THEN PAYMENT PROOF -->
+                        <div class="form-group">
+                            <label class="form-label">Payment Proof (Screenshot)</label>
+                            <div class="file-upload" onclick="document.getElementById('payment-proof').click()">
+                                <div>📁 Click to upload payment proof</div>
+                                <div style="font-size: 0.9rem; color: #666;">PNG, JPG up to 5MB</div>
+                                <input type="file" id="payment-proof" accept="image/*" onchange="previewImage(this)" style="display: none;">
+                            </div>
+                            <div class="file-preview" id="file-preview">
+                                <img id="preview-image" src="" alt="Payment proof preview">
+                                <div style="font-size: 0.9rem; margin-top: 0.5rem;" id="file-name"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Reference Number (Optional)</label>
+                            <input type="text" id="reference-number" class="form-control" placeholder="GCash reference number">
+                        </div>
+
+                        <button id="place-order-btn" class="btn-primary" onclick="placeOrder()">
+                            Place Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CUSTOM NOTIFICATION MODAL -->
+            <div class="notification-overlay" id="notification-overlay">
+                <div class="notification-container">
+                    <div class="notification-header">
+                        <div class="notification-icon">✅</div>
+                    </div>
+                    <div class="notification-body">
+                        <h3 class="notification-title" id="notification-title">Order Successful!</h3>
+                        <p class="notification-message" id="notification-message">
+                            Your order has been placed successfully! Please wait for admin confirmation.
+                        </p>
+                    </div>
+                    <div class="notification-footer">
+                        <button class="btn-primary" onclick="closeNotification()" style="width: auto; padding: 0.5rem 2rem;">
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
+
     <footer>
-        <div class="footer-inner">
-            &copy; 2024 Aiaxcart Premium. All rights reserved.
+        <div class="container">
+            <p>&copy; 2024 Aiaxcart Premium. All rights reserved.</p>
         </div>
     </footer>
-    <!-- scripts order must not change! -->
-    <script src="config.js"></script>
-    <script src="config.private.js"></script>
-    <script src="main.js"></script>
+
+    <script>
+        // COMPLETE PRODUCTS DATA WITH YOUR PRICING
+        const productsData = [
+            // Entertainment
+            { 
+                id: 'netflix', 
+                name: 'Netflix Premium', 
+                category: 'entertainment', 
+                icon: '📺',
+                stock: 15,
+                sold: 42,
+                pricing: {
+                    "solo profile": { '1m': 160, '2m': 280, '3m': 435, '4m': 565, '6m': 850, '8m': 1090, '12m': 1500 },
+                    "shared profile": { '1m': 80, '2m': 145, '3m': 205, '4m': 270, '6m': 410, '8m': 520, '12m': 800 }
+                }
+            },
+            { 
+                id: 'viu', 
+                name: 'Viu Premium', 
+                category: 'entertainment', 
+                icon: '🎬',
+                stock: 8,
+                sold: 25,
+                pricing: {
+                    "solo account": { '1m': 70, '2m': 105, '3m': 145, '4m': 170, '6m': 205, '10m': 280, '12m': 310 },
+                    "shared account": { '1m': 30, '2m': 55, '3m': 75, '4m': 90, '6m': 120, '10m': 190, '12m': 220 }
+                }
+            },
+            { 
+                id: 'viva-max', 
+                name: 'VIVAMAX VIVAONE', 
+                category: 'entertainment', 
+                icon: '🎭',
+                stock: 15,
+                sold: 18,
+                pricing: {
+                    "solo account": { '1m': 110, '2m': 145, '3m': 170 },
+                    "shared account": { '1m': 65, '2m': 90, '3m': 120 }
+                }
+            },
+            { 
+                id: 'wetv', 
+                name: 'WeTV', 
+                category: 'entertainment', 
+                icon: '📱',
+                stock: 8,
+                sold: 12,
+                pricing: {
+                    "solo account": { '1m': 150 },
+                    "shared account": { '1m': 55, '2m': 95, '3m': 135 }
+                }
+            },
+            { 
+                id: 'iwant-tfc', 
+                name: 'IWANT TFC', 
+                category: 'entertainment', 
+                icon: '📺',
+                stock: 8,
+                sold: 7,
+                pricing: {
+                    "solo account": { '1m': 145 },
+                    "shared account": { '1m': 50, '2m': 90, '3m': 125 }
+                }
+            },
+            { 
+                id: 'crunchyroll', 
+                name: 'Crunchyroll', 
+                category: 'entertainment', 
+                icon: '🎮',
+                stock: 10,
+                sold: 15,
+                pricing: {
+                    "solo profile": { '1m': 75, '2m': 115, '3m': 160, '4m': 195 },
+                    "shared profile": { '1m': 35, '2m': 60, '3m': 90, '4m': 115 }
+                }
+            },
+            { 
+                id: 'disney-plus', 
+                name: 'Disney+', 
+                category: 'entertainment', 
+                icon: '🦁',
+                stock: 12,
+                sold: 28,
+                pricing: {
+                    "solo account": { '1m': 390 },
+                    "solo profile": { '1m': 160, '2m': 315, '4m': 630, '10m': 1480, '12m': 1700 },
+                    "shared profile": { '1m': 85, '2m': 165, '4m': 330, '10m': 720, '12m': 880 }
+                }
+            },
+            { 
+                id: 'bilibili', 
+                name: 'Bilibili', 
+                category: 'entertainment', 
+                icon: '📺',
+                stock: 6,
+                sold: 8,
+                pricing: {
+                    "shared account": { '1m': 45, '2m': 75, '3m': 105 }
+                }
+            },
+            { 
+                id: 'loklok', 
+                name: 'Loklok', 
+                category: 'entertainment', 
+                icon: '📱',
+                stock: 7,
+                sold: 10,
+                pricing: {
+                    "solo account": { '1m': 150 },
+                    "shared account": { '1m': 65, '2m': 115, '3m': 170 }
+                }
+            },
+            { 
+                id: 'iqiyi', 
+                name: 'iQiyi', 
+                category: 'entertainment', 
+                icon: '📺',
+                stock: 8,
+                sold: 11,
+                pricing: {
+                    "shared account": { '1m': 50, '2m': 90, '3m': 135 }
+                }
+            },
+            { 
+                id: 'hbo-max', 
+                name: 'HBO Max', 
+                category: 'entertainment', 
+                icon: '📹',
+                stock: 10,
+                sold: 15,
+                pricing: {
+                    "solo account": { '1m': 240, '2m': 360, '3m': 480 },
+                    "solo profile": { '1m': 135, '2m': 240, '3m': 350 },
+                    "shared profile": { '1m': 70, '2m': 120, '3m': 170 }
+                }
+            },
+            { 
+                id: 'amazon-prime', 
+                name: 'Amazon Prime', 
+                category: 'entertainment', 
+                icon: '🛒',
+                stock: 15,
+                sold: 22,
+                pricing: {
+                    "solo account": { '1m': 80, '2m': 110, '3m': 135, '4m': 160, '5m': 185, '6m': 210 },
+                    "solo profile": { '1m': 50, '2m': 80, '3m': 110, '4m': 135, '5m': 150, '6m': 170 },
+                    "shared profile": { '1m': 30, '2m': 50, '3m': 70, '4m': 80, '5m': 90, '6m': 100 }
+                }
+            },
+            { 
+                id: 'youku', 
+                name: 'Youku', 
+                category: 'entertainment', 
+                icon: '📺',
+                stock: 6,
+                sold: 5,
+                pricing: {
+                    "solo account": { '1m': 125 },
+                    "shared account": { '1m': 50, '2m': 90, '3m': 125 }
+                }
+            },
+            { 
+                id: 'nba-league-pass', 
+                name: 'NBA League Pass Premium', 
+                category: 'entertainment', 
+                icon: '🏀',
+                stock: 5,
+                sold: 3,
+                pricing: {
+                    "solo account": { '1m': 150 },
+                    "shared account": { '1m': 75 }
+                }
+            },
+
+            // Streaming (Music)
+            { 
+                id: 'youtube', 
+                name: 'YouTube Premium', 
+                category: 'streaming', 
+                icon: '📹',
+                stock: 20,
+                sold: 55,
+                pricing: {
+                    "famhead": { '1m': 70, '2m': 90, '3m': 125, '4m': 150, '5m': 175, '6m': 200 },
+                    "solo": { '1m': 45, '2m': 60, '3m': 85, '4m': 105, '5m': 125, '6m': 145 },
+                    "invite": { '1m': 20, '2m': 35, '3m': 50, '4m': 60, '5m': 70, '6m': 80 }
+                }
+            },
+            { 
+                id: 'spotify', 
+                name: 'Spotify Premium', 
+                category: 'streaming', 
+                icon: '🎵',
+                stock: 15,
+                sold: 38,
+                pricing: {
+                    "solo fw": { '1m': 60, '2m': 110, '3m': 150, '4m': 200 },
+                    "solo nw": { '1m': 45, '2m': 80, '3m': 120, '4m': 150 }
+                }
+            },
+            { 
+                id: 'apple-music', 
+                name: 'Apple Music', 
+                category: 'streaming', 
+                icon: '🎧',
+                stock: 12,
+                sold: 20,
+                pricing: {
+                    "solo account": { '1m': 49, '2m': 89, '3m': 129, '4m': 159 }
+                }
+            },
+
+            // AI Tools
+            { 
+                id: 'chatgpt', 
+                name: 'ChatGPT Plus', 
+                category: 'ai', 
+                icon: '🧠',
+                stock: 10,
+                sold: 35,
+                pricing: {
+                    "solo account": { '1m': 600, '2m': 1050, '3m': 1500 },
+                    "shared account": { '1m': 120, '2m': 200, '3m': 290 }
+                }
+            },
+            { 
+                id: 'blackbox-ai', 
+                name: 'Blackbox AI', 
+                category: 'ai', 
+                icon: '🤖',
+                stock: 0,
+                sold: 15,
+                pricing: {
+                    "solo account": { '1m': 90, '2m': 170, '3m': 250 }
+                }
+            },
+            { 
+                id: 'perplexity', 
+                name: 'Perplexity AI', 
+                category: 'ai', 
+                icon: '🔍',
+                stock: 8,
+                sold: 12,
+                pricing: {
+                    "solo account": { '1m': 120, '4m': 200, '6m': 250, '12m': 300, '24m': 450 },
+                    "shared account": { '1m': 55, '4m': 140, '6m': 190, '12m': 230, '24m': 350 }
+                }
+            },
+            { 
+                id: 'google-one', 
+                name: 'Google One + Gemini AI', 
+                category: 'ai', 
+                icon: '☁️',
+                stock: 10,
+                sold: 18,
+                pricing: {
+                    "solo account": { '1m': 50, '2m': 85, '3m': 120, '12m': 280 },
+                    "shared account": { '1m': 30, '2m': 50, '3m': 80, '12m': 150 }
+                }
+            },
+
+            // Educational
+            { 
+                id: 'quizlet', 
+                name: 'Quizlet+', 
+                category: 'educational', 
+                icon: '📚',
+                stock: 6,
+                sold: 8,
+                pricing: {
+                    "solo account": { '1m': 45, '2m': 65, '3m': 100 },
+                    "shared account": { '1m': 20, '2m': 35, '3m': 50 }
+                }
+            },
+            { 
+                id: 'scribd', 
+                name: 'Scribd Premium', 
+                category: 'educational', 
+                icon: '📖',
+                stock: 7,
+                sold: 10,
+                pricing: {
+                    "solo account": { '1m': 50, '2m': 85, '3m': 120 },
+                    "shared account": { '1m': 30, '2m': 50, '3m': 80 }
+                }
+            },
+            { 
+                id: 'studocu', 
+                name: 'Studocu Premium', 
+                category: 'educational', 
+                icon: '🎓',
+                stock: 6,
+                sold: 9,
+                pricing: {
+                    "solo account": { '1m': 50, '2m': 85, '3m': 120 },
+                    "shared account": { '1m': 30, '2m': 50, '3m': 80 }
+                }
+            },
+            { 
+                id: 'duolingo', 
+                name: 'Duolingo Super', 
+                category: 'educational', 
+                icon: '🧑‍🎓',
+                stock: 6,
+                sold: 7,
+                pricing: {
+                    "solo account": { '1m': 80, '2m': 130, '3m': 170 }
+                }
+            },
+            { 
+                id: 'turnitin-student', 
+                name: 'Turnitin Student', 
+                category: 'educational', 
+                icon: '📝',
+                stock: 8,
+                sold: 12,
+                pricing: {
+                    "solo account": { '7d': 35, '14d': 50, '1m': 80, '2m': 140, '3m': 160, '6m': 330, '12m': 580 }
+                }
+            },
+            { 
+                id: 'turnitin-instructor', 
+                name: 'Turnitin Instructor', 
+                category: 'educational', 
+                icon: '👨‍🏫',
+                stock: 5,
+                sold: 3,
+                pricing: {
+                    "solo account": { '1m': 520 },
+                    "shared account": { '7d': 120, '14d': 175, '1m': 280 }
+                }
+            },
+
+            // Editing Tools
+            { 
+                id: 'canva', 
+                name: 'Canva Pro', 
+                category: 'editing', 
+                icon: '🎨',
+                stock: 25,
+                sold: 68,
+                pricing: {
+                    "edu lifetime": {'nw': 19, '3m w': 39, '6m w': 49, '12m w': 69},
+                    "teamhead": {'1m': 45, '2m': 55, '3m': 65, '4m': 75, '5m': 85, '6m': 95},
+                    "solo": { '1m': 25, '2m': 35, '3m': 45, '4m': 55, '5m': 65, '6m': 75 },
+                    "invite": { '1m': 10, '2m': 15, '3m': 20, '4m': 25, '5m': 30, '6m': 35 }
+                }
+            },
+            { 
+                id: 'picsart', 
+                name: 'Picsart Gold', 
+                category: 'editing', 
+                icon: '👏',
+                stock: 12,
+                sold: 22,
+                pricing: {
+                    "teamhead account": { '1m': 70, '2m': 115, '3m': 150 },
+                    "solo account": { '1m': 50, '2m': 85, '3m': 120 },
+                    "shared account": { '1m': 25, '2m': 45, '3m': 70 }
+                }
+            },
+            { 
+                id: 'capcut', 
+                name: 'CapCut Pro', 
+                category: 'editing', 
+                icon: '📝',
+                stock: 10,
+                sold: 18,
+                pricing: {
+                    "solo account": { '7d': 50, '1m': 130, '2m': 190, '3m': 240 },
+                    "shared account": { '1m': 70, '2m': 120, '3m': 155 }
+                }
+            },
+            { 
+                id: 'alight-motion', 
+                name: 'Alight Motion Pro', 
+                category: 'editing', 
+                icon: '📱',
+                stock: 8,
+                sold: 10,
+                pricing: {
+                    "solo account": { '1m': 90, '12m': 149 },
+                    "shared account": { '1m': 35, '12m': 69 }
+                }
+            },
+            { 
+                id: 'remini', 
+                name: 'Remini Web', 
+                category: 'editing', 
+                icon: '✨',
+                stock: 6,
+                sold: 8,
+                pricing: {
+                    "solo account": { '7d': 30, '1m': 50 },
+                    "shared account": { '7d': 15, '1m': 25 }
+                }
+            },
+            { 
+                id: 'grammarly', 
+                name: 'Grammarly Premium', 
+                category: 'educational', 
+                icon: '✍️',
+                stock: 8,
+                sold: 15,
+                pricing: {
+                    "solo account": { '1m': 85 },
+                    "shared account": { '1m': 35, '2m': 65, '3m': 95 }
+                }
+            },
+            { 
+                id: 'quillbot', 
+                name: 'Quillbot Premium', 
+                category: 'educational', 
+                icon: '📝',
+                stock: 8,
+                sold: 12,
+                pricing: {
+                    "solo account": { '1m': 100 },
+                    "shared account": { '1m': 45, '2m': 75, '3m': 110 }
+                }
+            },
+            { 
+                id: 'ms-365', 
+                name: 'Microsoft 365', 
+                category: 'educational', 
+                icon: '🤬',
+                stock: 15,
+                sold: 25,
+                pricing: {
+                    "solo account": { '1m': 55, '2m': 90, '3m': 120 },
+                    "shared account": { '1m': 25, '2m': 45, '3m': 65 }
+                }
+            },
+            { 
+                id: 'cams-canner', 
+                name: 'CamScanner Pro', 
+                category: 'editing', 
+                icon: '📁',
+                stock: 8,
+                sold: 10,
+                pricing: {
+                    "solo account": { '1m': 100, '2m': 180, '3m': 250 },
+                    "shared account": { '1m': 50, '2m': 90, '3m': 120 }
+                }
+            },
+            { 
+                id: 'small-pdf', 
+                name: 'Small PDF Pro', 
+                category: 'editing', 
+                icon: '📁',
+                stock: 7,
+                sold: 9,
+                pricing: {
+                    "solo account": { '1m': 55, '2m': 95, '3m': 130 },
+                    "shared account": { '1m': 30, '2m': 50, '3m': 70 }
+                }
+            },
+            { 
+                id: 'zoom', 
+                name: 'Zoom Pro', 
+                category: 'educational', 
+                icon: '📽️',
+                stock: 6,
+                sold: 8,
+                pricing: {
+                    "solo account": { '14d': 45, '1m': 70, '2m': 120, '3m': 160 }
+                }
+            }
+        ];
+
+        // RULES DATA
+        const rulesData = {
+            "general": [
+                "All accounts are premium quality and verified",
+                "Replacement guaranteed within 24 hours for any issues",
+                "No refunds after account delivery",
+                "Keep account details confidential",
+                "Contact support for any issues within the warranty period"
+            ],
+            "netflix": [
+                "No password changing allowed",
+                "Use only on one device at a time",
+                "Contact support immediately if kicked out",
+                "Replacement available for 7 days"
+            ],
+            "spotify": [
+                "Download feature may not work on all accounts",
+                "Use only in supported regions",
+                "Account may require relogin after 30 days"
+            ],
+            "youtube": [
+                "Background play and download features included",
+                "Ad-free experience guaranteed",
+                "Family sharing available for famhead accounts"
+            ],
+            "chatgpt": [
+                "Access to GPT-4 included",
+                "No usage limits",
+                "Works on all devices"
+            ],
+            "canva": [
+                "All pro features unlocked",
+                "Access to premium elements and templates",
+                "Team features available for teamhead accounts"
+            ]
+        };
+
+        // FEEDBACK DATA
+        const feedbackData = [
+            {
+                id: 1,
+                user: "Maria Santos",
+                date: "2024-02-15",
+                content: "Great service! My Netflix account works perfectly. Will order again!",
+                image: null
+            },
+            {
+                id: 2,
+                user: "Juan Dela Cruz",
+                date: "2024-02-10",
+                content: "Fast delivery and good quality accounts. Highly recommended!",
+                image: null
+            },
+            {
+                id: 3,
+                user: "Ana Reyes",
+                date: "2024-02-05",
+                content: "Had an issue with my Spotify account but support helped me quickly. Good service!",
+                image: null
+            }
+        ];
+
+        let pendingOrder = null;
+        let paymentProofFile = null;
+        let currentUser = null;
+        let expandedCategories = {};
+
+        // INITIALIZE APP
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProducts();
+            setupTabs();
+            setupSearch();
+            setupCheckoutListeners();
+            setupAuthTabs();
+            loadRules();
+            loadFeedback();
+            checkLoginStatus();
+        });
+
+        function setupCheckoutListeners() {
+            document.getElementById('payment-method').addEventListener('change', showPaymentInstructions);
+        }
+
+        function setupSearch() {
+            const searchInput = document.getElementById('product-search');
+            searchInput.addEventListener('input', debounce(function(e) {
+                filterProducts(e.target.value);
+            }, 300));
+
+            const rulesSearchInput = document.getElementById('rules-search');
+            rulesSearchInput.addEventListener('input', debounce(function(e) {
+                filterRules(e.target.value);
+            }, 300));
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function filterProducts(searchTerm) {
+            const products = document.querySelectorAll('.product-card');
+            const searchLower = searchTerm.toLowerCase().trim();
+            
+            if (searchLower === '') {
+                products.forEach(product => {
+                    product.style.display = 'block';
+                });
+                return;
+            }
+            
+            products.forEach(product => {
+                const productName = product.querySelector('.product-name').textContent.toLowerCase();
+                if (productName.includes(searchLower)) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+        }
+
+        function filterRules(searchTerm) {
+            const rulesContainer = document.getElementById('rules-container');
+            const searchLower = searchTerm.toLowerCase().trim();
+            
+            if (searchLower === '') {
+                loadRules();
+                return;
+            }
+            
+            let html = '<div class="rules-category">';
+            html += '<h3>Search Results</h3>';
+            
+            let foundRules = false;
+            
+            // Search in general rules
+            rulesData.general.forEach(rule => {
+                if (rule.toLowerCase().includes(searchLower)) {
+                    html += `<div class="rule-item">${rule}</div>`;
+                    foundRules = true;
+                }
+            });
+            
+            // Search in product-specific rules
+            for (const [productId, rules] of Object.entries(rulesData)) {
+                if (productId === 'general') continue;
+                
+                const product = productsData.find(p => p.id === productId);
+                if (product) {
+                    rules.forEach(rule => {
+                        if (rule.toLowerCase().includes(searchLower)) {
+                            html += `<div class="rule-item"><strong>${product.name}:</strong> ${rule}</div>`;
+                            foundRules = true;
+                        }
+                    });
+                }
+            }
+            
+            if (!foundRules) {
+                html += '<p>No rules found matching your search.</p>';
+            }
+            
+            html += '</div>';
+            rulesContainer.innerHTML = html;
+        }
+
+        function loadProducts() {
+            const productsGrid = document.getElementById('products-grid');
+            
+            const productsByCategory = {
+                'entertainment': productsData.filter(p => p.category === 'entertainment'),
+                'streaming': productsData.filter(p => p.category === 'streaming'),
+                'educational': productsData.filter(p => p.category === 'educational'),
+                'editing': productsData.filter(p => p.category === 'editing'),
+                'ai': productsData.filter(p => p.category === 'ai')
+            };
+
+            let html = '';
+            
+            for (const [category, products] of Object.entries(productsByCategory)) {
+                if (products.length === 0) continue;
+                
+                const categoryName = formatCategoryName(category);
+                // Show only first 3 products if category is not expanded
+                const displayProducts = expandedCategories[category] ? products : products.slice(0, 3);
+                const productsHTML = displayProducts.map(product => createProductCard(product)).join('');
+                
+                html += `
+                    <div class="category-section">
+                        <div class="category-header">
+                            <h3 class="category-title">${categoryName}</h3>
+                            <button class="view-all-btn" onclick="toggleCategory('${category}')">
+                                ${expandedCategories[category] ? 'Show Less' : `View All (${products.length})`}
+                            </button>
+                        </div>
+                        <div class="products-category-grid">
+                            ${productsHTML}
+                        </div>
+                    </div>
+                `;
+            }
+
+            productsGrid.innerHTML = html;
+        }
+
+        function toggleCategory(category) {
+            expandedCategories[category] = !expandedCategories[category];
+            loadProducts();
+        }
+
+        function createProductCard(product) {
+            const stockText = product.stock > 0 ? `${product.stock} available` : 'Out of stock';
+            const stockClass = product.stock > 0 ? '' : 'stock-out';
+            const soldText = `${product.sold} sold`;
+
+            const accountTypes = Object.keys(product.pricing);
+            const accountTypeButtons = accountTypes.map(type => 
+                `<button class="account-type-btn" onclick="selectAccountType(this, '${product.id}', '${type}')">${type}</button>`
+            ).join('');
+
+            return `
+                <div class="product-card">
+                    <div class="product-image">
+                        ${product.icon}
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <div>
+                            <div class="product-stock ${stockClass}">${stockText}</div>
+                            <div class="product-sold">${soldText}</div>
+                        </div>
+                        
+                        <div class="account-type-options">
+                            ${accountTypeButtons}
+                        </div>
+                        
+                        <div class="duration-selector">
+                            <label>Duration:</label>
+                            <div class="duration-scroll" id="duration-${product.id}">
+                                <!-- Durations will be loaded dynamically -->
+                            </div>
+                        </div>
+                        
+                        <div class="price-display" id="price-${product.id}">
+                            <span class="select-price-message">Select account type & duration</span>
+                        </div>
+                        
+                        <button class="btn-primary" onclick="orderProduct('${product.id}')" 
+                                id="order-btn-${product.id}" ${product.stock === 0 ? 'disabled' : ''}>
+                            ${product.stock === 0 ? 'Out of Stock' : 'Select Options First'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectAccountType(button, productId, accountType) {
+            const buttons = button.parentElement.querySelectorAll('.account-type-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            const product = productsData.find(p => p.id === productId);
+            if (product) {
+                product.selectedAccountType = accountType;
+                updateDurationOptions(productId, accountType);
+            }
+        }
+
+        function updateDurationOptions(productId, accountType) {
+            const product = productsData.find(p => p.id === productId);
+            const durationContainer = document.getElementById(`duration-${productId}`);
+            
+            if (product && product.pricing[accountType]) {
+                const durations = Object.keys(product.pricing[accountType]);
+                const durationButtons = durations.map(duration => {
+                    const durationText = getDurationText(duration);
+                    return `<button class="duration-btn" onclick="selectDuration(this, '${productId}', '${duration}')">${durationText}</button>`;
+                }).join('');
+                
+                durationContainer.innerHTML = durationButtons;
+                
+                // Auto-select first duration
+                if (durations.length > 0) {
+                    const firstDurationBtn = durationContainer.querySelector('.duration-btn');
+                    if (firstDurationBtn) {
+                        firstDurationBtn.click();
+                    }
+                }
+            }
+        }
+
+        function selectDuration(button, productId, durationKey) {
+            const buttons = button.parentElement.querySelectorAll('.duration-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            const product = productsData.find(p => p.id === productId);
+            if (product) {
+                product.selectedDuration = durationKey;
+                updatePriceDisplay(productId);
+            }
+        }
+
+        function updatePriceDisplay(productId) {
+            const product = productsData.find(p => p.id === productId);
+            const priceDisplay = document.getElementById(`price-${productId}`);
+            const orderBtn = document.getElementById(`order-btn-${productId}`);
+
+            if (product.selectedAccountType && product.selectedDuration) {
+                const price = product.pricing[product.selectedAccountType][product.selectedDuration];
+                const durationText = getDurationText(product.selectedDuration);
+                
+                priceDisplay.innerHTML = `₱${price} <small>(${product.selectedAccountType} - ${durationText})</small>`;
+                orderBtn.textContent = `Order Now - ₱${price}`;
+                orderBtn.disabled = false;
+                
+                orderBtn.setAttribute('data-price', price);
+                orderBtn.setAttribute('data-account-type', product.selectedAccountType);
+                orderBtn.setAttribute('data-duration', product.selectedDuration);
+            }
+        }
+
+        function getDurationText(durationKey) {
+            const durationMap = {
+                '7d': '7 Days',
+                '14d': '14 Days',
+                '1m': '1 Month',
+                '2m': '2 Months',
+                '3m': '3 Months',
+                '4m': '4 Months',
+                '5m': '5 Months',
+                '6m': '6 Months',
+                '8m': '8 Months',
+                '10m': '10 Months',
+                '12m': '12 Months',
+                '24m': '24 Months',
+                'nw': 'No Warranty',
+                '3m w': '3 Months Warranty',
+                '6m w': '6 Months Warranty',
+                '12m w': '12 Months Warranty'
+            };
+            return durationMap[durationKey] || durationKey;
+        }
+
+        function formatCategoryName(category) {
+            const names = {
+                'entertainment': '🎬 Entertainment',
+                'streaming': '🎵 Music & Streaming',
+                'educational': '📚 Educational',
+                'editing': '🎨 Editing Tools',
+                'ai': '🤖 AI Tools'
+            };
+            return names[category] || category;
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // AUTHENTICATION FUNCTIONS
+        function setupAuthTabs() {
+            const authTabs = document.querySelectorAll('.auth-tab');
+            authTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-auth-tab');
+                    
+                    // Remove active class from all tabs and forms
+                    authTabs.forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.auth-form').forEach(form => {
+                        form.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked tab and form
+                    this.classList.add('active');
+                    document.getElementById(`${tabName}-form`).classList.add('active');
+                    
+                    // Update title
+                    document.getElementById('auth-title').textContent = tabName === 'login' ? 'Login' : 'Sign Up';
+                });
+            });
+        }
+
+        function openAuthModal() {
+            document.getElementById('auth-overlay').classList.add('active');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-overlay').classList.remove('active');
+            // Reset forms
+            document.getElementById('login-form').reset();
+            document.getElementById('signup-form').reset();
+        }
+
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                showNotification('Please fill in all fields.', 'warning');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                showNotification('Please enter a valid email address.', 'warning');
+                return;
+            }
+            
+            // Get users from localStorage
+            const users = JSON.parse(localStorage.getItem('aiaxcart_users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('aiaxcart_current_user', JSON.stringify(user));
+                showNotification('Login successful!', 'success');
+                closeAuthModal();
+                updateUIForUser();
+            } else {
+                showNotification('Invalid email or password.', 'error');
+            }
+        }
+
+        function signup() {
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+            
+            if (!name || !email || !password || !confirmPassword) {
+                showNotification('Please fill in all fields.', 'warning');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                showNotification('Please enter a valid email address.', 'warning');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showNotification('Passwords do not match.', 'warning');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showNotification('Password must be at least 6 characters.', 'warning');
+                return;
+            }
+            
+            // Get users from localStorage
+            const users = JSON.parse(localStorage.getItem('aiaxcart_users') || '[]');
+            
+            // Check if user already exists
+            if (users.find(u => u.email === email)) {
+                showNotification('User with this email already exists.', 'error');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now(),
+                name: name,
+                email: email,
+                password: password,
+                joinDate: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('aiaxcart_users', JSON.stringify(users));
+            
+            currentUser = newUser;
+            localStorage.setItem('aiaxcart_current_user', JSON.stringify(newUser));
+            showNotification('Account created successfully!', 'success');
+            closeAuthModal();
+            updateUIForUser();
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('aiaxcart_current_user');
+            showNotification('Logged out successfully.', 'success');
+            updateUIForUser();
+        }
+
+        function checkLoginStatus() {
+            const savedUser = localStorage.getItem('aiaxcart_current_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateUIForUser();
+            }
+        }
+
+        function updateUIForUser() {
+            const authButtons = document.getElementById('auth-buttons');
+            const userInfo = document.getElementById('user-info');
+            const feedbackFormContent = document.getElementById('feedback-form-content');
+            const feedbackLoginMessage = document.getElementById('feedback-login-message');
+            
+            if (currentUser) {
+                authButtons.style.display = 'none';
+                userInfo.style.display = 'flex';
+                document.getElementById('user-name').textContent = currentUser.name;
+                document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+                
+                // Update feedback form
+                feedbackFormContent.style.display = 'block';
+                feedbackLoginMessage.style.display = 'none';
+                
+                // Update My Account tab
+                updateAccountTab();
+            } else {
+                authButtons.style.display = 'block';
+                userInfo.style.display = 'none';
+                
+                // Update feedback form
+                feedbackFormContent.style.display = 'none';
+                feedbackLoginMessage.style.display = 'block';
+                
+                // Reset My Account tab
+                document.getElementById('accounts-content').innerHTML = `
+                    <h2 style="margin-bottom: 1rem;">Account Information</h2>
+                    <div class="card">
+                        <p>Login to view your account details and order history.</p>
+                        <button class="btn-primary" style="margin-top: 1rem; width: auto;" onclick="openAuthModal()">Login / Sign up</button>
+                    </div>
+                `;
+            }
+        }
+
+        function updateAccountTab() {
+            if (!currentUser) return;
+            
+            const userOrders = getCurrentUserOrders();
+            
+            document.getElementById('accounts-content').innerHTML = `
+                <h2 style="margin-bottom: 1rem;">My Account</h2>
+                <div class="card">
+                    <h3>Profile Information</h3>
+                    <p><strong>Name:</strong> ${currentUser.name}</p>
+                    <p><strong>Email:</strong> ${currentUser.email}</p>
+                    <p><strong>Member since:</strong> ${new Date(currentUser.joinDate).toLocaleDateString()}</p>
+                </div>
+                
+                <div class="card">
+                    <h3>Order History</h3>
+                    ${userOrders.length > 0 ? 
+                        userOrders.map(order => `
+                            <div class="order-item" style="border: 1px solid #F9E6E4; padding: 1rem; margin-bottom: 1rem; border-radius: 8px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <strong>${order.product.productName}</strong>
+                                        <div>${order.product.accountType} - ${getDurationText(order.product.duration)}</div>
+                                        <div>₱${order.product.price}</div>
+                                    </div>
+                                    <div>
+                                        <span class="stock-status ${order.processed ? 'status-sold' : 'status-reserved'}" style="padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
+                                            ${order.processed ? 'Completed' : 'Pending'}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">
+                                    Ordered on: ${new Date(order.timestamp).toLocaleDateString()}
+                                    ${order.processedDate ? ` | Completed on: ${new Date(order.processedDate).toLocaleDateString()}` : ''}
+                                </div>
+                            </div>
+                        `).join('') : 
+                        '<p>No orders yet.</p>'
+                    }
+                </div>
+            `;
+        }
+
+        function getCurrentUserOrders() {
+            const orders = JSON.parse(localStorage.getItem('aiaxcart_orders') || '[]');
+            return orders.filter(order => order.user && order.user.email === currentUser.email);
+        }
+
+        function orderProduct(productId) {
+            // Check if user is logged in
+            if (!currentUser) {
+                showNotification('Please login to place an order.', 'warning');
+                openAuthModal();
+                return;
+            }
+            
+            const orderBtn = document.getElementById(`order-btn-${productId}`);
+            const price = orderBtn.getAttribute('data-price');
+            const accountType = orderBtn.getAttribute('data-account-type');
+            const durationKey = orderBtn.getAttribute('data-duration');
+            
+            if (!price || !accountType || !durationKey) {
+                showNotification('Please select account type and duration first.', 'warning');
+                return;
+            }
+
+            const product = productsData.find(p => p.id === productId);
+            if (product) {
+                const orderDetails = {
+                    productId: productId,
+                    productName: product.name,
+                    price: price,
+                    accountType: accountType,
+                    duration: durationKey,
+                    icon: product.icon
+                };
+                
+                pendingOrder = orderDetails;
+                openCheckout();
+            }
+        }
+
+        function openCheckout() {
+            if (!pendingOrder) {
+                showNotification('No order data found.', 'error');
+                return;
+            }
+
+            const selectedProductDiv = document.getElementById('selected-product-checkout');
+            selectedProductDiv.innerHTML = `
+                <div class="product-icon-checkout">${pendingOrder.icon}</div>
+                <div class="product-details-checkout">
+                    <h3>${pendingOrder.productName}</h3>
+                    <div class="product-price-checkout">₱${pendingOrder.price}</div>
+                    <div class="ownership-type-checkout">${pendingOrder.accountType} - ${getDurationText(pendingOrder.duration)}</div>
+                </div>
+            `;
+
+            // Set the user's email in checkout
+            document.getElementById('customer-email').value = currentUser.email;
+
+            showPaymentInstructions();
+            document.getElementById('checkout-overlay').classList.add('active');
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkout-overlay').classList.remove('active');
+            document.getElementById('payment-proof').value = '';
+            document.getElementById('file-preview').style.display = 'none';
+            document.getElementById('preview-image').src = '';
+            document.getElementById('file-name').textContent = '';
+            paymentProofFile = null;
+        }
+
+        function showPaymentInstructions() {
+            const method = document.getElementById('payment-method').value;
+            const instructionsDiv = document.getElementById('payment-instructions');
+            
+            if (method === 'gcash') {
+                instructionsDiv.innerHTML = `
+                    <h4>GCash Payment Instructions:</h4>
+                    <p><strong>Send to:</strong> 0962 554 4105</p>
+                    <p><strong>Amount:</strong> ₱${pendingOrder.price}</p>
+                    <p>Please include your email in the payment description.</p>
+                `;
+            } else if (method === 'maya') {
+                instructionsDiv.innerHTML = `
+                    <h4>Maya Payment Instructions:</h4>
+                    <p><strong>Send to:</strong> 0929 984 3629</p>
+                    <p><strong>Amount:</strong> ₱${pendingOrder.price}</p>
+                    <p>Please include your email in the payment description.</p>
+                `;
+            }
+        }
+
+        function previewImage(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview-image').src = e.target.result;
+                    document.getElementById('file-name').textContent = file.name;
+                    document.getElementById('file-preview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+                paymentProofFile = file;
+            }
+        }
+
+        function showLoading(button) {
+            const originalText = button.textContent;
+            button.innerHTML = '<div class="loading-spinner"></div> Processing...';
+            button.disabled = true;
+            return originalText;
+        }
+
+        function hideLoading(button, originalText) {
+            button.textContent = originalText;
+            button.disabled = false;
+        }
+
+        function placeOrder() {
+            const email = document.getElementById('customer-email').value;
+            const paymentMethod = document.getElementById('payment-method').value;
+            const referenceNumber = document.getElementById('reference-number').value;
+            const placeOrderBtn = document.getElementById('place-order-btn');
+            
+            if (!paymentProofFile) {
+                showNotification('Please upload payment proof.', 'warning');
+                return;
+            }
+
+            // Show loading state
+            const originalText = showLoading(placeOrderBtn);
+
+            // Simulate API call with timeout
+            setTimeout(() => {
+                try {
+                    // In a real app, you would send the data to your server here
+                    const orderData = {
+                        product: pendingOrder,
+                        user: currentUser,
+                        paymentMethod: paymentMethod,
+                        referenceNumber: referenceNumber,
+                        timestamp: new Date().toISOString(),
+                        processed: false
+                    };
+                    
+                    // Save to localStorage (simulating database storage)
+                    const orders = JSON.parse(localStorage.getItem('aiaxcart_orders') || '[]');
+                    orders.push(orderData);
+                    localStorage.setItem('aiaxcart_orders', JSON.stringify(orders));
+                    
+                    // Update product stock and sold count
+                    const product = productsData.find(p => p.id === pendingOrder.productId);
+                    if (product) {
+                        product.stock = Math.max(0, product.stock - 1);
+                        product.sold += 1;
+                    }
+                    
+                    showNotification('Order placed successfully! Please wait for admin confirmation.', 'success');
+                    closeCheckout();
+                    
+                    // Reset form
+                    document.getElementById('customer-email').value = '';
+                    document.getElementById('reference-number').value = '';
+                    document.getElementById('payment-proof').value = '';
+                    document.getElementById('file-preview').style.display = 'none';
+                    paymentProofFile = null;
+                    
+                    // Reload products to update stock and sold counts
+                    loadProducts();
+                    updateAccountTab();
+                    
+                } catch (error) {
+                    console.error('Order error:', error);
+                    showNotification('Order failed. Please try again.', 'error');
+                } finally {
+                    hideLoading(placeOrderBtn, originalText);
+                }
+            }, 1500);
+        }
+
+        function loadRules() {
+            const rulesContainer = document.getElementById('rules-container');
+            let html = '';
+            
+            // General Rules
+            html += '<div class="rules-category">';
+            html += '<h3>General Rules & Regulations</h3>';
+            rulesData.general.forEach(rule => {
+                html += `<div class="rule-item">${rule}</div>`;
+            });
+            html += '</div>';
+            
+            // Product-specific Rules
+            for (const [productId, rules] of Object.entries(rulesData)) {
+                if (productId === 'general') continue;
+                
+                const product = productsData.find(p => p.id === productId);
+                if (product) {
+                    html += '<div class="rules-category">';
+                    html += `<h3>${product.name} Rules</h3>`;
+                    rules.forEach(rule => {
+                        html += `<div class="rule-item">${rule}</div>`;
+                    });
+                    html += '</div>';
+                }
+            }
+            
+            rulesContainer.innerHTML = html;
+        }
+
+        function loadFeedback() {
+            const feedbackList = document.getElementById('feedback-list');
+            let html = '';
+            
+            feedbackData.forEach(feedback => {
+                html += `
+                    <div class="feedback-item">
+                        <div class="feedback-header">
+                            <div class="feedback-avatar">${feedback.user.charAt(0)}</div>
+                            <div>
+                                <div class="feedback-user">${feedback.user}</div>
+                                <div class="feedback-date">${formatDate(feedback.date)}</div>
+                            </div>
+                        </div>
+                        <div class="feedback-content">
+                            ${feedback.content}
+                        </div>
+                        ${feedback.image ? `<img src="${feedback.image}" class="feedback-image" alt="Feedback image">` : ''}
+                    </div>
+                `;
+            });
+            
+            feedbackList.innerHTML = html;
+        }
+
+        function submitFeedback() {
+            const feedbackText = document.getElementById('feedback-text').value;
+            const feedbackImage = document.getElementById('feedback-image').files[0];
+            
+            if (!feedbackText) {
+                showNotification('Please enter your feedback.', 'warning');
+                return;
+            }
+            
+            // Create new feedback
+            const newFeedback = {
+                id: Date.now(),
+                user: currentUser.name,
+                date: new Date().toISOString().split('T')[0],
+                content: feedbackText,
+                image: null
+            };
+            
+            // Handle image if uploaded
+            if (feedbackImage) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    newFeedback.image = e.target.result;
+                    saveFeedback(newFeedback);
+                };
+                reader.readAsDataURL(feedbackImage);
+            } else {
+                saveFeedback(newFeedback);
+            }
+        }
+
+        function saveFeedback(feedback) {
+            feedbackData.unshift(feedback);
+            loadFeedback();
+            document.getElementById('feedback-text').value = '';
+            document.getElementById('feedback-image').value = '';
+            showNotification('Feedback submitted successfully!', 'success');
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification-overlay');
+            const messageElement = document.getElementById('notification-message');
+            const titleElement = document.getElementById('notification-title');
+            const iconElement = document.querySelector('.notification-icon');
+            const headerElement = document.querySelector('.notification-header');
+            
+            // Set icon and colors based on type
+            if (type === 'success') {
+                iconElement.textContent = '✅';
+                headerElement.style.background = '#FFD3D6';
+                titleElement.textContent = 'Success!';
+            } else if (type === 'warning') {
+                iconElement.textContent = '⚠️';
+                headerElement.style.background = '#FFF3CD';
+                titleElement.textContent = 'Please Check';
+            } else if (type === 'error') {
+                iconElement.textContent = '❌';
+                headerElement.style.background = '#F8D7DA';
+                titleElement.textContent = 'Error';
+            }
+            
+            messageElement.textContent = message;
+            notification.classList.add('active');
+        }
+
+        function closeNotification() {
+            document.getElementById('notification-overlay').classList.remove('active');
+        }
+
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and hide contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.style.display = 'none';
+                    });
+                    
+                    // Add active class to clicked tab and show content
+                    this.classList.add('active');
+                    
+                    // Special case for products tab
+                    if (tabName === 'products') {
+                        document.getElementById('products-content').style.display = 'block';
+                    } else {
+                        document.getElementById(`${tabName}-content`).style.display = 'block';
+                        document.getElementById('products-content').style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Set up event listeners for buttons
+        document.getElementById('login-btn').addEventListener('click', openAuthModal);
+        document.getElementById('logout-btn').addEventListener('click', logout);
+    </script>
 </body>
 </html>
