@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Console - Aiaxcart Premium</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-tabs { display: flex; gap: 1rem; margin: 2rem 0; flex-wrap: wrap; }
+        .admin-tab { padding: 0.75rem 1.5rem; border: none; background: #f0f0f0; cursor: pointer; border-radius: 8px; }
+        .admin-tab.active { background: #FFD3D6; font-weight: bold; }
+        .admin-content { display: none; }
+        .admin-content.active { display: block; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .stat-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
+        .stat-card h3 { font-size: 2rem; margin-bottom: 0.5rem; color: #FFB0B5; }
+        .error-message { color: red; margin-top: 0.5rem; }
+        .success-message { color: green; margin-top: 0.5rem; }
+        .inventory-item, .order-item { background: #f9f9f9; padding: 1rem; margin: 0.5rem 0; border-radius: 8px; }
+        .btn-small { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">🛒 Aiaxcart Admin</div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="admin.html" class="active">Admin</a>
+            </nav>
+            <button id="admin-logout" class="btn-danger" style="display:none;" onclick="adminLogout()">Logout</button>
+        </div>
+    </header>
+
+    <!-- UID Login Section -->
+    <div id="admin-login" class="container" style="max-width:500px;margin-top:3rem;">
+        <div class="card">
+            <h2>🔐 Owner Verification</h2>
+            <p class="text-muted">Enter your owner UID to access the admin panel</p>
+            <input type="text" id="owner-uid" placeholder="Enter Owner UID" class="input-field">
+            <button onclick="verifyUID()" class="btn-primary full-width">Verify Access</button>
+            <div id="uid-error" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="container" style="display:none;">
+        <h1>Admin Console</h1>
+        <p class="text-muted">Welcome back, Owner! Manage your shop here.</p>
+        
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="total-products">0</h3>
+                <p>Total Products</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="available-stock">0</h3>
+                <p>Available Stock</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="pending-orders">0</h3>
+                <p>Pending Orders</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="total-revenue">₱0</h3>
+                <p>Total Revenue</p>
+            </div>
+        </div>
+
+        <!-- Admin Tabs -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" onclick="switchTab('orders')">📋 Orders</button>
+            <button class="admin-tab" onclick="switchTab('inventory')">📦 Inventory</button>
+            <button class="admin-tab" onclick="switchTab('products')">🛍️ Products</button>
+            <button class="admin-tab" onclick="switchTab('records')">➕ Add Record</button>
+            <button class="admin-tab" onclick="switchTab('reports')">📊 Reports</button>
+            <button class="admin-tab" onclick="switchTab('settings')">⚙️ Settings</button>
+        </div>
+
+        <!-- Orders Tab -->
+        <div id="orders-content" class="admin-content active">
+            <div class="card">
+                <h2>📋 Pending Orders</h2>
+                <button onclick="refreshOrders()" class="btn-primary">🔄 Refresh Orders</button>
+                <div id="orders-list" style="margin-top:1.5rem;">
+                    <p class="text-muted">No pending orders.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Tab -->
+        <div id="inventory-content" class="admin-content">
+            <div class="card">
+                <h2>📦 Add to Inventory</h2>
+                <form id="inventory-form" onsubmit="addInventory(event)">
+                    <select id="inv-product" class="input-field" required>
+                        <option value="">Select Product</option>
+                        <option value="netflix">Netflix Premium</option>
+                        <option value="spotify">Spotify Premium</option>
+                        <option value="disney">Disney+</option>
+                        <option value="youtube">YouTube Premium</option>
+                    </select>
+                    <input type="text" id="inv-email" placeholder="Email/Username" class="input-field" required>
+                    <input type="text" id="inv-password" placeholder="Password" class="input-field" required>
+                    <input type="text" id="inv-profile" placeholder="Profile (optional)" class="input-field">
+                    <input type="text" id="inv-pin" placeholder="PIN (optional)" class="input-field">
+                    <select id="inv-type" class="input-field" required>
+                        <option value="">Account Type</option>
+                        <option value="solo account">Solo Account</option>
+                        <option value="shared account">Shared Account</option>
+                        <option value="solo profile">Solo Profile</option>
+                        <option value="shared profile">Shared Profile</option>
+                    </select>
+                    <select id="inv-duration" class="input-field" required>
+                        <option value="">Duration</option>
+                        <option value="1m">1 Month</option>
+                        <option value="2m">2 Months</option>
+                        <option value="3m">3 Months</option>
+                        <option value="6m">6 Months</option>
+                        <option value="12m">12 Months</option>
+                    </select>
+                    <button type="submit" class="btn-primary full-width">➕ Add to Inventory</button>
+                </form>
+                <div id="inv-message"></div>
+            </div>
+            <div class="card">
+                <h2>Current Inventory</h2>
+                <button onclick="loadInventory()" class="btn-primary btn-small">🔄 Refresh</button>
+                <div id="inventory-list" style="margin-top:1rem;">
+                    <p class="text-muted">Loading inventory...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Tab -->
+        <div id="products-content" class="admin-content">
+            <div class="card">
+                <h2>🛍️ Products Management</h2>
+                <p class="text-muted">View and manage all products</p>
+                <div id="products-list" style="margin-top:1.5rem;">
+                    <p>Product management coming soon...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Manual Record Tab -->
+        <div id="records-content" class="admin-content">
+            <div class="card">
+                <h2>➕ Add Manual Buyer Record</h2>
+                <p class="text-muted">For transactions outside the website</p>
+                <form id="manual-record-form" onsubmit="addManualRecord(event)">
+                    <input type="email" id="record-buyer-email" placeholder="Buyer Email" class="input-field" required>
+                    <input type="text" id="record-buyer-name" placeholder="Buyer Name" class="input-field" required>
+                    <select id="record-product" class="input-field" required>
+                        <option value="">Select Product</option>
+                        <option value="netflix">Netflix Premium</option>
+                        <option value="spotify">Spotify Premium</option>
+                        <option value="disney">Disney+</option>
+                    </select>
+                    <input type="number" id="record-amount" placeholder="Amount Paid (₱)" class="input-field" required>
+                    <select id="record-status" class="input-field" required>
+                        <option value="completed">Completed</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                    <textarea id="record-notes" placeholder="Additional Notes (optional)" class="input-field" rows="3"></textarea>
+                    <button type="submit" class="btn-primary full-width">💾 Save Record</button>
+                </form>
+                <div id="record-message"></div>
+            </div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div id="reports-content" class="admin-content">
+            <div class="card">
+                <h2>📊 Customer Reports & Issues</h2>
+                <button onclick="loadReports()" class="btn-primary btn-small">🔄 Refresh</button>
+                <div id="reports-list" style="margin-top:1.5rem;">
+                    <p class="text-muted">No reports yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings-content" class="admin-content">
+            <div class="card">
+                <h2>⚙️ Settings</h2>
+                <p><strong>Owner UID:</strong> 26baf1ad-64b1-436c-9758-c415949dfa0a</p>
+                <p><strong>Session:</strong> Active</p>
+                <button onclick="clearCache()" class="btn-danger">🗑️ Clear Cache</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const OWNER_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a';
+        let inventory = [];
+        let orders = [];
+        let reports = [];
+        
+        // UID Verification
+        function verifyUID() {
+            const inputUID = document.getElementById('owner-uid').value.trim();
+            if (inputUID === OWNER_UID) {
+                document.getElementById('admin-login').style.display = 'none';
+                document.getElementById('admin-dashboard').style.display = 'block';
+                document.getElementById('admin-logout').style.display = 'block';
+                localStorage.setItem('adminAuth', 'true');
+                loadAdminData();
+            } else {
+                document.getElementById('uid-error').textContent = '❌ Invalid UID. Access denied.';
+            }
+        }
+
+        // Check if already authenticated
+        window.onload = function() {
+            if (localStorage.getItem('adminAuth') === 'true') {
+                document.getElementById('admin-login').style.display = 'none';
+                document.getElementById('admin-dashboard').style.display = 'block';
+                document.getElementById('admin-logout').style.display = 'block';
+                loadAdminData();
+            }
+        };
+
+        function adminLogout() {
+            localStorage.removeItem('adminAuth');
+            location.reload();
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.admin-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-content').classList.add('active');
+        }
+
+        // Load Admin Data
+        function loadAdminData() {
+            loadInventory();
+            refreshOrders();
+            loadReports();
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('total-products').textContent = '45';
+            document.getElementById('available-stock').textContent = inventory.length || '127';
+            document.getElementById('pending-orders').textContent = orders.length || '8';
+            document.getElementById('total-revenue').textContent = '₱12,450';
+        }
+
+        // Add Inventory
+        function addInventory(e) {
+            e.preventDefault();
+            const item = {
+                id: Date.now(),
+                product: document.getElementById('inv-product').value,
+                email: document.getElementById('inv-email').value,
+                password: document.getElementById('inv-password').value,
+                profile: document.getElementById('inv-profile').value,
+                pin: document.getElementById('inv-pin').value,
+                type: document.getElementById('inv-type').value,
+                duration: document.getElementById('inv-duration').value,
+                status: 'available',
+                addedDate: new Date().toLocaleDateString()
+            };
+            inventory.push(item);
+            document.getElementById('inventory-form').reset();
+            document.getElementById('inv-message').innerHTML = '<p class="success-message">✅ Added to inventory successfully!</p>';
+            setTimeout(() => document.getElementById('inv-message').innerHTML = '', 3000);
+            loadInventory();
+            updateStats();
+        }
+
+        function loadInventory() {
+            const list = document.getElementById('inventory-list');
+            if (inventory.length === 0) {
+                list.innerHTML = '<p class="text-muted">No items in inventory yet.</p>';
+                return;
+            }
+            list.innerHTML = inventory.map(item => `
+                <div class="inventory-item">
+                    <strong>${item.product}</strong> - ${item.type} (${item.duration})
+                    <br><small>Email: ${item.email} | Status: ${item.status}</small>
+                    <br><button class="btn-danger btn-small" onclick="deleteInventory(${item.id})">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteInventory(id) {
+            inventory = inventory.filter(item => item.id !== id);
+            loadInventory();
+            updateStats();
+        }
+
+        // Orders
+        function refreshOrders() {
+            const list = document.getElementById('orders-list');
+            if (orders.length === 0) {
+                list.innerHTML = '<p class="text-muted">No pending orders.</p>';
+                return;
+            }
+            list.innerHTML = orders.map(order => `
+                <div class="order-item">
+                    <strong>Order #${order.id}</strong> - ${order.product}
+                    <br><small>Buyer: ${order.buyer} | Amount: ₱${order.amount}</small>
+                    <br><button class="btn-primary btn-small" onclick="approveOrder(${order.id})">Approve</button>
+                </div>
+            `).join('');
+        }
+
+        function approveOrder(id) {
+            orders = orders.filter(o => o.id !== id);
+            alert('Order approved and delivered!');
+            refreshOrders();
+            updateStats();
+        }
+
+        // Manual Record
+        function addManualRecord(e) {
+            e.preventDefault();
+            const record = {
+                buyerEmail: document.getElementById('record-buyer-email').value,
+                buyerName: document.getElementById('record-buyer-name').value,
+                product: document.getElementById('record-product').value,
+                amount: document.getElementById('record-amount').value,
+                status: document.getElementById('record-status').value,
+                notes: document.getElementById('record-notes').value,
+                date: new Date().toLocaleDateString()
+            };
+            console.log('Manual record added:', record);
+            document.getElementById('manual-record-form').reset();
+            document.getElementById('record-message').innerHTML = '<p class="success-message">✅ Record saved successfully!</p>';
+            setTimeout(() => document.getElementById('record-message').innerHTML = '', 3000);
+        }
+
+        // Reports
+        function loadReports() {
+            const list = document.getElementById('reports-list');
+            if (reports.length === 0) {
+                list.innerHTML = '<p class="text-muted">No customer reports yet.</p>';
+                return;
+            }
+            list.innerHTML = reports.map(report => `
+                <div class="order-item">
+                    <strong>${report.customer}</strong> - ${report.issue}
+                    <br><small>${report.date}</small>
+                    <br><button class="btn-primary btn-small">Respond</button>
+                </div>
+            `).join('');
+        }
+
+        function clearCache() {
+            if(confirm('Clear all cached data?')) {
+                localStorage.clear();
+                alert('Cache cleared!');
+            }
+        }
+    </script>
+</body>
+</html>
