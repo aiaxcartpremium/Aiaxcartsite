@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Aiaxcart Premium</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">🛒 Aiaxcart Premium</div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="account.html" class="active">My Account</a>
+            </nav>
+            <button id="logout-btn" class="btn-auth">Logout</button>
+        </div>
+    </header>
+
+    <main class="container" style="padding:2rem 0;">
+        <h1>My Account</h1>
+        
+        <div class="card">
+            <h2>📦 My Orders</h2>
+            <div id="orders-container">
+                <p class="text-muted">You have no orders yet.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📋 Order History</h2>
+            <div id="history-container">
+                <p class="text-muted">No order history.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🚨 Report an Issue</h2>
+            <form id="report-form">
+                <select class="input-field" required>
+                    <option value="">Select Order</option>
+                </select>
+                <textarea class="input-field" rows="4" placeholder="Describe your issue..." required></textarea>
+                <button type="submit" class="btn-primary full-width">Submit Report</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Check if logged in
+        const user = JSON.parse(localStorage.getItem('user') || 'null');
+        if (!user) {
+            alert('Please login first');
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('logout-btn').onclick = () => {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        };
+
+        document.getElementById('report-form').onsubmit = (e) => {
+            e.preventDefault();
+            alert('Report submitted! We will review it shortly.');
+            e.target.reset();
+        };
+    </script>
+</body>
+</html>
