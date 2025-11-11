@@ -1,41 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Admin Panel - Aiaxcart Premium</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-    html,body{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;}
-    .container{max-width:1200px;margin:0 auto;padding:0 20px;}
-    .header-content{display:flex;justify-content:space-between;align-items:center;}
-    .logo{font-size:1.8rem;font-weight:700;}
-    nav ul{display:flex;list-style:none;}
-    nav ul li{margin-left:1.5rem;}
-    nav ul li a{color:#5a3e36;text-decoration:none;font-weight:500;padding:0.5rem 1rem;border-radius:8px;}
-    nav ul li a.active,nav ul li a:hover{background:#FFC6CA;font-weight:bold;}
-    .tabs{display:flex;gap:1rem;margin:2rem 0;flex-wrap:wrap;}
-    .tab{padding:0.7rem 1.2rem;border:none;border-radius:8px;background:#f0f0f0;cursor:pointer;}
-    .tab.active{background:#FFD3D6;font-weight:bold;}
-    .panel{display:none;}
-    .panel.is-visible{display:block;}
-    .card{background:white;padding:2rem 2.5rem;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.11);}
-    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.3rem;margin:2rem 0;}
-    .stat-card{background:white;padding:1.3rem;text-align:center;border-radius:13px;box-shadow:0 2px 8px rgba(0,0,0,0.09);}
-    .stat-card h3{font-size:2rem;margin-bottom:0.3rem;color:#FFB0B5;}
-    #owner-modal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.36);display:flex;align-items:center;justify-content:center;z-index:9999;}
-    .modal-card{position:relative;background:white;padding:2rem 2.5rem 1.3rem 2.5rem;border-radius:14px;min-width:320px;}
-    .btn{padding:0.6rem 1.5rem;border:none;border-radius:12px;cursor:pointer;font-weight:500;}
-    .btn-primary{background:#FFB0B5;color:white;}
-    .btn-danger{background:#F44336;color:white;}
-    .btn-edit{background:#2196F3;color:white;}
-    .btn-small{padding:0.4rem 0.85rem;font-size:0.92rem;}
-    table{width:100%;border-collapse:collapse;margin-top:1rem;}
-    th,td{padding:9px 10px;text-align:left;border-bottom:1px solid #f3d9d9;}
-    th{background-color:#FFF0F0;}
-    .toggle-btn{cursor:pointer;padding:0.18rem 1.1rem;}
-    label{display:block;margin-top:1rem;}
-    input,select{padding:0.55rem;border-radius:8px;border:1px solid #EAEAEA;font-size:1rem;}
-</style>
+    <meta charset="UTF-8">
+    <title>Aiaxcart Premium | Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { background: #fefaf7; color: #382f2c; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        .logo { font-size: 2rem; font-weight: 700; display: flex; align-items: center;}
+        header { background: #FFD3D6; padding: 1.3rem 0 1.1rem 0; box-shadow: 0 6px 22px rgba(0,0,0,0.08);}
+        .header-content { display: flex; justify-content: space-between; align-items: center;}
+        nav ul { display: flex; list-style: none;}
+        nav ul li {margin-left: 2.2rem;}
+        nav ul li a { color: #382f2c; text-decoration: none; font-weight: 500; padding: 0.6rem 1.4rem; border-radius: 10px;}
+        nav ul li a.active, nav ul li a:hover {background: #FFC6CA;}
+        .tabs { display: flex; gap: 0.95rem; margin: 2rem 0 1.5rem 0; flex-wrap: wrap;}
+        .tab {
+            padding: 0.85rem 1.55rem;
+            border: none;
+            background: #fff;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 500;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .tab.active { background: #FFD3D6;}
+        .panel { display: none; }
+        .panel.active { display: block; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.3rem; margin-bottom:2rem;}
+        .stat-card { background: #fff; padding: 2rem 0 1.25rem 0; border-radius: 13px; text-align:center; box-shadow: 0 2px 8px rgba(0,0,0,0.07);}
+        .stat-card h3 { font-size: 2.1rem; margin-bottom: 0.55rem; color:#FFB0B5;}
+        .card { background: #fff; border-radius: 13px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 2.2rem 1.5rem; margin-bottom: 2rem;}
+        label { margin:1rem 0 0.45rem 0; display: block; }
+        select,input[type="text"],input[type="number"],input[type="email"],input[type="date"] {
+            padding:0.65rem 0.9rem;border-radius:8px;border:1px solid #E8E8E8;font-size:1rem;width:100%;font-family:inherit;
+        }
+        .btn {padding: 0.65rem 1.55rem; border:none; border-radius:9px; font-weight:500; font-size: 1rem; cursor:pointer;}
+        .btn-primary {background: #FFB0B5; color:white;}
+        .btn-danger {background: #F44336; color:white;}
+        .btn-warning {background: #FF9800; color:white;}
+        .btn-success {background: #43b87a; color:white;}
+        .btn-small {padding:0.3rem 0.8rem;font-size:0.95rem;margin-top:0.25rem;}
+        .stock-list {display:flex;flex-direction:column;gap:1.2rem;}
+        .stock-card {background:#fff5; border-radius:8px; padding:1rem 1.2rem; box-shadow:0 1px 7px rgba(0,0,0,0.04);}
+        .stock-actions {margin-top:0.5rem;}
+        .badge {display:inline-block;padding:0.18rem 0.9rem;border-radius:12px;font-size:0.90rem; font-weight:500;}
+        .badge-premium {background:#ffe3ed;color:#CC348D;}
+        .badge-archived {background:#e7e6ef;color:#8c73b1;}
+        .toggle-row {display:flex;align-items:center;gap:1.3rem; margin-top:0.85rem;}
+        .error-message {color:red; margin-top:0.5rem;}
+        .success-message {color:green; margin-top:0.5rem;}
+        #owner-modal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.37);display:flex;align-items:center;justify-content:center;z-index:9999;}
+        .modal-card{position:relative;background:white;padding:2.7rem 2.5rem 1.5rem 2.5rem;border-radius:16px;min-width:325px;}
+        .close-btn{position:absolute;top:0.6rem;right:0.7rem;background:none;border:none;font-size:1.55rem;color:#ff7a7a;line-height:1;cursor:pointer;}
+        @media(max-width:1000px){.stats-grid{grid-template-columns:1fr 1fr;}}
+        @media(max-width:700px){.stats-grid{grid-template-columns:1fr;}.tabs{gap:0.45rem;}}
+    </style>
 </head>
 <body>
 <header>
@@ -49,22 +71,23 @@
         </nav>
     </div>
 </header>
-<div id="owner-modal">
+<!-- Owner modal -->
+<div id="owner-modal" style="display:none;">
     <div class="modal-card">
-        <button onclick="closeOwnerModal()" style="position:absolute;top:0.5rem;right:0.7rem;background:none;border:none;font-size:1.5rem;color:#ff7a7a;line-height:1;cursor:pointer;">&times;</button>
+        <button class="close-btn" onclick="closeOwnerModal()">&times;</button>
         <h2>🔐 Owner Verification</h2>
-        <input type="text" id="owner-uid" placeholder="Enter Owner UID" class="input-field">
-        <button onclick="verifyUID()" class="btn btn-primary full-width" style="margin-top:15px;">Verify Access</button>
+        <input type="text" id="owner-uid" placeholder="Enter Owner UID" style="display:block;width:100%;margin-bottom:1.2rem;">
+        <button onclick="verifyUID()" class="btn btn-primary full-width" style="width:100%;">Verify Access</button>
         <div id="uid-error" class="error-message"></div>
     </div>
 </div>
 <div class="container" id="admin-dashboard" style="display:none;">
-    <h1>Admin Console</h1>
+    <h1 style="margin-top:2rem;">Admin Console</h1>
     <div class="stats-grid">
-        <div class="stat-card"><h3 id="stat-products">0</h3>Products</div>
-        <div class="stat-card"><h3 id="stat-stock">0</h3>Available Stock</div>
-        <div class="stat-card"><h3 id="stat-pending">0</h3>Pending Orders</div>
-        <div class="stat-card"><h3 id="stat-revenue">₱0</h3>Total Revenue</div>
+        <div class="stat-card"><h3 id="stat-products">0</h3><div>Products</div></div>
+        <div class="stat-card"><h3 id="stat-stock">0</h3><div>Available Stock</div></div>
+        <div class="stat-card"><h3 id="stat-pending">0</h3><div>Pending Orders</div></div>
+        <div class="stat-card"><h3 id="stat-revenue">₱0</h3><div>Total Revenue</div></div>
     </div>
     <div class="tabs" id="admintabs">
         <button class="tab active" data-tab="add-stock">Add Stock</button>
@@ -74,70 +97,119 @@
         <button class="tab" data-tab="archived-stocks">Archived Stocks</button>
         <button class="tab" data-tab="products">Products</button>
         <button class="tab" data-tab="store-rules">Store Rules</button>
-        <button class="tab" data-tab="records">Add Record</button>
-        <button class="tab" data-tab="reports">Reports</button>
-        <button class="tab" data-tab="settings">Settings</button>
     </div>
-    <div class="panel is-visible" id="panel-add-stock">
+    <!-- ADD STOCK PANEL -->
+    <div class="panel active" id="panel-add-stock">
         <div class="card">
             <h2>Add Stock</h2>
-            <form id="addStockForm">
-                <label>Product
-                    <select id="add-product" required></select>
-                </label>
-                <label>Type
-                    <select id="add-type"><option>Solo</option><option>Shared</option></select>
-                </label>
-                <label>Duration <select id="add-duration"><option>1m</option><option>3m</option><option>6m</option></select></label>
-                <label>Email/Login <input id="add-email"></label>
-                <label>Password <input id="add-password"></label>
-                <label>Premium? <input type="checkbox" id="add-premium"></label>
-                <label>Premium At <input type="date" id="add-premium-date"></label>
-                <label>Archive? <input type="checkbox" id="add-archive"></label>
-                <label>Archive At <input type="date" id="add-archive-date"></label>
-                <button type="submit" class="btn btn-primary" style="margin-top:1rem;">Add</button>
+            <form id="add-stock-form">
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;">
+                  <label>Product
+                    <select id="stock-product" required></select>
+                  </label>
+                  <label>Account Type
+                    <select id="stock-type" required>
+                        <option value="">Select Type</option>
+                        <option>Solo</option><option>Shared</option></select>
+                  </label>
+                  <label>Duration
+                    <select id="stock-duration" required>
+                        <option value="">Select Duration</option>
+                        <option>1m</option><option>3m</option><option>6m</option><option>12m</option>
+                    </select>
+                  </label>
+                  <label>Quantity
+                    <input type="number" id="stock-qty" value="1" min="1">
+                  </label>
+                  <label>Email/Login
+                    <input type="text" id="stock-email" placeholder="login email">
+                  </label>
+                  <label>Password
+                    <input type="text" id="stock-password" placeholder="login password">
+                  </label>
+                  <label>Profile
+                    <input type="text" id="stock-profile" placeholder="profile name">
+                  </label>
+                  <label>PIN
+                    <input type="text" id="stock-pin" placeholder="profile pin">
+                  </label>
+                  <label>Auto-Archive After (Days)
+                    <input type="number" id="stock-archive-days" value="0" min="0">
+                    <span style="font-size:0.94em;">Set to 0 to never auto-archive</span>
+                  </label>
+                  <label>Date When Premiumed (Optional)
+                    <input type="date" id="stock-premium-date">
+                  </label>
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-top:1.45rem;">Add Stock</button>
             </form>
+            <div id="add-stock-msg"></div>
         </div>
     </div>
+    <!-- MANAGE STOCKS PANEL -->
     <div class="panel" id="panel-manage-stocks">
         <div class="card">
-            <h2>Manage Stocks</h2>
-            <div id="manage-stocks-list"></div>
+            <h2>Available Stocks</h2>
+            <div style="margin-bottom:14px;">
+                <button class="btn btn-warning btn-small" onclick="autoArchiveAll()">Check Auto-Archive</button>
+                <button class="btn btn-primary btn-small" onclick="showStocks()">Refresh Stocks</button>
+            </div>
+            <div class="stock-list" id="manage-stocks-list"></div>
         </div>
     </div>
-    <div class="panel" id="panel-pending-orders"><div class="card"><h2>Pending Orders</h2><div id="pending-list"></div></div></div>
-    <div class="panel" id="panel-sold-accounts"><div class="card"><h2>Sold Accounts</h2><div id="sold-list"></div></div></div>
-    <div class="panel" id="panel-archived-stocks"><div class="card"><h2>Archived Stocks</h2><div id="archived-list"></div></div></div>
-    <div class="panel" id="panel-products"><div class="card"><h2>Products</h2><div id="products-list"></div></div></div>
-    <div class="panel" id="panel-store-rules"><div class="card"><h2>Store Rules</h2><p>- No password change - 24hr replacement</p></div></div>
-    <div class="panel" id="panel-records"><div class="card"><h2>Add Record</h2>Demo form here...</div></div>
-    <div class="panel" id="panel-reports"><div class="card"><h2>Reports</h2><div id="reports-list">None yet.</div></div></div>
-    <div class="panel" id="panel-settings"><div class="card"><button onclick="localStorage.clear();location.reload();" class="btn btn-danger">Clear Cache</button></div></div>
+    <!-- PENDING ORDERS PANEL (demo) -->
+    <div class="panel" id="panel-pending-orders">
+        <div class="card"><h2>Pending Orders</h2>
+            <button class="btn btn-primary btn-small" onclick="alert('Refresh/demo only')">Refresh Orders</button>
+            <div style="margin-top:20px;">No pending orders</div>
+        </div>
+    </div>
+    <!-- SOLD ACCOUNTS PANEL (demo) -->
+    <div class="panel" id="panel-sold-accounts">
+        <div class="card"><h2>Sold Accounts</h2>
+            <div>No sold accounts yet</div>
+        </div>
+    </div>
+    <!-- ARCHIVED STOCKS PANEL -->
+    <div class="panel" id="panel-archived-stocks">
+        <div class="card"><h2>Archived Stocks</h2>
+            <div id="archived-stocks-list"></div>
+        </div>
+    </div>
+    <!-- PRODUCTS PANEL -->
+    <div class="panel" id="panel-products">
+        <div class="card">
+            <h2>Products Management</h2>
+            <form id="add-product-form" style="display: flex;gap:12px;margin-bottom:16px;">
+                <input type="text" id="new-prod-name" placeholder="Add new product" style="flex:2;">
+                <button type="submit" class="btn btn-primary">Add Product</button>
+            </form>
+            <div class="stock-list" id="products-list"></div>
+        </div>
+    </div>
+    <!-- STORE RULES PANEL -->
+    <div class="panel" id="panel-store-rules">
+        <div class="card">
+            <h2>Store Rules Management</h2>
+            <form id="add-rule-form" style="display:flex;gap:15px;margin-bottom:16px;">
+                <input type="text" id="new-rule" placeholder="Enter general/store rule" style="flex:2;">
+                <button class="btn btn-primary">Add Rule</button>
+            </form>
+            <div class="stock-list" id="rules-list"></div>
+        </div>
+    </div>
 </div>
 <script>
-// DEMO product list
-const PRODUCTS = ["Netflix Premium","Disney+","Bilibili"];
-let stocks = JSON.parse(localStorage.getItem("admin_stocks")||"[]");
-let sold = JSON.parse(localStorage.getItem("admin_sold")||"[]");
-let pending = JSON.parse(localStorage.getItem("admin_pending")||"[]");
-let archived = JSON.parse(localStorage.getItem("admin_archived")||"[]");
-
-function saveDB(){
-    localStorage.setItem("admin_stocks",JSON.stringify(stocks));
-    localStorage.setItem("admin_sold",JSON.stringify(sold));
-    localStorage.setItem("admin_pending",JSON.stringify(pending));
-    localStorage.setItem("admin_archived",JSON.stringify(archived));
-}
-
-// Owner modal
+/* -- OWNER VERIFICATION MODAL -- */
 const OWNER_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a';
 function closeOwnerModal(){document.getElementById('owner-modal').style.display='none';}
 function verifyUID(){
-    let uid = document.getElementById('owner-uid').value.trim();
+    let uid=document.getElementById('owner-uid').value.trim();
     if(uid===OWNER_UID){
         localStorage.setItem('ownerVerified','yes');
         closeOwnerModal();
         document.getElementById('admin-dashboard').style.display='block';
+        showStocks(); showProducts(); showRules(); updateStats();
     }else{
         document.getElementById('uid-error').textContent='❌ Invalid UID.';
     }
@@ -146,74 +218,131 @@ document.addEventListener("DOMContentLoaded",function(){
     let tabs=document.querySelectorAll(".tab"),panels=document.querySelectorAll(".panel");
     tabs.forEach(tab=>tab.onclick=function(){
         tabs.forEach(t=>t.classList.remove("active"));
-        panels.forEach(p=>p.classList.remove("is-visible"));
+        panels.forEach(p=>p.classList.remove("active"));
         tab.classList.add("active");
-        document.getElementById("panel-"+tab.dataset.tab).classList.add("is-visible");
-        if(tab.dataset.tab==="manage-stocks") showStocks();
-        if(tab.dataset.tab==="pending-orders") showPending();
-        if(tab.dataset.tab==="sold-accounts") showSold();
-        if(tab.dataset.tab==="archived-stocks") showArchived();
-        if(tab.dataset.tab==="products") showProducts();
-        if(localStorage.getItem('ownerVerified')!=='yes'){
-        document.getElementById('owner-modal').style.display='flex';
-        document.getElementById('admin-dashboard').style.display='none';
-    } else {
-        document.getElementById('admin-dashboard').style.display='block';
-    }
+        document.getElementById("panel-"+tab.dataset.tab).classList.add("active");
+        if(tab.dataset.tab==="manage-stocks")showStocks();
+        if(tab.dataset.tab==="archived-stocks")showArchived();
+        if(tab.dataset.tab==="products")showProducts();
+        if(tab.dataset.tab==="store-rules")showRules();
     });
-    document.getElementById("add-product").innerHTML=PRODUCTS.map(p=>`<option>${p}</option>`).join('');
+    // PRODUCT list
+    if(!localStorage.getItem("demo_init")){
+        localStorage.setItem("products",JSON.stringify(["Netflix Premium","Viu Premium","VIVAMAX VIVAONE","WeTV","iQiyi","Crunchyroll"]));
+        localStorage.setItem("stocks",JSON.stringify([
+          {id:1,product:"Crunchyroll",type:"solo account",duration:"3 Months",email:"shanaia...",password:"etgweg",profile:"",pin:"",premium:false,premiumAt:"",archive:false,archiveAt:"",added:"11/10/2025",archDays:0},
+          {id:2,product:"iQiyi",type:"shared account",duration:"1 Month",email:"shanaia...",password:"ryvryuuy",profile:"",pin:"",premium:true,premiumAt:"2025-11-10",archive:true,archiveAt:"2025-11-15",added:"11/10/2025",archDays:5}
+        ]));
+        localStorage.setItem("rules",JSON.stringify(["All accounts are premium quality and verified","Replacement guaranteed within 24 hours for any issues","No refunds after account delivery","Keep account details confidential","Contact support for any issues within the warranty period"]));
+        localStorage.setItem("demo_init","1");
+    }
     if(localStorage.getItem('ownerVerified')!=='yes'){
         document.getElementById('owner-modal').style.display='flex';
     } else {
-        document.getElementById('admin-dashboard').style.display='block';updateStats();showStocks();
+        document.getElementById('admin-dashboard').style.display='block';
+        showStocks();showProducts();showRules();updateStats();
     }
-    document.getElementById("addStockForm").onsubmit=function(e){
+    // Fill product dropdown in Add Stock
+    let prodData=JSON.parse(localStorage.getItem('products'));
+    document.getElementById('stock-product').innerHTML='<option value="">Select Product</option>'+prodData.map(p=>`<option>${p}</option>`).join('');
+    // Add Stock
+    document.getElementById('add-stock-form').onsubmit=function(e){
         e.preventDefault();
-        let o = {
-            id: "STK"+Date.now(),
-            product: document.getElementById("add-product").value,
-            type: document.getElementById("add-type").value, duration: document.getElementById("add-duration").value,
-            email: document.getElementById("add-email").value, password: document.getElementById("add-password").value,
-            premium: document.getElementById("add-premium").checked, premiumAt: document.getElementById("add-premium-date").value,
-            archive: document.getElementById("add-archive").checked, archiveAt: document.getElementById("add-archive-date").value
-        };
-        stocks.push(o);saveDB();this.reset();updateStats();showStocks();
-        alert("Stock added!");
+        let pid=Date.now(),prod=document.getElementById('stock-product').value,t=document.getElementById('stock-type').value,d=document.getElementById('stock-duration').value;
+        let qty=parseInt(document.getElementById('stock-qty').value)||1;
+        let em=document.getElementById('stock-email').value,pw=document.getElementById('stock-password').value,pr=document.getElementById('stock-profile').value,pin=document.getElementById('stock-pin').value;
+        let archDays=parseInt(document.getElementById('stock-archive-days').value)||0, premiumAt=document.getElementById('stock-premium-date').value;
+        let stocks=JSON.parse(localStorage.getItem('stocks')||'[]');
+        for(let i=0;i<qty;i++){
+            stocks.push({id:pid+i,product:prod,type:t,duration:d,email:em,password:pw,profile:pr,pin:pin,premium:!!premiumAt,premiumAt:premiumAt,archive:archDays>0,archiveAt:archDays>0 ? calcArchiveAt(archDays) : "",added:getToday(),archDays:archDays});
+        }
+        localStorage.setItem('stocks',JSON.stringify(stocks)); showStocks(); updateStats(); this.reset();
+    };
+    // Add Product
+    document.getElementById('add-product-form').onsubmit=function(e){
+        e.preventDefault();
+        let prod=document.getElementById('new-prod-name').value.trim();
+        if(!prod)return;
+        let prods=JSON.parse(localStorage.getItem('products')||'[]');
+        if(prods.indexOf(prod)===-1){prods.push(prod);}
+        localStorage.setItem('products',JSON.stringify(prods)); showProducts();
+        document.getElementById('new-prod-name').value='';
+    };
+    // Add Rule
+    document.getElementById('add-rule-form').onsubmit=function(e){
+        e.preventDefault();
+        let rule=document.getElementById('new-rule').value.trim();
+        if(!rule)return;
+        let rules=JSON.parse(localStorage.getItem('rules')||'[]');rules.push(rule);
+        localStorage.setItem('rules',JSON.stringify(rules));showRules();
+        document.getElementById('new-rule').value='';
     };
 });
 function showStocks(){
-    let html="<table><tr><th>Product</th><th>Type</th><th>Email</th><th>Premium</th><th>Archive</th><th>Actions</th></tr>";
-    stocks.forEach((s,i)=>html+=`<tr>
-    <td>${s.product}</td><td>${s.type} (${s.duration})</td><td>${s.email}</td>
-    <td>${s.premium?(s.premiumAt?("At: "+s.premiumAt):"✔"):''}</td>
-    <td>${s.archive?(s.archiveAt?("At: "+s.archiveAt):"✔"):''}</td>
-    <td>
-        <button class="btn-edit btn-small" onclick="editStock('${s.id}')">Edit</button>
-        <button class="btn-danger btn-small" onclick="delStock('${s.id}')">Del</button>
-        <button class="btn-small" onclick="archiveStock('${s.id}')">Archive</button>
-    </td></tr>`);
-    html+="</table>";
-    document.getElementById("manage-stocks-list").innerHTML=html;
+    let stocks=JSON.parse(localStorage.getItem('stocks')||'[]'),h="";
+    stocks.filter(s=>!autoArchiveCheck(s)).forEach(s=>{
+        h+=`<div class="stock-card">
+            <b>📺 ${s.product}</b> <span style="color:#777;">${s.type} - ${s.duration}${s.premium?' <span class="badge badge-premium">Premium</span>':''}</span>
+            <div style="font-size:0.98em;">Added: ${s.added} | Auto-Archive: ${s.archive ? s.archiveAt : "Never"}</div>
+            <div>Email: ${s.email}</div><div>Password: ${s.password}</div>
+            <div class="stock-actions">
+                <span class="badge" style="background:#d9ffe5;color:#137a32;">Available</span>
+                <button class="btn-success btn-small" onclick="markSold(${s.id})">Mark as Sold</button>
+                <button class="btn-warning btn-small" onclick="archiveOne(${s.id})">Archive</button>
+                <button class="btn-danger btn-small" onclick="delStock(${s.id})">Delete</button>
+            </div></div>`;
+    });
+    document.getElementById('manage-stocks-list').innerHTML=h?h:"No available stocks.";
 }
-function editStock(id){
-    alert("TODO: show stock for edit: "+id);
+function autoArchiveCheck(s){
+    if(s.archive && s.archiveAt && new Date(s.archiveAt)<=new Date()){archiveOne(s.id);return true;}
+    return false;
 }
-function delStock(id){stocks=stocks.filter(s=>s.id!==id);saveDB();showStocks();}
-function archiveStock(id){
-    let idx=stocks.findIndex(s=>s.id===id);
-    if(idx>-1){archived.push(stocks[idx]);stocks.splice(idx,1);saveDB();showStocks();}
+function autoArchiveAll(){
+    let stocks=JSON.parse(localStorage.getItem('stocks')||'[]'),changed=false;
+    stocks.forEach(s=>autoArchiveCheck(s));
+    showStocks(); showArchived();
 }
-function showPending(){document.getElementById('pending-list').innerHTML=pending.length?"<ul>"+pending.map(o=>"<li>"+o.id+"</li>").join('')+"</ul>":"None";}
-function showSold(){document.getElementById('sold-list').innerHTML=sold.length?"<ul>"+sold.map(o=>"<li>"+o.id+"</li>").join('')+"</ul>":"None";}
-function showArchived(){document.getElementById('archived-list').innerHTML=archived.length?("<ul>"+archived.map(a=>"<li>"+a.product+" "+a.email+"</li>").join('')+"</ul>"):"None";}
+function getToday(){let d=new Date();return (d.getMonth()+1)+"/"+d.getDate()+"/"+d.getFullYear();}
+function calcArchiveAt(days){let d=new Date();d.setDate(d.getDate()+days);return d.toISOString().slice(0,10);}
+function delStock(id){
+    let stocks=JSON.parse(localStorage.getItem('stocks')||'[]');
+    stocks=stocks.filter(s=>s.id!=id);localStorage.setItem('stocks',JSON.stringify(stocks));showStocks();updateStats();}
+function archiveOne(id){
+    let stocks=JSON.parse(localStorage.getItem('stocks')||'[]'),stock=stocks.find(s=>s.id==id);
+    let arch=JSON.parse(localStorage.getItem('archived')||'[]');arch.push({...stock,archived:getToday()});
+    stocks=stocks.filter(s=>s.id!=id);localStorage.setItem('stocks',JSON.stringify(stocks));
+    localStorage.setItem('archived',JSON.stringify(arch));showStocks();showArchived();updateStats();
+}
+function showArchived(){
+    let arch=JSON.parse(localStorage.getItem('archived')||'[]');
+    let h=arch.map(a=>`<div class="stock-card"><b>${a.product}</b> (${a.type})<div>Archived: ${a.archived||a.archiveAt||"?"}</div></div>`).join('');
+    document.getElementById('archived-stocks-list').innerHTML=h||"No archived stocks";
+}
+function markSold(id){
+    delStock(id);showStocks();alert("Demo: marked as sold (implement real buyer logic as needed).");
+}
 function showProducts(){
-    document.getElementById('products-list').innerHTML=PRODUCTS.map(p=>"<li>"+p+"</li>").join('');
+    let prods=JSON.parse(localStorage.getItem("products")||"[]");
+    document.getElementById("products-list").innerHTML=prods.map((p,i)=>`<div style="padding:13px 0;display:flex;justify-content:space-between;align-items:center;"><span>📺 ${p}</span> <button onclick="delProduct(${i})" class="btn btn-danger btn-small">Delete</button></div>`).join('');
+}
+function delProduct(idx){
+    let prods=JSON.parse(localStorage.getItem("products")||"[]");prods.splice(idx,1);
+    localStorage.setItem("products",JSON.stringify(prods));showProducts();
+}
+function showRules(){
+    let rules=JSON.parse(localStorage.getItem("rules")||"[]");
+    document.getElementById("rules-list").innerHTML=rules.map((r,i)=>`<div style="padding:11px 0;display:flex;justify-content:space-between;align-items:center;">${r} <button class="btn btn-danger btn-small" onclick="delRule(${i})">Remove</button></div>`).join('');
+}
+function delRule(idx){
+    let rules=JSON.parse(localStorage.getItem("rules")||"[]");rules.splice(idx,1);
+    localStorage.setItem("rules",JSON.stringify(rules));showRules();
 }
 function updateStats(){
-    document.getElementById("stat-products").textContent = PRODUCTS.length;
-    document.getElementById("stat-stock").textContent = stocks.length;
-    document.getElementById("stat-pending").textContent = pending.length;
-    document.getElementById("stat-revenue").textContent = "₱"+sold.length*149; // demo only.
+    document.getElementById("stat-products").textContent = (JSON.parse(localStorage.getItem('products')||'[]').length||0);
+    document.getElementById("stat-stock").textContent = (JSON.parse(localStorage.getItem('stocks')||'[]').filter(s=>!autoArchiveCheck(s)).length);
+    document.getElementById("stat-pending").textContent = 0; // Expand as you add pending orders support
+    document.getElementById("stat-revenue").textContent = "₱0"; // Demo only
 }
 </script>
 </body>
