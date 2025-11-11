@@ -5,252 +5,497 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Console - Aiaxcart Premium</title>
     <style>
-        /* (Your full CSS comes here, unchanged—for brevity not repeated, use your original CSS from paste.txt) */
-        /* Just keep all of your paste.txt <style> content here */
+        body {background: #fefaf7; color:#5a3e36; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
+        .container{max-width:1200px;margin:0 auto;padding:0 20px;}
+        header{background:#FFD3D6;padding:1rem 0;box-shadow:0 4px 15px rgba(0,0,0,0.08);}
+        .header-content{display:flex;justify-content:space-between;align-items:center;}
+        .logo{font-size:1.8rem;font-weight:700;}
+        nav ul{display:flex;list-style:none;}
+        nav ul li{margin-left:1.5rem;}
+        nav ul li a{color:#5a3e36;text-decoration:none;font-weight:500;padding:0.5rem 1rem;border-radius:8px;}
+        nav ul li a.active,nav ul li a:hover{background:#FFC6CA;font-weight:bold;}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:24px;margin:2rem 0;}
+        .stat-card{background:white;padding:1.5rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.09);text-align:center;}
+        .stat-card h3{font-size:2rem;margin-bottom:0.5rem;color:#FFB0B5;font-family:inherit;}
+        .tabs{display:flex;gap:1rem;margin:0 0 2rem 0;flex-wrap:wrap;}
+        .tab{padding:0.7rem 1.2rem;cursor:pointer;border-radius:8px;background:#f0f0f0;border:none;}
+        .tab.active{background:#FFD3D6;font-weight:bold;}
+        .panel{display:none;}
+        .panel.active{display:block;}
+        .card{background:white;border-radius:12px;padding:1.5rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+        .btn{padding:0.55rem 1.15rem;border-radius:8px;border:none;font-size:1rem;cursor:pointer;font-weight:500;margin-bottom:0;}
+        .btn-primary{background:#FFB0B5;color:white;}
+        .btn-danger{background:#F44336;color:white;}
+        .btn-edit{background:#2196F3;color:white;}
+        .btn-small{padding:0.35rem 0.85rem;font-size:0.87rem;}
+        input,select,textarea{padding:0.65rem;border-radius:8px;border:1px solid #EAEAEA;font-size:1rem;margin: 0.15rem 0; width:100%;}
+        input[type="number"]{max-width:120px;}
+        label{margin-top:0.8rem;display:block;}
+        .error-message{color:red;margin-top:0.5rem;}
+        .success-message{color:green;margin-top:0.5rem;}
+        .stock-list-head{font-weight:600;margin:1.3rem 0 0.7rem;}
+        .cat-btn{margin:0.3rem 0.5rem 0.3rem 0;padding:0.4rem 1.1rem;border-radius:8px;background:#f5f5f5;border:none;font-size:1rem;}
+        .cat-btn.active{background:#FFD3D6;}
+        .stock-item{padding:0.6rem 0;border-bottom:1px solid #EEE;}
+        .stock-actions{margin-top:0.3rem;display:flex;gap:7px;}
+        .add-rec-mode{display:flex;gap:1rem;margin-bottom:1.4rem;}
+        .add-rec-mode .btn{width:200px;}
+        @media(max-width:768px){
+            .header-content{flex-direction:column;gap:14px;}
+            .tabs{flex-wrap:wrap;}
+            .tab{padding:0.45rem 1rem;font-size:0.95rem;}
+            .stats-grid{grid-template-columns:1fr;}
+        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <i>🛒</i> Aiaxcart Premium
+<header>
+    <div class="container header-content">
+        <div class="logo">🛒 Aiaxcart Premium</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="admin.html" class="active">Admin</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<div class="container">
+    <h1 style="margin-top:2rem;">Admin Console</h1>
+    <div class="stats-grid">
+        <div class="stat-card"><h3 id="stat-total-sales">0</h3><div>Total Sales</div></div>
+        <div class="stat-card"><h3 id="stat-total-revenue">₱0</h3><div>Total Revenue</div></div>
+        <div class="stat-card"><h3 id="stat-available-stock">0</h3><div>Available Stock</div></div>
+        <div class="stat-card"><h3 id="stat-pending-orders">0</h3><div>Pending Orders</div></div>
+    </div>
+    <div class="tabs" id="admintabs">
+        <button class="tab active" data-tab="add-stock">Add Stock</button>
+        <button class="tab" data-tab="manage-stocks">Manage Stocks</button>
+        <button class="tab" data-tab="pending-orders">Pending Orders</button>
+        <button class="tab" data-tab="sold-accounts">Sold Accounts</button>
+        <button class="tab" data-tab="archived-stocks">Archived Stocks</button>
+        <button class="tab" data-tab="products">Products</button>
+        <button class="tab" data-tab="store-rules">Store Rules</button>
+        <button class="tab" data-tab="records">Add Record</button>
+        <button class="tab" data-tab="reports">Reports</button>
+        <button class="tab" data-tab="settings">Settings</button>
+    </div>
+    <!-- Add Stock Panel -->
+    <div class="panel active" id="panel-add-stock">
+        <div class="card">
+            <h2>Add Stock</h2>
+            <form id="addStockForm">
+                <label>Product
+                    <select id="stock-product" required>
+                        <option value="">Select Product</option>
+                        <!-- Dynamically filled -->
+                    </select>
+                </label>
+                <label>Account Type
+                    <input type="text" id="stock-type" placeholder="e.g. solo, shared, profile" required>
+                </label>
+                <label>Duration
+                    <input type="text" id="stock-duration" placeholder="e.g. 1m, 3m, 6m" required>
+                </label>
+                <label>Email/Login
+                    <input type="text" id="stock-email" required>
+                </label>
+                <label>Password
+                    <input type="text" id="stock-password" required>
+                </label>
+                <label>Profile (optional)
+                    <input type="text" id="stock-profile">
+                </label>
+                <label>PIN (optional)
+                    <input type="text" id="stock-pin">
+                </label>
+                <label>Quantity
+                    <input type="number" id="stock-quantity" value="1" min="1">
+                </label>
+                <button type="submit" class="btn btn-primary" style="margin-top:1rem;">Add to Inventory</button>
+            </form>
+            <div id="add-stock-msg"></div>
+        </div>
+    </div>
+    <!-- Manage Stocks Panel -->
+    <div class="panel" id="panel-manage-stocks">
+        <div class="card">
+            <h2>Manage Stocks</h2>
+            <div id="stock-cat-btns"></div>
+            <div id="manage-stocks-list"></div>
+        </div>
+    </div>
+    <!-- Pending Orders Panel -->
+    <div class="panel" id="panel-pending-orders">
+        <div class="card">
+            <h2>Pending Orders</h2>
+            <div id="pending-orders-list"></div>
+        </div>
+    </div>
+    <!-- Sold Accounts Panel -->
+    <div class="panel" id="panel-sold-accounts">
+        <div class="card">
+            <h2>Sold Accounts</h2>
+            <div id="sold-accounts-list"></div>
+        </div>
+    </div>
+    <!-- Archived Stocks Panel -->
+    <div class="panel" id="panel-archived-stocks">
+        <div class="card">
+            <h2>Archived Stocks</h2>
+            <div id="archived-stocks-list"></div>
+        </div>
+    </div>
+    <!-- Products Panel -->
+    <div class="panel" id="panel-products">
+        <div class="card">
+            <h2>Products Management</h2>
+            <p>Product management coming soon...</p>
+        </div>
+    </div>
+    <!-- Store Rules Panel -->
+    <div class="panel" id="panel-store-rules">
+        <div class="card">
+            <h2>Store Rules</h2>
+            <p>Rules management coming soon...</p>
+        </div>
+    </div>
+    <!-- Add Record Panel -->
+    <div class="panel" id="panel-records">
+        <div class="card">
+            <h2>➕ Add Buyer Record</h2>
+            <div class="add-rec-mode">
+                <button class="btn btn-primary" id="autoModeBtn" onclick="switchRecordMode(true)">Automatic (Site Order)</button>
+                <button class="btn" id="manualModeBtn" onclick="switchRecordMode(false)">Manual (Other Platforms)</button>
+            </div>
+            <form id="record-form" onsubmit="addRecord(event)">
+                <label>Sales/Order ID
+                    <input type="text" id="record-id" readonly>
+                </label>
+                <label>Source
+                    <select id="record-source" onchange="sourceChanged()">
+                        <option value="site">Site (Automatic)</option>
+                        <option value="tg">Telegram</option>
+                        <option value="ig">Instagram</option>
+                        <option value="fb">Facebook</option>
+                        <option value="other">Other</option>
+                    </select>
+                </label>
+                <label>Buyer Name/Email
+                    <input type="text" id="record-buyer" required>
+                </label>
+                <div id="socmed-link-wrap" style="display:none;">
+                    <label>Buyer Social Link
+                        <input type="url" id="record-socmed">
+                    </label>
                 </div>
-                <nav>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="admin.html" class="active">Admin</a></li>
-                    </ul>
-                </nav>
-                <div class="auth-buttons">
-                    <button id="login-btn" class="btn btn-outline d-none">Login / Sign up</button>
-                    <a href="index.html" id="my-account-btn" class="btn btn-primary d-none">My Account</a>
-                    <button id="logout-btn" class="btn btn-outline d-none">Logout</button>
-                </div>
+                <label>Product
+                    <select id="record-product" required>
+                        <option value="">Select Product</option>
+                    </select>
+                </label>
+                <label>Subs Type
+                    <input type="text" id="record-substype" required>
+                </label>
+                <label>Email/Login
+                    <input type="text" id="record-email" required>
+                </label>
+                <label>Password
+                    <input type="text" id="record-password" required>
+                </label>
+                <label>PIN
+                    <input type="text" id="record-pin">
+                </label>
+                <label>Profile
+                    <input type="text" id="record-profile">
+                </label>
+                <label>Product Key
+                    <input type="text" id="record-prodkey">
+                </label>
+                <label>Current Expiration
+                    <input type="date" id="record-expiration" required>
+                    <span><button type="button" class="btn btn-warning btn-small" onclick="addDaysSubs()">Add Days/Subs</button></span>
+                    <span id="new-exp-wrap" style="font-weight:bold;"></span>
+                </label>
+                <label>Notes/Details
+                    <textarea id="record-notes" rows="2"></textarea>
+                </label>
+                <button type="submit" class="btn btn-primary full-width">💾 Save Record</button>
+            </form>
+            <div id="record-message"></div>
+        </div>
+        <div class="card">
+            <h3>Records (Latest)</h3>
+            <div id="records-list"></div>
+        </div>
+    </div>
+    <!-- Reports Panel -->
+    <div class="panel" id="panel-reports">
+        <div class="card">
+            <h2>📊 Customer Reports & Issues</h2>
+            <div id="reports-list"><p class="text-muted">No reports yet.</p></div>
+        </div>
+    </div>
+    <!-- Settings Panel -->
+    <div class="panel" id="panel-settings">
+        <div class="card">
+            <h2>⚙️ Settings</h2>
+            <p><strong>Owner UID:</strong> 26baf1ad-64b1-436c-9758-c415949dfa0a</p>
+            <button onclick="clearCache()" class="btn btn-danger">Clear Cache</button>
+        </div>
+    </div>
+</div>
+<script>
+const PRODUCTS = [
+    "Netflix Premium","Viu Premium","VIVAMAX VIVAONE","WeTV","IWANT TFC","Crunchyroll","Disney+","Bilibili","Loklok","iQiyi",
+    "HBO Max","Amazon Prime","Youku","NBA League Pass Premium","YouTube Premium","Spotify Premium","Apple Music","ChatGPT Plus",
+    "Blackbox AI","Perplexity AI","Google One + Gemini AI","Quizlet+","Scribd Premium","Studocu Premium","Duolingo Super",
+    "Turnitin Student","Turnitin Instructor","Canva Pro","Picsart Gold","CapCut Pro","Alight Motion Pro","Remini Web",
+    "Grammarly Premium","Quillbot Premium","Microsoft 365","CamScanner Pro","Small PDF Pro","Zoom Pro"
+];
+let stocks = JSON.parse(localStorage.getItem("admin_stocks")||"[]");
+let sales = JSON.parse(localStorage.getItem("admin_sales")||"[]");
+let archived = JSON.parse(localStorage.getItem("admin_archived")||"[]");
+let soldAccounts = JSON.parse(localStorage.getItem("admin_soldaccts")||"[]");
+let pendingOrders = JSON.parse(localStorage.getItem("admin_orders")||"[]");
+let reports = JSON.parse(localStorage.getItem("admin_reports")||"[]");
+let recordsData = JSON.parse(localStorage.getItem('recordsData')||'[]');
+
+function saveDB() {
+    localStorage.setItem("admin_stocks",JSON.stringify(stocks));
+    localStorage.setItem("admin_sales",JSON.stringify(sales));
+    localStorage.setItem("admin_archived",JSON.stringify(archived));
+    localStorage.setItem("admin_soldaccts",JSON.stringify(soldAccounts));
+    localStorage.setItem("admin_orders",JSON.stringify(pendingOrders));
+    localStorage.setItem("admin_reports",JSON.stringify(reports));
+    localStorage.setItem("recordsData",JSON.stringify(recordsData));
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+    // fill products for Add Stock/Record
+    let prodSel = document.getElementById("stock-product"); prodSel.innerHTML='<option value="">Select Product</option>'+PRODUCTS.map(p=>`<option value="${p}">${p}</option>`).join("");
+    let recProdSel = document.getElementById("record-product");
+    recProdSel.innerHTML = '<option value="">Select Product</option>' + PRODUCTS.map(p=>`<option value="${p}">${p}</option>`).join("");
+    genSalesRecordID();
+    updateStats();
+    showStocksCats();
+    showSoldAccounts();
+    showArchivedStocks();
+    showPendingOrders();
+    loadRecordsList();
+    showReports();
+    setupTabs();
+});
+function updateStats(){
+    document.getElementById("stat-total-sales").textContent = soldAccounts.length;
+    document.getElementById("stat-total-revenue").textContent = "₱"+soldAccounts.reduce((sum,sa)=>sum+(Number(sa.amount)||0),0);
+    document.getElementById("stat-available-stock").textContent = stocks.length;
+    document.getElementById("stat-pending-orders").textContent = pendingOrders.length;
+}
+function setupTabs(){
+    let tabs=document.querySelectorAll(".tab"),panels=document.querySelectorAll(".panel");
+    tabs.forEach(tab=>tab.onclick=function(){
+        tabs.forEach(t=>t.classList.remove("active"));
+        panels.forEach(p=>p.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById("panel-"+tab.dataset.tab).classList.add("active");
+    });
+}
+// -- Add Stock
+document.getElementById("addStockForm").onsubmit=e=>{
+    e.preventDefault();
+    let prod=document.getElementById("stock-product").value, type=document.getElementById("stock-type").value, dur=document.getElementById("stock-duration").value, qty=Number(document.getElementById("stock-quantity").value)||1, items=[];
+    for (let i=0;i<qty;i++) {
+        items.push({
+            id: 'STK'+Date.now()+Math.floor(1000*Math.random()),
+            product: prod, type, duration: dur,
+            email: document.getElementById("stock-email").value,
+            password: document.getElementById("stock-password").value,
+            profile: document.getElementById("stock-profile").value,
+            pin: document.getElementById("stock-pin").value,
+            status: 'available',
+            date: new Date().toLocaleDateString()
+        });
+    }
+    stocks.push(...items); saveDB();
+    document.getElementById("addStockForm").reset();
+    document.getElementById("add-stock-msg").innerHTML = `<span class="success-message">✅ ${qty} stock/s added!</span>`;
+    setTimeout(()=>document.getElementById("add-stock-msg").innerHTML='',2000);
+    showStocksCats(); updateStats();
+};
+// -- Categorized Stocks
+function showStocksCats() {
+    let byProd = {};
+    stocks.forEach(s=>{
+        if (!byProd[s.product]) byProd[s.product]=[];
+        byProd[s.product].push(s);
+    });
+    let catBtns = Object.keys(byProd).sort().map(prod=>`<button class="cat-btn" onclick="expandStockCat('${prod.replace(/'/g,"\\'")}')">${prod} (${byProd[prod].length})</button>`).join(" ");
+    document.getElementById("stock-cat-btns").innerHTML=(catBtns||"<p>No stocks yet.</p>");
+    document.getElementById("manage-stocks-list").innerHTML="";
+}
+function expandStockCat(prod){
+    let items = stocks.filter(s=>s.product===prod);
+    document.getElementById("manage-stocks-list").innerHTML =
+        `<div class="stock-list-head">${prod} <button class="btn btn-small btn-danger" onclick="closeStockCat()">Close</button></div>` +
+        items.map((s,i)=>`
+        <div class="stock-item">
+          <b>${s.type}</b> (${s.duration}) — ${s.email}
+          <div class="stock-actions">
+            <button class="btn btn-edit btn-small" onclick="editStock('${s.id}')">Edit</button>
+            <button class="btn btn-danger btn-small" onclick="deleteStock('${s.id}')">Delete</button>
+          </div>
+        </div>
+        `).join('');
+}
+function closeStockCat() {
+    document.getElementById("manage-stocks-list").innerHTML="";
+}
+function editStock(id){
+    let s=stocks.find(s=>s.id===id),inputs=[
+        ['type','Account Type'],['duration','Duration'],
+        ['email','Email/Login'],['password','Password'],['profile','Profile'],['pin','PIN']];
+    let html = '<div style="padding:1rem;"><b>Edit Stock</b><br>';
+    inputs.forEach(([f,lab])=>{
+        html+=`${lab}:<input id="ed_${f}" value="${s[f]||''}" style="margin-bottom:8px;">`;
+    });
+    html+=`<button onclick="saveEditStock('${id}')" class="btn btn-primary btn-small" style="margin-top:14px;">Save</button>
+    <button onclick="showStocksCats()" class="btn btn-danger btn-small">Cancel</button></div>`;
+    document.getElementById("manage-stocks-list").innerHTML=html;
+}
+function saveEditStock(id){
+    let s=stocks.find(s=>s.id===id);
+    s.type = document.getElementById("ed_type").value;
+    s.duration = document.getElementById("ed_duration").value;
+    s.email = document.getElementById("ed_email").value;
+    s.password = document.getElementById("ed_password").value;
+    s.profile = document.getElementById("ed_profile").value;
+    s.pin = document.getElementById("ed_pin").value;
+    saveDB(); showStocksCats();
+}
+function deleteStock(id){
+    stocks=stocks.filter(s=>s.id!==id);saveDB();showStocksCats();updateStats();
+}
+// -- Sold, Archived, Pending, Reports
+function showSoldAccounts(){
+    document.getElementById("sold-accounts-list").innerHTML=soldAccounts.map(s=>`
+        <div class="stock-item">
+            <b>${s.product}</b> - ${s.type} (${s.duration})
+            <br>Sold to: ${s.email} | Amount: ₱${s.amount||'0'}
+            <br>Date: ${s.date||'-'}
+        </div>
+    `).join("")||"<p class='text-muted'>No sold accounts yet.</p>";
+}
+function showArchivedStocks(){
+    document.getElementById("archived-stocks-list").innerHTML=archived.map(s=>`
+        <div class="stock-item"><b>${s.product}</b> - ${s.type} (${s.duration})
+        <br>${s.email}</div>
+    `).join("")||"<p class='text-muted'>No archived stocks yet.</p>";
+}
+function showPendingOrders(){
+    document.getElementById("pending-orders-list").innerHTML=pendingOrders.map(o=>`
+        <div class="stock-item">
+            <b>${o.product}</b> — Buyer: ${o.buyer} — Amount: ₱${o.amount}
+            <div class="stock-actions">
+                <button class="btn btn-success btn-small" onclick="approveOrder('${o.id}')">Approve</button>
+                <button class="btn btn-danger btn-small" onclick="cancelOrder('${o.id}')">Cancel</button>
             </div>
         </div>
-    </header>
-    <main>
-        <div class="container">
-            <div id="admin-page">
-                <h1 class="mb-2">Admin Console</h1>
-                <!-- Admin Login -->
-                <div id="admin-login" class="card">
-                    <h2 class="card-title">Admin Login</h2>
-                    <div id="admin-message"></div>
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" id="admin-email" class="form-control" placeholder="admin@aiaxcart.com">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input type="password" id="admin-password" class="form-control" placeholder="admin123">
-                    </div>
-                    <button id="admin-signin-btn" class="btn btn-primary w-100">Sign In</button>
-                </div>
-
-                <!-- Admin Dashboard -->
-                <div id="admin-dashboard" class="d-none">
-                    <!-- Tabs -->
-                    <div class="tabs">
-                        <button class="tab active" data-tab="add-stock">Add Stock</button>
-                        <button class="tab" data-tab="manage-stocks">Manage Stocks</button>
-                        <button class="tab" data-tab="pending-orders">Pending Orders</button>
-                        <button class="tab" data-tab="sold-accounts">Sold Accounts</button>
-                        <button class="tab" data-tab="archived-stocks">Archived Stocks</button>
-                        <button class="tab" data-tab="products">Products</button>
-                        <button class="tab" data-tab="store-rules">Store Rules</button>
-                        <button class="tab" data-tab="records">Add Record</button>
-                        <button class="tab" data-tab="reports">Reports</button>
-                        <button class="tab" data-tab="settings">Settings</button>
-                    </div>
-                    <!-- All your original tab panels go here, unchanged except ... -->
-
-                    <!-- Add Record Panel -->
-                    <section id="panel-records" class="panel">
-                        <div class="card">
-                            <h2>➕ Add Buyer Record</h2>
-                            <div style="display:flex;gap:1rem;margin-bottom:1rem;">
-                                <button class="btn" id="autoModeBtn" onclick="switchRecordMode(true)">Automatic (Site Order)</button>
-                                <button class="btn" id="manualModeBtn" onclick="switchRecordMode(false)">Manual (Other Platforms)</button>
-                            </div>
-                            <form id="record-form" onsubmit="addRecord(event)">
-                                <div>
-                                    <label>Source:
-                                        <select id="record-source" onchange="sourceChanged()">
-                                            <option value="site">Site (Automatic)</option>
-                                            <option value="tg">Telegram</option>
-                                            <option value="ig">Instagram</option>
-                                            <option value="fb">Facebook</option>
-                                            <option value="other">Other</option>
-                                        </select>
-                                    </label>
-                                </div>
-                                <div>
-                                    <label>Sales/Order ID:<input type="text" id="record-id" required></label>
-                                </div>
-                                <div>
-                                    <label>Buyer Name/Email:<input type="text" id="record-buyer" required></label>
-                                </div>
-                                <div id="socmed-link-wrap" style="display:none;">
-                                    <label>Buyer Social Link:<input type="url" id="record-socmed"></label>
-                                </div>
-                                <div>
-                                    <label>Product:<input type="text" id="record-product" required></label>
-                                </div>
-                                <div>
-                                    <label>Subs Type:<input type="text" id="record-substype" required></label>
-                                </div>
-                                <div>
-                                    <label>Email/Login:<input type="text" id="record-email" required></label>
-                                    <label>Password:<input type="text" id="record-password" required></label>
-                                    <label>PIN:<input type="text" id="record-pin"></label>
-                                    <label>Profile:<input type="text" id="record-profile"></label>
-                                    <label>Product Key:<input type="text" id="record-prodkey"></label>
-                                </div>
-                                <div>
-                                    <label>Current Expiration:<input type="date" id="record-expiration" required></label>
-                                    <span style="margin:0 1rem;">
-                                      <button type="button" class="btn btn-warning btn-small" onclick="addDaysSubs()">Add Days/Subs</button>
-                                    </span>
-                                    <span id="new-exp-wrap" style="font-weight:bold;"></span>
-                                </div>
-                                <div>
-                                    <label>Notes/Details:<textarea id="record-notes" rows="2"></textarea></label>
-                                </div>
-                                <button type="submit" class="btn btn-primary full-width">💾 Save Record</button>
-                            </form>
-                            <div id="record-message"></div>
-                        </div>
-                        <div class="card">
-                            <h3>Records (Latest)</h3>
-                            <div id="records-list"></div>
-                        </div>
-                    </section>
-
-                    <!-- Reports Panel -->
-                    <section id="panel-reports" class="panel">
-                        <div class="card">
-                            <h2>📊 Customer Reports & Issues</h2>
-                            <button onclick="loadReports()" class="btn btn-primary btn-small">Refresh</button>
-                            <div id="reports-list" style="margin-top:1.5rem;">
-                                <p class="text-muted">No reports yet.</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Settings Panel -->
-                    <section id="panel-settings" class="panel">
-                        <div class="card">
-                            <h2>⚙️ Settings</h2>
-                            <p><strong>Owner UID:</strong> 26baf1ad-64b1-436c-9758-c415949dfa0a</p>
-                            <p><strong>Session:</strong> Active</p>
-                            <button onclick="clearCache()" class="btn btn-danger">🗑️ Clear Cache</button>
-                        </div>
-                    </section>
-                </div>
-            </div>
+    `).join("")||"<p class='text-muted'>No pending orders.</p>";
+}
+function approveOrder(id){
+    let idx = pendingOrders.findIndex(o=>o.id===id);
+    if(idx>-1){
+        let o = pendingOrders.splice(idx,1)[0];
+        soldAccounts.push({ ...o, date: new Date().toLocaleDateString() });
+        saveDB(); showPendingOrders(); showSoldAccounts(); updateStats();
+    }
+}
+function cancelOrder(id){
+    pendingOrders=pendingOrders.filter(o=>o.id!==id);
+    saveDB(); showPendingOrders(); updateStats();
+}
+function showReports(){
+    document.getElementById("reports-list").innerHTML=reports.map(r=>`
+        <div class="stock-item"><b>${r.customer||''}</b> - ${r.issue||''}<br><small>${r.date||''}</small></div>
+    `).join("")||"<p class='text-muted'>No reports yet.</p>";
+}
+// --- Add Record Functions
+function genSalesRecordID(){document.getElementById('record-id').value="REC"+Date.now().toString(36)+Math.floor(Math.random()*1000);}
+let isAutoMode = true;
+function switchRecordMode(auto){
+    isAutoMode=auto;
+    document.getElementById("autoModeBtn").classList.toggle("btn-primary",auto);
+    document.getElementById("manualModeBtn").classList.toggle("btn-primary",!auto);
+    document.getElementById('record-source').value=auto?'site':'tg';
+    sourceChanged();
+    genSalesRecordID();
+}
+function sourceChanged(){
+    let source=document.getElementById('record-source').value;
+    document.getElementById('socmed-link-wrap').style.display=source==='site'?'none':'';
+    document.getElementById('record-buyer').placeholder=source==='site'?'(Auto-filled)':'Name or Email';
+}
+function addDaysSubs(){
+    let days=prompt("How many days to add?");
+    days=parseInt(days||"");
+    let dateInput=document.getElementById("record-expiration");
+    if(!dateInput.value||isNaN(days))return;
+    let expDate=new Date(dateInput.value);
+    expDate.setDate(expDate.getDate()+days);
+    document.getElementById("new-exp-wrap").textContent="New Expiration: "+expDate.toISOString().slice(0,10);
+    dateInput.value=expDate.toISOString().slice(0,10);
+}
+function addRecord(e){
+    e.preventDefault();
+    let r={
+        id:document.getElementById('record-id').value,
+        buyer:document.getElementById('record-buyer').value,
+        source:document.getElementById('record-source').value,
+        socmed:document.getElementById('record-socmed').value,
+        product:document.getElementById('record-product').value,
+        substype:document.getElementById('record-substype').value,
+        email:document.getElementById('record-email').value,
+        password:document.getElementById('record-password').value,
+        pin:document.getElementById('record-pin').value,
+        profile:document.getElementById('record-profile').value,
+        prodkey:document.getElementById('record-prodkey').value,
+        expiration:document.getElementById('record-expiration').value,
+        notes:document.getElementById('record-notes').value,
+        date:new Date().toLocaleDateString()
+    };
+    recordsData.unshift(r);
+    saveDB();
+    document.getElementById('record-message').innerHTML='<span class="success-message">✅ Record saved!</span>';
+    setTimeout(()=>{document.getElementById('record-message').innerHTML='';},2000);
+    document.getElementById('record-form').reset();
+    genSalesRecordID();
+    document.getElementById('new-exp-wrap').textContent='';
+    loadRecordsList();
+}
+function loadRecordsList(){
+    let list=document.getElementById('records-list');
+    if(!recordsData.length){list.innerHTML='<p class="text-muted">No records yet.</p>';return;}
+    list.innerHTML=recordsData.slice(0,10).map(r=>`
+        <div style="border:1px solid #FFD3D6;border-radius:10px;padding:1rem;margin-bottom:0.8rem;">
+            <strong>ID:</strong> ${r.id}<br>
+            <strong>Buyer:</strong> ${r.buyer}<br>
+            <strong>Source:</strong> ${r.source}${r.socmed?` <a href="${r.socmed}" target="_blank">(link)</a>`:""}
+            <br><strong>Product:</strong> ${r.product} (${r.substype})<br>
+            <strong>Email:</strong> ${r.email}
+            <br><strong>Pass:</strong> ${r.password}
+            <br><strong>Profile:</strong> ${r.profile}&nbsp;&nbsp;<strong>PIN:</strong> ${r.pin}
+            <br><strong>ProductKey:</strong> ${r.prodkey}
+            <br><strong>Expiration:</strong> ${r.expiration}
+            <br><strong>Notes:</strong> ${r.notes||''}
+            <br><span class="text-muted">${r.date}</span>
         </div>
-    </main>
-    <script>
-        /* (All your original admin/admin panel JS goes here...) */
-
-        // --- Add Record/Reports/Settings logic ---
-        let recordsData = JSON.parse(localStorage.getItem('recordsData')||'[]');
-        let isAutoMode = true;
-        function switchRecordMode(auto) {
-            isAutoMode=auto;
-            document.getElementById('autoModeBtn').classList.toggle('btn-primary', auto);
-            document.getElementById('manualModeBtn').classList.toggle('btn-primary', !auto);
-            document.getElementById('record-source').value=auto?'site':'tg';
-            sourceChanged();
-        }
-        function sourceChanged() {
-            let source = document.getElementById('record-source').value;
-            if (source==='site') {
-                document.getElementById('socmed-link-wrap').style.display='none';
-                document.getElementById('record-buyer').placeholder='(Auto-filled)';
-            } else {
-                document.getElementById('socmed-link-wrap').style.display='';
-                document.getElementById('record-buyer').placeholder='Name or Email';
-            }
-        }
-        function addDaysSubs() {
-            let days = prompt("How many days to add?");
-            days = parseInt(days);
-            let dateInput = document.getElementById('record-expiration');
-            if (!dateInput.value || isNaN(days)) return;
-            let expDate = new Date(dateInput.value);
-            expDate.setDate(expDate.getDate() + days);
-            document.getElementById('new-exp-wrap').textContent = 'New Expiration: '+expDate.toISOString().slice(0,10);
-            dateInput.value = expDate.toISOString().slice(0,10);
-        }
-        function addRecord(e) {
-            e.preventDefault();
-            let r = {
-                id: document.getElementById('record-id').value,
-                buyer: document.getElementById('record-buyer').value,
-                source: document.getElementById('record-source').value,
-                socmed: document.getElementById('record-socmed').value,
-                product: document.getElementById('record-product').value,
-                substype: document.getElementById('record-substype').value,
-                email: document.getElementById('record-email').value,
-                password: document.getElementById('record-password').value,
-                pin: document.getElementById('record-pin').value,
-                profile: document.getElementById('record-profile').value,
-                prodkey: document.getElementById('record-prodkey').value,
-                expiration: document.getElementById('record-expiration').value,
-                notes: document.getElementById('record-notes').value,
-                date: new Date().toLocaleDateString()
-            };
-            recordsData.unshift(r);
-            localStorage.setItem('recordsData', JSON.stringify(recordsData));
-            document.getElementById('record-message').innerHTML='<span class="success-message">✅ Record saved!</span>';
-            setTimeout(()=>{document.getElementById('record-message').innerHTML='';},2000);
-            document.getElementById('record-form').reset();
-            document.getElementById('new-exp-wrap').textContent='';
-            loadRecordsList();
-        }
-        function loadRecordsList() {
-            let list = document.getElementById('records-list');
-            if (!recordsData.length) { list.innerHTML='<p class="text-muted">No records yet.</p>'; return; }
-            list.innerHTML = recordsData.slice(0,10).map(r=>`
-                <div style="border:1px solid #FFD3D6;border-radius:12px;padding:1rem;margin-bottom:1rem;">
-                    <strong>ID:</strong> ${r.id} <br>
-                    <strong>Buyer:</strong> ${r.buyer} <br>
-                    <strong>Source:</strong> ${r.source} ${r.socmed?`<br><strong>Socmed:</strong> <a href="${r.socmed}" target="_blank">${r.socmed}</a>`:''}
-                    <br><strong>Product:</strong> ${r.product} (${r.substype})
-                    <br><strong>Email:</strong> ${r.email}
-                    <br><strong>Pass:</strong> ${r.password}
-                    <br><strong>PIN/Profile/ProductKey:</strong> ${r.pin}/${r.profile}/${r.prodkey}
-                    <br><strong>Expiration:</strong> ${r.expiration} 
-                    <br><strong>Notes:</strong> ${r.notes||''}
-                    <br><span class="text-muted">${r.date}</span>
-                </div>
-            `).join('');
-        }
-        document.addEventListener('DOMContentLoaded',loadRecordsList);
-
-        // --- Reports ---
-        function loadReports() {
-            const reports = JSON.parse(localStorage.getItem('reports')||'[]');
-            const list = document.getElementById('reports-list');
-            if(reports.length===0){list.innerHTML='<p class="text-muted">No reports yet.</p>';return;}
-            list.innerHTML = reports.map(report => `
-                <div class="order-item">
-                    <strong>${report.customer || ''}</strong> - ${report.issue || ''}
-                    <br><small>${report.date || ''}</small>
-                    <br><button class="btn btn-primary btn-small">Respond</button>
-                </div>
-            `).join('');
-        }
-
-        // --- Settings ---
-        function clearCache() {
-            if(confirm('Clear all cached data?')){localStorage.clear();alert('Cache cleared!');location.reload();}
-        }
-
-        /* (The rest of your admin functions, stocks/products/rule, etc stay BELOW here, unchanged) */
-    </script>
+    `).join('');
+}
+// -- Settings
+function clearCache(){
+    if(confirm('Clear all cached data?')){localStorage.clear();alert('Cache cleared!');location.reload();}
+}
+</script>
 </body>
 </html>
