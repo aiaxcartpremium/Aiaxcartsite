@@ -135,9 +135,12 @@ function closeOwnerModal(){document.getElementById('owner-modal').style.display=
 function verifyUID(){
     let uid = document.getElementById('owner-uid').value.trim();
     if(uid===OWNER_UID){
-        localStorage.setItem('ownerVerified','yes');closeOwnerModal();
-        document.getElementById('admin-dashboard').style.display='block';updateStats();showStocks();
-    }else document.getElementById('uid-error').textContent='❌ Invalid UID.';
+        localStorage.setItem('ownerVerified','yes');
+        closeOwnerModal();
+        document.getElementById('admin-dashboard').style.display='block';
+    }else{
+        document.getElementById('uid-error').textContent='❌ Invalid UID.';
+    }
 }
 document.addEventListener("DOMContentLoaded",function(){
     let tabs=document.querySelectorAll(".tab"),panels=document.querySelectorAll(".panel");
@@ -151,6 +154,12 @@ document.addEventListener("DOMContentLoaded",function(){
         if(tab.dataset.tab==="sold-accounts") showSold();
         if(tab.dataset.tab==="archived-stocks") showArchived();
         if(tab.dataset.tab==="products") showProducts();
+        if(localStorage.getItem('ownerVerified')!=='yes'){
+        document.getElementById('owner-modal').style.display='flex';
+        document.getElementById('admin-dashboard').style.display='none';
+    } else {
+        document.getElementById('admin-dashboard').style.display='block';
+    }
     });
     document.getElementById("add-product").innerHTML=PRODUCTS.map(p=>`<option>${p}</option>`).join('');
     if(localStorage.getItem('ownerVerified')!=='yes'){
