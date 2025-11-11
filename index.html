@@ -5,16 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aiaxcart Premium Shop</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #fefaf7; color: #5a3e36; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        header { background: #FFD3D6; padding: 1rem 0; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 700; }
+        .nav-center { font-size: 1.2rem; font-weight: 500; }
+        .btn-auth { padding: 0.6rem 1.5rem; border: 1px solid #5a3e36; background: white; border-radius: 8px; cursor: pointer; }
+        .btn-auth:hover { background: #FFE5E7; }
+        .tabs-container { background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .tabs { display: flex; gap: 0.5rem; padding: 0.5rem; overflow-x: auto; }
+        .tab { padding: 0.75rem 1.5rem; border: none; background: transparent; cursor: pointer; border-radius: 8px; font-weight: 500; }
+        .tab.active { background: #FFD3D6; }
+        .tab-content { display: none; padding: 2rem 0; }
+        .tab-content.active { display: block; }
+        .search-box { position: relative; margin: 1.5rem 0; }
+        .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); }
+        #search-input { width: 100%; padding: 0.75rem 1rem 0.75rem 3rem; border: 1px solid #F9E6E4; border-radius: 8px; font-size: 1rem; }
+        .section-title { font-size: 1.8rem; margin: 2rem 0 1rem; }
+        .category-section { margin: 2rem 0; }
+        .category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .category-title { font-size: 1.4rem; font-weight: 600; border-bottom: 2px solid #FFD3D6; padding-bottom: 0.5rem; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+        .product-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); overflow: hidden; transition: transform 0.3s; }
+        .product-card:hover { transform: translateY(-5px); }
+        .product-image { height: 120px; background: #F9E6E4; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+        .product-info { padding: 1.5rem; }
+        .product-name { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .product-badges { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .badge { padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+        .badge-stock { background: #d4edda; color: #155724; }
+        .badge-sold { background: #e2e3e5; color: #383d41; }
+        .badge-out { background: #f8d7da; color: #721c24; }
+        .account-types { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+        .account-btn { padding: 0.5rem 0.8rem; border: 1px solid #F9E6E4; background: white; border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: all 0.3s; }
+        .account-btn.active { background: #FFD3D6; border-color: #FFB0B5; font-weight: 600; }
+        .duration-label { font-weight: 500; margin: 0.5rem 0; }
+        .duration-scroll { display: flex; gap: 0.5rem; overflow-x: auto; padding: 0.5rem 0; }
+        .duration-btn { padding: 0.5rem 0.8rem; border: 1px solid #F9E6E4; background: white; border-radius: 8px; cursor: pointer; font-size: 0.85rem; white-space: nowrap; transition: all 0.3s; }
+        .duration-btn.active { background: #F9DCC0; border-color: #FFB0B5; font-weight: 600; }
+        .price-display { font-size: 1.25rem; font-weight: bold; color: #FFB0B5; margin: 1rem 0; text-align: center; min-height: 2rem; }
+        .btn-checkout { background: #FFB0B5; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 500; transition: all 0.3s; }
+        .btn-checkout:hover { background: #FF8A90; }
+        .btn-checkout:disabled { background: #cccccc; cursor: not-allowed; }
+        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin: 1rem 0; }
+        .btn-primary { background: #FFB0B5; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .text-muted { color: #666; font-size: 0.9rem; }
+    </style>
 </head>
 <body>
     <header>
         <div class="container header-content">
             <div class="logo">🛒 Aiaxcart Premium</div>
             <div class="nav-center">Home</div>
-            <div id="auth-buttons">
+            <div id="auth-section">
                 <button id="login-btn" class="btn-auth">Login / Sign up</button>
             </div>
-            <div id="user-info" style="display:none;">
+            <div id="user-section" style="display:none;">
                 <a href="account.html" class="btn-primary">My Account</a>
                 <button id="logout-btn" class="btn-auth">Logout</button>
             </div>
@@ -22,14 +71,17 @@
     </header>
 
     <div class="tabs-container">
-        <div class="tabs">
-            <button class="tab active" data-tab="products">Products</button>
-            <button class="tab" data-tab="account">My Account</button>
-            <button class="tab" data-tab="payments">Payments</button>
+        <div class="container">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('products')">Products</button>
+                <button class="tab" onclick="switchTab('account')">My Account</button>
+                <button class="tab" onclick="switchTab('payments')">Payments</button>
+            </div>
         </div>
     </div>
 
     <main class="container">
+        <!-- Products Tab -->
         <div id="products-tab" class="tab-content active">
             <div class="search-box">
                 <span class="search-icon">🔍</span>
@@ -38,11 +90,19 @@
 
             <h2 class="section-title">Premium Accounts</h2>
             
-            <div id="categories-container">
-                <!-- Categories will be dynamically loaded -->
+            <!-- Entertainment Section -->
+            <div class="category-section">
+                <div class="category-header">
+                    <h3 class="category-title">🎬 Entertainment</h3>
+                    <button class="btn-primary" style="padding:0.5rem 1rem;font-size:0.9rem;">View All (14)</button>
+                </div>
+                <div class="products-grid" id="entertainment-grid"></div>
             </div>
+
+            <!-- More categories will be added by JS -->
         </div>
 
+        <!-- My Account Tab -->
         <div id="account-tab" class="tab-content">
             <h2>My Account</h2>
             <div class="card">
@@ -51,6 +111,7 @@
             </div>
         </div>
 
+        <!-- Payments Tab -->
         <div id="payments-tab" class="tab-content">
             <h2>Payment Methods</h2>
             <div class="card">
@@ -66,19 +127,125 @@
         </div>
     </main>
 
-    <!-- Auth Modal -->
-    <div id="auth-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Login / Sign Up</h2>
-            <input type="email" id="auth-email" placeholder="Email" class="input-field">
-            <input type="password" id="auth-password" placeholder="Password" class="input-field">
-            <button id="auth-submit" class="btn-primary full-width">Continue</button>
-        </div>
-    </div>
+    <script>
+        // Sample Products Data (matching your screenshots)
+        const productsData = [
+            { id: 'netflix', name: 'Netflix Premium', category: 'entertainment', icon: '📺', stock: 15, sold: 42,
+              pricing: {
+                  'solo profile': { '1m': 160, '2m': 280, '3m': 435, '6m': 850, '12m': 1500 },
+                  'shared profile': { '1m': 80, '2m': 145, '3m': 205, '6m': 410, '12m': 800 }
+              }
+            },
+            { id: 'viu', name: 'Viu Premium', category: 'entertainment', icon: '🎬', stock: 8, sold: 25,
+              pricing: {
+                  'solo account': { '1m': 70, '2m': 105, '3m': 145, '6m': 205, '12m': 310 },
+                  'shared account': { '1m': 30, '2m': 55, '3m': 75, '6m': 120, '12m': 220 }
+              }
+            },
+            { id: 'disney', name: 'Disney+', category: 'entertainment', icon: '🦁', stock: 12, sold: 38,
+              pricing: {
+                  'solo profile': { '1m': 160, '2m': 315, '4m': 630, '12m': 1700 },
+                  'shared profile': { '1m': 85, '2m': 165, '4m': 330, '12m': 880 }
+              }
+            },
+            { id: 'spotify', name: 'Spotify Premium', category: 'streaming', icon: '🎵', stock: 20, sold: 55,
+              pricing: {
+                  'solo fw': { '1m': 60, '2m': 110, '3m': 150, '4m': 200 },
+                  'solo nw': { '1m': 45, '2m': 80, '3m': 120, '4m': 150 }
+              }
+            }
+        ];
 
-    <script src="supabase.js"></script>
-    <script src="auth.js"></script>
-    <script src="main.js"></script>
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        // Render Products
+        function renderProducts() {
+            const grid = document.getElementById('entertainment-grid');
+            grid.innerHTML = '';
+
+            productsData.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+
+                const accountTypes = Object.keys(product.pricing);
+                const defaultType = accountTypes[0];
+                const durations = Object.keys(product.pricing[defaultType]);
+                const defaultDuration = durations[0];
+
+                const accountTypesHTML = accountTypes.map(type => 
+                    `<button class="account-btn" onclick="selectAccountType('${product.id}', '${type}')">${type}</button>`
+                ).join('');
+
+                const durationsHTML = durations.map(dur => 
+                    `<button class="duration-btn" onclick="selectDuration('${product.id}', '${defaultType}', '${dur}')">${dur}</button>`
+                ).join('');
+
+                card.innerHTML = `
+                    <div class="product-image">${product.icon}</div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-badges">
+                            <span class="badge ${product.stock > 0 ? 'badge-stock' : 'badge-out'}">
+                                ${product.stock > 0 ? product.stock + ' available' : 'Out of stock'}
+                            </span>
+                            <span class="badge badge-sold">${product.sold} sold</span>
+                        </div>
+                        <div class="account-types" id="${product.id}-types">
+                            ${accountTypesHTML}
+                        </div>
+                        <div class="duration-label">Duration:</div>
+                        <div class="duration-scroll" id="${product.id}-durations">
+                            ${durationsHTML}
+                        </div>
+                        <div class="price-display" id="${product.id}-price">
+                            <em style="color:#999;">Select account type & duration</em>
+                        </div>
+                        <button class="btn-checkout" disabled id="${product.id}-checkout">
+                            Select Options First
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function selectAccountType(productId, type) {
+            const product = productsData.find(p => p.id === productId);
+            document.querySelectorAll(`#${productId}-types .account-btn`).forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update durations
+            const durations = Object.keys(product.pricing[type]);
+            const durationsContainer = document.getElementById(`${productId}-durations`);
+            durationsContainer.innerHTML = durations.map(dur => 
+                `<button class="duration-btn" onclick="selectDuration('${productId}', '${type}', '${dur}')">${dur}</button>`
+            ).join('');
+        }
+
+        function selectDuration(productId, type, duration) {
+            const product = productsData.find(p => p.id === productId);
+            const price = product.pricing[type][duration];
+            document.querySelectorAll(`#${productId}-durations .duration-btn`).forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(`${productId}-price`).innerHTML = `₱${price}`;
+            const checkoutBtn = document.getElementById(`${productId}-checkout`);
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = 'Checkout';
+            checkoutBtn.onclick = () => checkout(productId, type, duration, price);
+        }
+
+        function checkout(productId, type, duration, price) {
+            alert(`Proceeding to checkout:\n${productId}\n${type} - ${duration}\nPrice: ₱${price}`);
+        }
+
+        // Initialize
+        renderProducts();
+    </script>
 </body>
 </html>
