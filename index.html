@@ -56,201 +56,299 @@
     </style>
 </head>
 <body>
-    <header>
-        <div class="container header-content">
-            <div class="logo">🛒 Aiaxcart Premium</div>
-            <div class="nav-center">Home</div>
-            <div id="auth-section">
-                <button id="login-btn" class="btn-auth">Login / Sign up</button>
-            </div>
-            <div id="user-section" style="display:none;">
-                <a href="account.html" class="btn-primary">My Account</a>
-                <button id="logout-btn" class="btn-auth">Logout</button>
+    <header class="header">
+        <div class="container">
+            <div class="header-main">
+                <div class="shop-logo">
+                    <span class="emoji">🛒</span>
+                    <span class="shop-name">Aiaxcart Premium</span>
+                </div>
+                <nav class="header-links">
+                    <span class="nav-home">Home</span>
+                    <span class="nav-admin">Admin</span>
+                </nav>
+                <div id="auth-section">
+                    <button id="login-btn">Login / Sign up</button>
+                </div>
+                <div id="user-section" style="display:none;">
+                    <span id="current-user"></span>
+                    <button id="logout-btn">Logout</button>
+                </div>
             </div>
         </div>
     </header>
-
-    <div class="tabs-container">
-        <div class="container">
-            <div class="tabs">
-                <button class="tab active" onclick="switchTab('products')">Products</button>
-                <button class="tab" onclick="switchTab('account')">My Account</button>
-                <button class="tab" onclick="switchTab('payments')">Payments</button>
-            </div>
-        </div>
-    </div>
-
-    <main class="container">
-        <!-- Products Tab -->
-        <div id="products-tab" class="tab-content active">
-            <div class="search-box">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="search-input" placeholder="Search products...">
-            </div>
-
-            <h2 class="section-title">Premium Accounts</h2>
-            
-            <!-- Entertainment Section -->
-            <div class="category-section">
-                <div class="category-header">
-                    <h3 class="category-title">🎬 Entertainment</h3>
-                    <button class="btn-primary" style="padding:0.5rem 1rem;font-size:0.9rem;">View All (14)</button>
+    <nav class="tab-navbar">
+        <button class="tab active" onclick="switchTab('products')">Products</button>
+        <button class="tab" onclick="switchTab('account')">My Account</button>
+        <button class="tab" onclick="switchTab('payments')">Payments</button>
+        <button class="tab" onclick="switchTab('rules')">Rules</button>
+        <button class="tab" onclick="switchTab('feedback')">Feedback</button>
+        <button class="tab" onclick="switchTab('about')">About</button>
+    </nav>
+    <main>
+        <section id="products-tab" class="tab-content active">
+            <div class="tab-inner">
+                <h2>Premium Accounts</h2>
+                <div class="searchbar">
+                    <input id="search-input" type="text" placeholder="🔍 Search products...">
                 </div>
-                <div class="products-grid" id="entertainment-grid"></div>
+                <div class="categories-wrapper"></div>
             </div>
-
-            <!-- More categories will be added by JS -->
-        </div>
-
-        <!-- My Account Tab -->
-        <div id="account-tab" class="tab-content">
-            <h2>My Account</h2>
-            <div class="card">
-                <p>Please login to view your orders and account details.</p>
-                <a href="account.html" class="btn-primary">Go to My Account</a>
+        </section>
+        <section id="account-tab" class="tab-content">
+            <div class="tab-inner">
+                <h2>My Account</h2>
+                <p>Log in to view your orders and account settings.</p>
             </div>
-        </div>
-
-        <!-- Payments Tab -->
-        <div id="payments-tab" class="tab-content">
-            <h2>Payment Methods</h2>
-            <div class="card">
-                <h3>GCash</h3>
-                <p><strong>0962 554 4105</strong></p>
-                <p class="text-muted">Please include your order reference.</p>
+        </section>
+        <section id="payments-tab" class="tab-content">
+            <div class="tab-inner">
+                <h2>Payment Methods</h2>
+                <div class="payments-list">
+                    <div class="payment-card">
+                        <b>GCash</b>
+                        <p>Send payment to: <b>0962 554 4105</b></p>
+                    </div>
+                    <div class="payment-card">
+                        <b>Maya</b>
+                        <p>Send payment to: <b>0929 984 3629</b></p>
+                    </div>
+                </div>
             </div>
-            <div class="card">
-                <h3>Maya</h3>
-                <p><strong>0929 984 3629</strong></p>
-                <p class="text-muted">Please include your order reference.</p>
+        </section>
+        <section id="rules-tab" class="tab-content">
+            <div class="tab-inner">
+                <h2>Store Rules</h2>
+                <input type="text" class="rules-search" placeholder="Search for product rules…">
+                <h3>General Rules & Regulations</h3>
+                <div class="rule-card">All accounts are premium quality and verified</div>
+                <div class="rule-card">No refunds after account delivery</div>
+                <div class="rule-card">Reselling is allowed but at your own risk</div>
             </div>
-        </div>
+        </section>
+        <section id="feedback-tab" class="tab-content">
+            <div class="tab-inner">
+                <h2>Feedback</h2>
+                <p>Send your suggestions, comments or problems for better service.</p>
+            </div>
+        </section>
+        <section id="about-tab" class="tab-content">
+            <div class="tab-inner">
+                <h2>About</h2>
+                <p>
+                    Aiaxcart Premium is your trusted shop for streaming, AI, and e-learning premium digital accounts!<br>
+                    Fast delivery, easy payment, and real support.
+                </p>
+            </div>
+        </section>
     </main>
-
+    <footer>
+        <div class="footer-inner">
+            &copy; 2024 Aiaxcart Premium. All rights reserved.
+        </div>
+    </footer>
+    <!-- MAIN JS CODE INLINED BELOW. PUT FULL PRODUCTS_DATA INSIDE -->
     <script>
-        // Sample Products Data (matching your screenshots)
-        const productsData = [
-            { id: 'netflix', name: 'Netflix Premium', category: 'entertainment', icon: '📺', stock: 15, sold: 42,
-              pricing: {
-                  'solo profile': { '1m': 160, '2m': 280, '3m': 435, '6m': 850, '12m': 1500 },
-                  'shared profile': { '1m': 80, '2m': 145, '3m': 205, '6m': 410, '12m': 800 }
-              }
-            },
-            { id: 'viu', name: 'Viu Premium', category: 'entertainment', icon: '🎬', stock: 8, sold: 25,
-              pricing: {
-                  'solo account': { '1m': 70, '2m': 105, '3m': 145, '6m': 205, '12m': 310 },
-                  'shared account': { '1m': 30, '2m': 55, '3m': 75, '6m': 120, '12m': 220 }
-              }
-            },
-            { id: 'disney', name: 'Disney+', category: 'entertainment', icon: '🦁', stock: 12, sold: 38,
-              pricing: {
-                  'solo profile': { '1m': 160, '2m': 315, '4m': 630, '12m': 1700 },
-                  'shared profile': { '1m': 85, '2m': 165, '4m': 330, '12m': 880 }
-              }
-            },
-            { id: 'spotify', name: 'Spotify Premium', category: 'streaming', icon: '🎵', stock: 20, sold: 55,
-              pricing: {
-                  'solo fw': { '1m': 60, '2m': 110, '3m': 150, '4m': 200 },
-                  'solo nw': { '1m': 45, '2m': 80, '3m': 120, '4m': 150 }
-              }
-            }
-        ];
-
-        // Tab Switching
-        function switchTab(tabName) {
+    // --- Authentication Functions ---
+    function getCurrentUser() {
+        return JSON.parse(localStorage.getItem('user') || 'null');
+    }
+    function setCurrentUser(user) {
+        localStorage.setItem('user', JSON.stringify(user));
+    }
+    function logout() {
+        localStorage.removeItem('user');
+        window.location.reload();
+    }
+    function login(email, password) {
+        const user = { email: email, id: Date.now(), name: email.split('@')[0] };
+        setCurrentUser(user);
+        window.location.reload();
+        return user;
+    }
+    // --- Product Data (PASTE YOUR FULL LIST BELOW) ---
+    const PRODUCTS_DATA = [
+        // PASTE ALL PRODUCT OBJECTS HERE!
+    ];
+    // --- Global State ---
+    let currentUser = null;
+    let selectedProducts = {};
+    // --- Main Init ---
+    document.addEventListener('DOMContentLoaded', function () {
+        currentUser = getCurrentUser();
+        checkAuth();
+        initializeTabs();
+        updateAuthUI();
+        renderAllProducts();
+        initializeEventListeners();
+    });
+    function checkAuth() {
+        const user = getCurrentUser();
+        if (user) {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('user-section').style.display = 'flex';
+            document.getElementById('current-user').textContent = user.email;
+        } else {
+            document.getElementById('auth-section').style.display = 'block';
+            document.getElementById('user-section').style.display = 'none';
+        }
+    }
+    function updateAuthUI() { checkAuth(); }
+    function initializeEventListeners() {
+        const loginBtn = document.getElementById('login-btn');
+        if (loginBtn) {
+            loginBtn.onclick = function () {
+                const email = prompt('Enter email:');
+                const password = prompt('Enter password:');
+                if (email && password) { login(email, password); }
+            };
+        }
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) { logoutBtn.onclick = logout; }
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) { searchInput.addEventListener('input', handleSearch); }
+    }
+    function initializeTabs() {
+        window.switchTab = function (tabName) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             event.target.classList.add('active');
             document.getElementById(tabName + '-tab').classList.add('active');
+        };
+    }
+    // --- Product Rendering ---
+    function renderAllProducts() {
+        const categoriesWrapper = document.querySelector('.categories-wrapper');
+        if (!categoriesWrapper) return;
+        categoriesWrapper.innerHTML = '';
+        const categories = [...new Set(PRODUCTS_DATA.map(p => p.category))];
+        categories.forEach(category => {
+            const categoryProducts = PRODUCTS_DATA.filter(p => p.category === category);
+            categoriesWrapper.appendChild(renderCategorySection(category, categoryProducts));
+        });
+    }
+    function renderCategorySection(category, products) {
+        const section = document.createElement('div');
+        section.className = 'category-section';
+        const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+        const categoryIcon = getCategoryIcon(category);
+        section.innerHTML = `
+            <div class="category-header">
+                <h3 class="category-title">${categoryIcon} ${categoryName}</h3>
+                <button class="btn-primary" style="padding:0.5rem 1rem;font-size:0.9rem;">View All (${products.length})</button>
+            </div>
+            <div class="products-grid" id="${category}-grid"></div>
+        `;
+        renderProducts(category, products, section.querySelector('.products-grid'));
+        return section;
+    }
+    function renderProducts(category, products, grid) {
+        grid.innerHTML = '';
+        products.forEach(product => {
+            const card = createProductCard(product);
+            grid.appendChild(card);
+        });
+    }
+    function createProductCard(product) {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        const accountTypes = Object.keys(product.pricing);
+        const defaultType = accountTypes[0];
+        const durations = Object.keys(product.pricing[defaultType]);
+        const accountTypesHTML = accountTypes.map(type =>
+            `<button class="account-btn" onclick="selectAccountType('${product.id}', '${type}')">${type}</button>`
+        ).join('');
+        const durationsHTML = durations.map(dur =>
+            `<button class="duration-btn" onclick="selectDuration('${product.id}', '${defaultType}', '${dur}')">${dur}</button>`
+        ).join('');
+        card.innerHTML = `
+            <div class="product-image">${product.icon}</div>
+            <div class="product-info">
+                <div class="product-name">${product.name}</div>
+                <div class="product-badges">
+                    <span class="badge ${product.stock > 0 ? 'badge-stock' : 'badge-out'}">
+                        ${product.stock > 0 ? product.stock + ' available' : 'Out of stock'}
+                    </span>
+                    <span class="badge badge-sold">${product.sold} sold</span>
+                </div>
+                <div class="account-types" id="${product.id}-types">${accountTypesHTML}</div>
+                <div class="duration-label">Duration:</div>
+                <div class="duration-scroll" id="${product.id}-durations">${durationsHTML}</div>
+                <div class="price-display" id="${product.id}-price">
+                    <em style="color:#999;font-size:0.9rem;">Select account type & duration</em>
+                </div>
+                <button class="btn-checkout" disabled id="${product.id}-checkout">
+                    Select Options First
+                </button>
+            </div>
+        `;
+        return card;
+    }
+    window.selectAccountType = function (productId, type) {
+        const product = PRODUCTS_DATA.find(p => p.id === productId);
+        if (!product) return;
+        document.querySelectorAll(`#${productId}-types .account-btn`).forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        const durations = Object.keys(product.pricing[type]);
+        const durationsContainer = document.getElementById(`${productId}-durations`);
+        durationsContainer.innerHTML = durations.map(dur =>
+            `<button class="duration-btn" onclick="selectDuration('${productId}', '${type}', '${dur}')">${dur}</button>`
+        ).join('');
+        selectedProducts[productId] = { type, duration: null, price: null };
+        document.getElementById(`${productId}-price`).innerHTML = '<em style="color:#999;font-size:0.9rem;">Select duration</em>';
+        document.getElementById(`${productId}-checkout`).disabled = true;
+    };
+    window.selectDuration = function (productId, type, duration) {
+        const product = PRODUCTS_DATA.find(p => p.id === productId);
+        if (!product) return;
+        const price = product.pricing[type][duration];
+        document.querySelectorAll(`#${productId}-durations .duration-btn`).forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById(`${productId}-price`).innerHTML = `₱${price}`;
+        const checkoutBtn = document.getElementById(`${productId}-checkout`);
+        checkoutBtn.disabled = false;
+        checkoutBtn.textContent = 'Checkout';
+        checkoutBtn.onclick = () => checkout(productId, type, duration, price);
+        selectedProducts[productId] = { type, duration, price };
+    };
+    function checkout(productId, type, duration, price) {
+        if (!getCurrentUser()) {
+            alert('Please login first to checkout');
+            return;
         }
-
-        // Render Products
-        function renderProducts() {
-            const grid = document.getElementById('entertainment-grid');
-            grid.innerHTML = '';
-
-            productsData.forEach(product => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-
-                const accountTypes = Object.keys(product.pricing);
-                const defaultType = accountTypes[0];
-                const durations = Object.keys(product.pricing[defaultType]);
-                const defaultDuration = durations[0];
-
-                const accountTypesHTML = accountTypes.map(type => 
-                    `<button class="account-btn" onclick="selectAccountType('${product.id}', '${type}')">${type}</button>`
-                ).join('');
-
-                const durationsHTML = durations.map(dur => 
-                    `<button class="duration-btn" onclick="selectDuration('${product.id}', '${defaultType}', '${dur}')">${dur}</button>`
-                ).join('');
-
-                card.innerHTML = `
-                    <div class="product-image">${product.icon}</div>
-                    <div class="product-info">
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-badges">
-                            <span class="badge ${product.stock > 0 ? 'badge-stock' : 'badge-out'}">
-                                ${product.stock > 0 ? product.stock + ' available' : 'Out of stock'}
-                            </span>
-                            <span class="badge badge-sold">${product.sold} sold</span>
-                        </div>
-                        <div class="account-types" id="${product.id}-types">
-                            ${accountTypesHTML}
-                        </div>
-                        <div class="duration-label">Duration:</div>
-                        <div class="duration-scroll" id="${product.id}-durations">
-                            ${durationsHTML}
-                        </div>
-                        <div class="price-display" id="${product.id}-price">
-                            <em style="color:#999;">Select account type & duration</em>
-                        </div>
-                        <button class="btn-checkout" disabled id="${product.id}-checkout">
-                            Select Options First
-                        </button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
+        const product = PRODUCTS_DATA.find(p => p.id === productId);
+        const confirmed = confirm(`Proceed to checkout?\n\nProduct: ${product.name}\nType: ${type}\nDuration: ${duration}\nPrice: ₱${price}`);
+        if (confirmed) {
+            alert(`Order created!\n\nPlease proceed to payment.`);
         }
-
-        function selectAccountType(productId, type) {
-            const product = productsData.find(p => p.id === productId);
-            document.querySelectorAll(`#${productId}-types .account-btn`).forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-
-            // Update durations
-            const durations = Object.keys(product.pricing[type]);
-            const durationsContainer = document.getElementById(`${productId}-durations`);
-            durationsContainer.innerHTML = durations.map(dur => 
-                `<button class="duration-btn" onclick="selectDuration('${productId}', '${type}', '${dur}')">${dur}</button>`
-            ).join('');
-        }
-
-        function selectDuration(productId, type, duration) {
-            const product = productsData.find(p => p.id === productId);
-            const price = product.pricing[type][duration];
-            document.querySelectorAll(`#${productId}-durations .duration-btn`).forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById(`${productId}-price`).innerHTML = `₱${price}`;
-            const checkoutBtn = document.getElementById(`${productId}-checkout`);
-            checkoutBtn.disabled = false;
-            checkoutBtn.textContent = 'Checkout';
-            checkoutBtn.onclick = () => checkout(productId, type, duration, price);
-        }
-
-        function checkout(productId, type, duration, price) {
-            alert(`Proceeding to checkout:\n${productId}\n${type} - ${duration}\nPrice: ₱${price}`);
-        }
-
-        // Initialize
-        renderProducts();
+    }
+    function handleSearch(e) {
+        const query = e.target.value.toLowerCase();
+        const allProducts = document.querySelectorAll('.product-card');
+        allProducts.forEach(card => {
+            const productName = card.querySelector('.product-name').textContent.toLowerCase();
+            card.style.display = productName.includes(query) ? 'block' : 'none';
+        });
+    }
+    function getCategoryIcon(category) {
+        const icons = {
+            'entertainment': '🎬',
+            'streaming': '🎵',
+            'ai': '🧠',
+            'educational': '📚',
+            'editing': '🎨'
+        };
+        return icons[category] || '📦';
+    }
     </script>
     <script src="config.js"></script>
 <script src="config.private.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="supabase.js"></script>
+<script src="auth.js"></script>
+<script src="main.js"></script> <!-- <-- THIS IS YOUR MAIN JS FILE -->
+<script src="orders.js"></script>
+<script src="telegram-bot.js"></script>
 
 </body>
 </html>
