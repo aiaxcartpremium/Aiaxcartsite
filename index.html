@@ -784,51 +784,19 @@
             </div>
         </div>
     </header>
-<!-- Put this where you want the modal markup, after your header but before other main page content -->
-<div class="owner-veri-overlay" id="ownerVeriOverlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.37);display:none;align-items:center;justify-content:center;z-index:9999;">
+<!-- Owner Verification Modal (hidden by default) -->
+<div class="owner-veri-overlay" id="ownerVeriOverlay"
+     style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.37);display:none;align-items:center;justify-content:center;z-index:9999;">
   <div style="position:relative;background:white;padding:1.5rem 2rem;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,0.10);min-width:300px;">
     <button onclick="closeOwnerModal()" style="position:absolute;top:0.5rem;right:0.5rem;border:none;background:none;font-size:1.5rem;line-height:1;cursor:pointer;color: #ff7a7a;">&times;</button>
     <h2 style="margin-bottom:1rem;">🔐 Owner Verification</h2>
-    <input type="text" id="ownerUidInput" placeholder="Enter Owner UID" style="padding:0.75rem;margin-bottom:1rem;width:100%;">
+    <input type="text" id="26baf1ad-64b1-436c-9758-c415949dfa0a" placeholder="Enter Owner UID" style="padding:0.75rem;margin-bottom:1rem;width:100%;">
     <button onclick="verifyOwnerUID()" style="background:#FFB0B5;color:white;border:none;padding:0.6rem 1.5rem;border-radius:12px;margin-top:0.5rem;width:100%;">Verify Access</button>
     <div id="ownerVeriMsg" style="color:red;margin-top:0.7rem;"></div>
   </div>
 </div>
 
-<script>
-const OWNER_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a'; // change as needed
 
-function openOwnerModal() {
-  document.getElementById('ownerUidInput').value = '';
-  document.getElementById('ownerVeriMsg').textContent = '';
-  document.getElementById("ownerVeriOverlay").style.display = "flex";
-}
-
-function closeOwnerModal() {
-  document.getElementById("ownerVeriOverlay").style.display = "none";
-}
-
-function verifyOwnerUID() {
-  let uid = document.getElementById('ownerUidInput').value.trim();
-  if(uid===OWNER_UID){
-    localStorage.setItem('ownerVerified','yes');
-    document.getElementById("ownerVeriOverlay").style.display="none";
-    window.location.href = "admin.html";
-  } else {
-    document.getElementById('ownerVeriMsg').textContent = "❌ Invalid UID.";
-  }
-}
-
-// Listen for click on Admin link; show modal instead of following link until verified
-document.querySelectorAll('a[href="admin.html"]').forEach(el=>{
-  el.addEventListener('click', function(ev){
-    if(localStorage.getItem('ownerVerified')!=='yes'){
-      ev.preventDefault();
-      openOwnerModal();
-    }
-  });
-});
-</script>
 
 <script>
 const OWNER_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a';//change to your actual owner UID
@@ -2455,5 +2423,42 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
         document.getElementById('login-btn').addEventListener('click', openAuthModal);
         document.getElementById('logout-btn').addEventListener('click', logout);
     </script>
+    <script>
+const OWNER_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a'; // change as needed
+
+function openOwnerModal() {
+  document.getElementById('ownerUidInput').value = '';
+  document.getElementById('ownerVeriMsg').textContent = '';
+  document.getElementById("ownerVeriOverlay").style.display = "flex";
+}
+
+function closeOwnerModal() {
+  document.getElementById("ownerVeriOverlay").style.display = "none";
+}
+
+function verifyOwnerUID() {
+  let uid = document.getElementById('ownerUidInput').value.trim();
+  if(uid===OWNER_UID){
+    localStorage.setItem('ownerVerified','yes');
+    document.getElementById("ownerVeriOverlay").style.display="none";
+    window.location.href = "admin.html";
+  } else {
+    document.getElementById('ownerVeriMsg').textContent = "❌ Invalid UID.";
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('a[href="admin.html"]').forEach(el=>{
+    el.addEventListener('click', function(ev){
+      // Only block/requires verification if not yet verified
+      if(localStorage.getItem('ownerVerified')!=='yes'){
+        ev.preventDefault();
+        openOwnerModal();
+      }
+      // if verified, let it go through
+    });
+  });
+});
+</script>
 </body>
 </html>
