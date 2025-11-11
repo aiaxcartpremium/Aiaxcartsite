@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Aiaxcart Premium | Admin</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
+<meta charset="UTF-8">
+<title>Aiaxcart Premium | Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- (Insert your complete CSS here for .container, .tabs, .stats-grid, .card styling etc...) -->
+<style>
         body { background: #fefaf7; color: #382f2c; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
         .logo { font-size: 2rem; font-weight: 700; display: flex; align-items: center;}
@@ -71,14 +72,14 @@
         </nav>
     </div>
 </header>
-<!-- Owner modal -->
-<div id="owner-modal" style="display:none;">
+<!-- Owner Verification Modal -->
+<div class="owner-veri-overlay" id="ownerVeriOverlay">
     <div class="modal-card">
-        <button class="close-btn" onclick="closeOwnerModal()">&times;</button>
+        <button onclick="closeOwnerModal()" class="close-btn">&times;</button>
         <h2>🔐 Owner Verification</h2>
-        <input type="text" id="owner-uid" placeholder="Enter Owner UID" style="display:block;width:100%;margin-bottom:1.2rem;">
-        <button onclick="verifyUID()" class="btn btn-primary full-width" style="width:100%;">Verify Access</button>
-        <div id="uid-error" class="error-message"></div>
+        <input type="text" id="ownerUidInput" placeholder="Enter Owner UID" style="width:100%;margin-bottom:1.3rem;">
+        <button onclick="verifyOwnerUID()" style="background:#FFB0B5;color:white;padding:0.65rem 1.5rem;width:100%;border:none;border-radius:8px;">Verify Access</button>
+        <div id="ownerVeriMsg" style="color:red;margin-top:0.8rem;font-size:1.1em;"></div>
     </div>
 </div>
 <div class="container" id="admin-dashboard" style="display:none;">
@@ -89,7 +90,7 @@
         <div class="stat-card"><h3 id="stat-pending">0</h3><div>Pending Orders</div></div>
         <div class="stat-card"><h3 id="stat-revenue">₱0</h3><div>Total Revenue</div></div>
     </div>
-    <div class="tabs" id="admintabs">
+    <div class="tabs">
         <button class="tab active" data-tab="add-stock">Add Stock</button>
         <button class="tab" data-tab="manage-stocks">Manage Stocks</button>
         <button class="tab" data-tab="pending-orders">Pending Orders</button>
@@ -97,253 +98,152 @@
         <button class="tab" data-tab="archived-stocks">Archived Stocks</button>
         <button class="tab" data-tab="products">Products</button>
         <button class="tab" data-tab="store-rules">Store Rules</button>
+        <button class="tab" data-tab="records">Add Record</button>
+        <button class="tab" data-tab="reports">Reports</button>
     </div>
-    <!-- ADD STOCK PANEL -->
-    <div class="panel active" id="panel-add-stock">
-        <div class="card">
-            <h2>Add Stock</h2>
-            <form id="add-stock-form">
-                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;">
-                  <label>Product
-                    <select id="stock-product" required></select>
-                  </label>
-                  <label>Account Type
-                    <select id="stock-type" required>
-                        <option value="">Select Type</option>
-                        <option>Solo</option><option>Shared</option></select>
-                  </label>
-                  <label>Duration
-                    <select id="stock-duration" required>
-                        <option value="">Select Duration</option>
-                        <option>1m</option><option>3m</option><option>6m</option><option>12m</option>
-                    </select>
-                  </label>
-                  <label>Quantity
-                    <input type="number" id="stock-qty" value="1" min="1">
-                  </label>
-                  <label>Email/Login
-                    <input type="text" id="stock-email" placeholder="login email">
-                  </label>
-                  <label>Password
-                    <input type="text" id="stock-password" placeholder="login password">
-                  </label>
-                  <label>Profile
-                    <input type="text" id="stock-profile" placeholder="profile name">
-                  </label>
-                  <label>PIN
-                    <input type="text" id="stock-pin" placeholder="profile pin">
-                  </label>
-                  <label>Auto-Archive After (Days)
-                    <input type="number" id="stock-archive-days" value="0" min="0">
-                    <span style="font-size:0.94em;">Set to 0 to never auto-archive</span>
-                  </label>
-                  <label>Date When Premiumed (Optional)
-                    <input type="date" id="stock-premium-date">
-                  </label>
-                </div>
-                <button type="submit" class="btn btn-primary" style="margin-top:1.45rem;">Add Stock</button>
-            </form>
-            <div id="add-stock-msg"></div>
-        </div>
-    </div>
-    <!-- MANAGE STOCKS PANEL -->
-    <div class="panel" id="panel-manage-stocks">
-        <div class="card">
-            <h2>Available Stocks</h2>
-            <div style="margin-bottom:14px;">
-                <button class="btn btn-warning btn-small" onclick="autoArchiveAll()">Check Auto-Archive</button>
-                <button class="btn btn-primary btn-small" onclick="showStocks()">Refresh Stocks</button>
-            </div>
-            <div class="stock-list" id="manage-stocks-list"></div>
-        </div>
-    </div>
-    <!-- PENDING ORDERS PANEL (demo) -->
-    <div class="panel" id="panel-pending-orders">
-        <div class="card"><h2>Pending Orders</h2>
-            <button class="btn btn-primary btn-small" onclick="alert('Refresh/demo only')">Refresh Orders</button>
-            <div style="margin-top:20px;">No pending orders</div>
-        </div>
-    </div>
-    <!-- SOLD ACCOUNTS PANEL (demo) -->
-    <div class="panel" id="panel-sold-accounts">
-        <div class="card"><h2>Sold Accounts</h2>
-            <div>No sold accounts yet</div>
-        </div>
-    </div>
-    <!-- ARCHIVED STOCKS PANEL -->
-    <div class="panel" id="panel-archived-stocks">
-        <div class="card"><h2>Archived Stocks</h2>
-            <div id="archived-stocks-list"></div>
-        </div>
-    </div>
-    <!-- PRODUCTS PANEL -->
-    <div class="panel" id="panel-products">
-        <div class="card">
-            <h2>Products Management</h2>
-            <form id="add-product-form" style="display: flex;gap:12px;margin-bottom:16px;">
-                <input type="text" id="new-prod-name" placeholder="Add new product" style="flex:2;">
-                <button type="submit" class="btn btn-primary">Add Product</button>
-            </form>
-            <div class="stock-list" id="products-list"></div>
-        </div>
-    </div>
-    <!-- STORE RULES PANEL -->
-    <div class="panel" id="panel-store-rules">
-        <div class="card">
-            <h2>Store Rules Management</h2>
-            <form id="add-rule-form" style="display:flex;gap:15px;margin-bottom:16px;">
-                <input type="text" id="new-rule" placeholder="Enter general/store rule" style="flex:2;">
-                <button class="btn btn-primary">Add Rule</button>
-            </form>
-            <div class="stock-list" id="rules-list"></div>
-        </div>
-    </div>
+    <!-- Panels -->
+    <div id="panel-add-stock" class="panel active"><div class="card">
+        <form id="addStockForm">
+            <label>Product
+                <select id="stock-product"></select>
+            </label>
+            <label>Account Type
+                <select id="stock-type"></select>
+            </label>
+            <label>Duration
+                <select id="stock-duration"></select>
+            </label>
+            <label>Quantity <input type="number" id="stock-qty" value="1" min="1"></label>
+            <label>Email <input type="text" id="stock-email"></label>
+            <label>Password <input type="text" id="stock-password"></label>
+            <label>Profile <input type="text" id="stock-profile"></label>
+            <label>PIN <input type="text" id="stock-pin"></label>
+            <label>Auto-Archive (Days): <input type="number" id="stock-arch" value="0"></label>
+            <label>Premium At (date, optional): <input type="date" id="stock-premdate"></label>
+            <button class="btn btn-primary" style="margin-top:1rem;">Add Stock</button>
+        </form>
+        <div id="add-stock-msg"></div>
+    </div></div>
+    <div id="panel-manage-stocks" class="panel"><div class="card" id="manage-stocks-list"></div></div>
+    <div id="panel-pending-orders" class="panel"><div class="card" id="pending-orders-list"></div></div>
+    <div id="panel-sold-accounts" class="panel"><div class="card" id="sold-list"></div></div>
+    <div id="panel-archived-stocks" class="panel"><div class="card" id="archived-list"></div></div>
+    <div id="panel-products" class="panel"><div class="card" id="products-list"></div></div>
+    <div id="panel-store-rules" class="panel"><div class="card" id="rules-list"></div></div>
+    <div id="panel-records" class="panel"><div class="card" id="records-list"></div></div>
+    <div id="panel-reports" class="panel"><div class="card" id="reports-list"></div></div>
 </div>
 <script>
-/* -- OWNER VERIFICATION MODAL -- */
+const PRODUCTS = [
+ "Netflix Premium","Viu Premium","VIVAMAX VIVAONE","WeTV","IWANT TFC","Crunchyroll","Disney+","Bilibili","Loklok","iQiyi",
+ "HBO Max","Amazon Prime","Youku","NBA League Pass Premium","YouTube Premium","Spotify Premium","Apple Music","ChatGPT Plus",
+ "Blackbox AI","Perplexity AI","Google One + Gemini AI","Quizlet+","Scribd Premium","Studocu Premium","Duolingo Super",
+ "Turnitin Student","Turnitin Instructor","Canva Pro","Picsart Gold","CapCut Pro","Alight Motion Pro","Remini Web",
+ "Grammarly Premium","Quillbot Premium","Microsoft 365","CamScanner Pro","Small PDF Pro","Zoom Pro"
+];
+const ACC_TYPES = ["Solo Account","Shared Account","Solo Profile","Shared Profile"];
+const DURATIONS = ["7d","14d","1m","2m","3m","4m","5m","6m","7m","8m","9m","10m","11m","12m","24m","NW","3m W","6m W","12m W"];
+let stocks = JSON.parse(localStorage.getItem("stocks")||"[]");
+let products = JSON.parse(localStorage.getItem("products")||"[]");
+if(products.length===0){products=PRODUCTS.slice(0,10);localStorage.setItem("products",JSON.stringify(products));}
+let rules = JSON.parse(localStorage.getItem("rules")||'["All accounts premium","No refunds after delivery"]');
+let records = JSON.parse(localStorage.getItem("records")||"[]");
+let archived = JSON.parse(localStorage.getItem("archived")||"[]");
+let sold = JSON.parse(localStorage.getItem("sold")||"[]");
+let pending = JSON.parse(localStorage.getItem("pending")||"[]");
+function saveAll(){
+        localStorage.setItem("stocks",JSON.stringify(stocks));
+        localStorage.setItem("products",JSON.stringify(products));
+        localStorage.setItem("rules",JSON.stringify(rules));
+        localStorage.setItem("records",JSON.stringify(records));
+        localStorage.setItem("archived",JSON.stringify(archived));
+        localStorage.setItem("sold",JSON.stringify(sold));
+        localStorage.setItem("pending",JSON.stringify(pending));
+}
+// Owner UID verification logic
 const OWNER_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a';
-function closeOwnerModal(){document.getElementById('owner-modal').style.display='none';}
-function verifyUID(){
-    let uid=document.getElementById('owner-uid').value.trim();
+function openOwnerModal(){document.getElementById('ownerUidInput').value='';document.getElementById('ownerVeriMsg').textContent='';document.getElementById("ownerVeriOverlay").style.display="flex";}
+function closeOwnerModal(){document.getElementById("ownerVeriOverlay").style.display="none";}
+function verifyOwnerUID(){
+    let uid=document.getElementById('ownerUidInput').value.trim();
     if(uid===OWNER_UID){
         localStorage.setItem('ownerVerified','yes');
         closeOwnerModal();
-        document.getElementById('admin-dashboard').style.display='block';
-        showStocks(); showProducts(); showRules(); updateStats();
+        showAdminPanel();
     }else{
-        document.getElementById('uid-error').textContent='❌ Invalid UID.';
+        document.getElementById('ownerVeriMsg').textContent='❌ Invalid UID.';
     }
+}
+function showAdminPanel(){
+    document.getElementById('admin-dashboard').style.display='block';
+    updateStats();showStocks();showArchived();showProducts();showRules();showRecords();showReports();showPending();showSold();
 }
 document.addEventListener("DOMContentLoaded",function(){
-    let tabs=document.querySelectorAll(".tab"),panels=document.querySelectorAll(".panel");
-    tabs.forEach(tab=>tab.onclick=function(){
-        tabs.forEach(t=>t.classList.remove("active"));
-        panels.forEach(p=>p.classList.remove("active"));
+    // Tab switching
+    let t=document.querySelectorAll(".tab"),p=document.querySelectorAll(".panel");
+    t.forEach(tab=>tab.onclick=function(){
+        t.forEach(tb=>tb.classList.remove("active"));
+        p.forEach(pl=>pl.classList.remove("active"));
         tab.classList.add("active");
         document.getElementById("panel-"+tab.dataset.tab).classList.add("active");
-        if(tab.dataset.tab==="manage-stocks")showStocks();
-        if(tab.dataset.tab==="archived-stocks")showArchived();
-        if(tab.dataset.tab==="products")showProducts();
-        if(tab.dataset.tab==="store-rules")showRules();
+        showAdminPanel();
     });
-    // PRODUCT list
-    if(!localStorage.getItem("demo_init")){
-        localStorage.setItem("products",JSON.stringify(["Netflix Premium","Viu Premium","VIVAMAX VIVAONE","WeTV","iQiyi","Crunchyroll"]));
-        localStorage.setItem("stocks",JSON.stringify([
-          {id:1,product:"Crunchyroll",type:"solo account",duration:"3 Months",email:"shanaia...",password:"etgweg",profile:"",pin:"",premium:false,premiumAt:"",archive:false,archiveAt:"",added:"11/10/2025",archDays:0},
-          {id:2,product:"iQiyi",type:"shared account",duration:"1 Month",email:"shanaia...",password:"ryvryuuy",profile:"",pin:"",premium:true,premiumAt:"2025-11-10",archive:true,archiveAt:"2025-11-15",added:"11/10/2025",archDays:5}
-        ]));
-        localStorage.setItem("rules",JSON.stringify(["All accounts are premium quality and verified","Replacement guaranteed within 24 hours for any issues","No refunds after account delivery","Keep account details confidential","Contact support for any issues within the warranty period"]));
-        localStorage.setItem("demo_init","1");
-    }
-    if(localStorage.getItem('ownerVerified')!=='yes'){
-        document.getElementById('owner-modal').style.display='flex';
-    } else {
-        document.getElementById('admin-dashboard').style.display='block';
-        showStocks();showProducts();showRules();updateStats();
-    }
-    // Fill product dropdown in Add Stock
-    let prodData=JSON.parse(localStorage.getItem('products'));
-    document.getElementById('stock-product').innerHTML='<option value="">Select Product</option>'+prodData.map(p=>`<option>${p}</option>`).join('');
-    // Add Stock
-    document.getElementById('add-stock-form').onsubmit=function(e){
-        e.preventDefault();
-        let pid=Date.now(),prod=document.getElementById('stock-product').value,t=document.getElementById('stock-type').value,d=document.getElementById('stock-duration').value;
-        let qty=parseInt(document.getElementById('stock-qty').value)||1;
-        let em=document.getElementById('stock-email').value,pw=document.getElementById('stock-password').value,pr=document.getElementById('stock-profile').value,pin=document.getElementById('stock-pin').value;
-        let archDays=parseInt(document.getElementById('stock-archive-days').value)||0, premiumAt=document.getElementById('stock-premium-date').value;
-        let stocks=JSON.parse(localStorage.getItem('stocks')||'[]');
-        for(let i=0;i<qty;i++){
-            stocks.push({id:pid+i,product:prod,type:t,duration:d,email:em,password:pw,profile:pr,pin:pin,premium:!!premiumAt,premiumAt:premiumAt,archive:archDays>0,archiveAt:archDays>0 ? calcArchiveAt(archDays) : "",added:getToday(),archDays:archDays});
-        }
-        localStorage.setItem('stocks',JSON.stringify(stocks)); showStocks(); updateStats(); this.reset();
-    };
-    // Add Product
-    document.getElementById('add-product-form').onsubmit=function(e){
-        e.preventDefault();
-        let prod=document.getElementById('new-prod-name').value.trim();
-        if(!prod)return;
-        let prods=JSON.parse(localStorage.getItem('products')||'[]');
-        if(prods.indexOf(prod)===-1){prods.push(prod);}
-        localStorage.setItem('products',JSON.stringify(prods)); showProducts();
-        document.getElementById('new-prod-name').value='';
-    };
-    // Add Rule
-    document.getElementById('add-rule-form').onsubmit=function(e){
-        e.preventDefault();
-        let rule=document.getElementById('new-rule').value.trim();
-        if(!rule)return;
-        let rules=JSON.parse(localStorage.getItem('rules')||'[]');rules.push(rule);
-        localStorage.setItem('rules',JSON.stringify(rules));showRules();
-        document.getElementById('new-rule').value='';
+    // Setup selects
+    document.getElementById("stock-product").innerHTML=products.map(x=>`<option>${x}</option>`).join('');
+    document.getElementById("stock-type").innerHTML=ACC_TYPES.map(x=>`<option>${x}</option>`).join('');
+    document.getElementById("stock-duration").innerHTML=DURATIONS.map(x=>`<option>${x}</option>`).join('');
+    if(localStorage.getItem('ownerVerified')!=='yes'){openOwnerModal();}else{showAdminPanel();}
+    // Add stock
+    document.getElementById("addStockForm").onsubmit=function(e){
+      e.preventDefault();
+      let qty=Number(document.getElementById("stock-qty").value)||1;
+      for(let i=0;i<qty;i++){
+        stocks.push({
+            id:Date.now()+(""+Math.floor(Math.random()*10000)),
+            product:document.getElementById("stock-product").value,
+            type:document.getElementById("stock-type").value,
+            duration:document.getElementById("stock-duration").value,
+            email:document.getElementById("stock-email").value,
+            password:document.getElementById("stock-password").value,
+            profile:document.getElementById("stock-profile").value,
+            pin:document.getElementById("stock-pin").value,
+            archiveAfter:Number(document.getElementById("stock-arch").value)||0,
+            premiumAt:document.getElementById("stock-premdate").value||"",
+            status:'available'
+        });
+      }
+      saveAll();this.reset();updateStats();showStocks();
+      document.getElementById("add-stock-msg").textContent="✔ Added!";
+      setTimeout(()=>document.getElementById("add-stock-msg").textContent='',1500);
     };
 });
-function showStocks(){
-    let stocks=JSON.parse(localStorage.getItem('stocks')||'[]'),h="";
-    stocks.filter(s=>!autoArchiveCheck(s)).forEach(s=>{
-        h+=`<div class="stock-card">
-            <b>📺 ${s.product}</b> <span style="color:#777;">${s.type} - ${s.duration}${s.premium?' <span class="badge badge-premium">Premium</span>':''}</span>
-            <div style="font-size:0.98em;">Added: ${s.added} | Auto-Archive: ${s.archive ? s.archiveAt : "Never"}</div>
-            <div>Email: ${s.email}</div><div>Password: ${s.password}</div>
-            <div class="stock-actions">
-                <span class="badge" style="background:#d9ffe5;color:#137a32;">Available</span>
-                <button class="btn-success btn-small" onclick="markSold(${s.id})">Mark as Sold</button>
-                <button class="btn-warning btn-small" onclick="archiveOne(${s.id})">Archive</button>
-                <button class="btn-danger btn-small" onclick="delStock(${s.id})">Delete</button>
-            </div></div>`;
-    });
-    document.getElementById('manage-stocks-list').innerHTML=h?h:"No available stocks.";
-}
-function autoArchiveCheck(s){
-    if(s.archive && s.archiveAt && new Date(s.archiveAt)<=new Date()){archiveOne(s.id);return true;}
-    return false;
-}
-function autoArchiveAll(){
-    let stocks=JSON.parse(localStorage.getItem('stocks')||'[]'),changed=false;
-    stocks.forEach(s=>autoArchiveCheck(s));
-    showStocks(); showArchived();
-}
-function getToday(){let d=new Date();return (d.getMonth()+1)+"/"+d.getDate()+"/"+d.getFullYear();}
-function calcArchiveAt(days){let d=new Date();d.setDate(d.getDate()+days);return d.toISOString().slice(0,10);}
-function delStock(id){
-    let stocks=JSON.parse(localStorage.getItem('stocks')||'[]');
-    stocks=stocks.filter(s=>s.id!=id);localStorage.setItem('stocks',JSON.stringify(stocks));showStocks();updateStats();}
-function archiveOne(id){
-    let stocks=JSON.parse(localStorage.getItem('stocks')||'[]'),stock=stocks.find(s=>s.id==id);
-    let arch=JSON.parse(localStorage.getItem('archived')||'[]');arch.push({...stock,archived:getToday()});
-    stocks=stocks.filter(s=>s.id!=id);localStorage.setItem('stocks',JSON.stringify(stocks));
-    localStorage.setItem('archived',JSON.stringify(arch));showStocks();showArchived();updateStats();
-}
-function showArchived(){
-    let arch=JSON.parse(localStorage.getItem('archived')||'[]');
-    let h=arch.map(a=>`<div class="stock-card"><b>${a.product}</b> (${a.type})<div>Archived: ${a.archived||a.archiveAt||"?"}</div></div>`).join('');
-    document.getElementById('archived-stocks-list').innerHTML=h||"No archived stocks";
-}
-function markSold(id){
-    delStock(id);showStocks();alert("Demo: marked as sold (implement real buyer logic as needed).");
-}
-function showProducts(){
-    let prods=JSON.parse(localStorage.getItem("products")||"[]");
-    document.getElementById("products-list").innerHTML=prods.map((p,i)=>`<div style="padding:13px 0;display:flex;justify-content:space-between;align-items:center;"><span>📺 ${p}</span> <button onclick="delProduct(${i})" class="btn btn-danger btn-small">Delete</button></div>`).join('');
-}
-function delProduct(idx){
-    let prods=JSON.parse(localStorage.getItem("products")||"[]");prods.splice(idx,1);
-    localStorage.setItem("products",JSON.stringify(prods));showProducts();
-}
-function showRules(){
-    let rules=JSON.parse(localStorage.getItem("rules")||"[]");
-    document.getElementById("rules-list").innerHTML=rules.map((r,i)=>`<div style="padding:11px 0;display:flex;justify-content:space-between;align-items:center;">${r} <button class="btn btn-danger btn-small" onclick="delRule(${i})">Remove</button></div>`).join('');
-}
-function delRule(idx){
-    let rules=JSON.parse(localStorage.getItem("rules")||"[]");rules.splice(idx,1);
-    localStorage.setItem("rules",JSON.stringify(rules));showRules();
-}
+
+// Panel logic
 function updateStats(){
-    document.getElementById("stat-products").textContent = (JSON.parse(localStorage.getItem('products')||'[]').length||0);
-    document.getElementById("stat-stock").textContent = (JSON.parse(localStorage.getItem('stocks')||'[]').filter(s=>!autoArchiveCheck(s)).length);
-    document.getElementById("stat-pending").textContent = 0; // Expand as you add pending orders support
-    document.getElementById("stat-revenue").textContent = "₱0"; // Demo only
+    document.getElementById("stat-products").innerText=products.length;
+    document.getElementById("stat-stock").innerText=stocks.filter(s=>s.status==='available').length;
+    document.getElementById("stat-pending").innerText=pending.length;
+    document.getElementById("stat-revenue").innerText="₱"+sold.reduce((a,b)=>a+(+b.price||0),0);
 }
+function showStocks(){
+    let s=stocks.filter(s=>s.status==='available');
+    document.getElementById("manage-stocks-list").innerHTML=s.length?s.map(st=>`<div><b>${st.product}</b> ${st.type} (${st.duration})<br>Email:${st.email}<br><button onclick="markSold('${st.id}')">Mark Sold</button> <button onclick="delStock('${st.id}')">Delete</button> <button onclick="archiveStock('${st.id}')">Archive</button></div><hr>`).join(''):"No stocks.";
+}
+function delStock(id){stocks=stocks.filter(s=>s.id!=id);saveAll();showStocks();}
+function archiveStock(id){
+    let idx=stocks.findIndex(s=>s.id==id);
+    if(idx>-1){archived.push({...stocks[idx],archivedAt:(new Date()).toLocaleDateString()});stocks.splice(idx,1);saveAll();showStocks();showArchived();}
+}
+function markSold(id){let x=stocks.find(s=>s.id==id);if(x){sold.push({...x,price:199});delStock(id);saveAll();updateStats();showSold();}}
+function showArchived(){document.getElementById("archived-list").innerHTML=archived.length?archived.map(a=>`<div>${a.product}, ${a.type}, archived at: ${a.archivedAt}</div>`).join(''):"No archived stocks";}
+function showPending(){document.getElementById("pending-orders-list").innerHTML=pending.length?pending.map(p=>`<div>${p.product}, order: ${p.orderId}</div>`).join(''):"No pending orders.";}
+function showSold(){document.getElementById("sold-list").innerHTML=sold.length?sold.map(x=>`<div>${x.product}, buyer, price ₱${x.price||0}</div>`).join(''):"No sold accounts yet";}
+function showProducts(){document.getElementById("products-list").innerHTML=products.length?products.map((p,i)=>`<div>${i+1}. ${p} <button onclick="delProd(${i})">Delete</button></div>`).join(''):"No products.";}
+function delProd(idx){products.splice(idx,1);saveAll();showProducts();updateStats();}
+function showRules(){document.getElementById("rules-list").innerHTML=rules.length?rules.map((r,i)=>`<div>${r} <button onclick="delRule(${i})">Remove</button></div>`).join(''):"No Rules.";}
+function delRule(idx){rules.splice(idx,1);saveAll();showRules();}
+function showRecords(){document.getElementById("records-list").innerHTML=records.length?records.map(r=>`<div>${r.id} ${r.buyer} | ${r.product} | Exp: ${r.exp}</div>`).join(''):"No records.";}
+function showReports(){document.getElementById("reports-list").innerHTML="No customer reports yet.";}
 </script>
 </body>
 </html>
