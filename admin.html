@@ -1,48 +1,41 @@
-<!-- admin.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Aiaxcart Premium Shop — Admin</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        html,body{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;}
-        body{background-color:#fefaf7;color:#5a3e36;line-height:1.6;}
-        .container{max-width:1200px;margin:0 auto;padding:0 20px;}
-        header{background:#FFD3D6;padding:1.2rem 0;box-shadow:0 4px 15px rgba(0,0,0,0.08);}
-        .header-content{display:flex;justify-content:space-between;align-items:center;}
-        .logo{font-size:1.8rem;font-weight:700;display:flex;align-items:center;}
-        nav ul{display:flex;list-style:none;}
-        nav ul li{margin-left:1.5rem;}
-        nav ul li a{color:#5a3e36;text-decoration:none;font-weight:500;padding:0.5rem 1rem;border-radius:8px;}
-        nav ul li a.active,nav ul li a:hover{background:#FFC6CA;font-weight:bold;}
-        .btn{padding:0.6rem 1.5rem;border:none;border-radius:12px;cursor:pointer;font-weight:500;}
-        .btn-primary{background:#FFB0B5;color:white;}
-        .btn-danger{background:#F44336;color:white;}
-        .btn-warning{background:#FF9800;color:white;}
-        .btn-success{background:#4CAF50;color:white;}
-        .btn-edit{background:#2196F3;color:white;}
-        .btn-small{padding:0.4rem 0.8rem;font-size:0.85rem;}
-        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin:2rem 0;}
-        .stat-card{background:white;padding:2rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);text-align:center;}
-        .stat-card h3{font-size:2rem;margin-bottom:0.5rem;color:#FFB0B5;}
-        /* Modal styles */
-        #owner-modal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;}
-        .modal-card{background:white;padding:2rem 2.5rem;border-radius:20px;box-shadow:0 2px 10px rgba(0,0,0,0.1);}
-        .error-message{color:red;margin-top:0.5rem;}
-        .success-message{color:green;margin-top:0.5rem;}
-        /* Tab styles */
-        .tabs{display:flex;gap:1rem;margin:2rem 0;flex-wrap:wrap;}
-        .tab{padding:0.75rem 1.5rem;border:none;background:#f0f0f0;cursor:pointer;border-radius:8px;}
-        .tab.active{background:#FFD3D6;font-weight:bold;}
-        .panel{display:none;}
-        .panel.is-visible{display:block;}
-        /* Stock Items */
-        .stock-item{border:1px solid #FFE5E7;border-radius:12px;padding:1rem;margin-bottom:1rem;background:white;}
-        .stock-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;}
-        .stock-info{flex:1;}
-        .stock-actions{display:flex;gap:0.5rem;}
-    </style>
+<meta charset="UTF-8">
+<title>Admin Panel - Aiaxcart Premium</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    html,body{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;}
+    .container{max-width:1200px;margin:0 auto;padding:0 20px;}
+    .header-content{display:flex;justify-content:space-between;align-items:center;}
+    .logo{font-size:1.8rem;font-weight:700;}
+    nav ul{display:flex;list-style:none;}
+    nav ul li{margin-left:1.5rem;}
+    nav ul li a{color:#5a3e36;text-decoration:none;font-weight:500;padding:0.5rem 1rem;border-radius:8px;}
+    nav ul li a.active,nav ul li a:hover{background:#FFC6CA;font-weight:bold;}
+    .tabs{display:flex;gap:1rem;margin:2rem 0;flex-wrap:wrap;}
+    .tab{padding:0.7rem 1.2rem;border:none;border-radius:8px;background:#f0f0f0;cursor:pointer;}
+    .tab.active{background:#FFD3D6;font-weight:bold;}
+    .panel{display:none;}
+    .panel.is-visible{display:block;}
+    .card{background:white;padding:2rem 2.5rem;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.11);}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.3rem;margin:2rem 0;}
+    .stat-card{background:white;padding:1.3rem;text-align:center;border-radius:13px;box-shadow:0 2px 8px rgba(0,0,0,0.09);}
+    .stat-card h3{font-size:2rem;margin-bottom:0.3rem;color:#FFB0B5;}
+    #owner-modal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.36);display:flex;align-items:center;justify-content:center;z-index:9999;}
+    .modal-card{position:relative;background:white;padding:2rem 2.5rem 1.3rem 2.5rem;border-radius:14px;min-width:320px;}
+    .btn{padding:0.6rem 1.5rem;border:none;border-radius:12px;cursor:pointer;font-weight:500;}
+    .btn-primary{background:#FFB0B5;color:white;}
+    .btn-danger{background:#F44336;color:white;}
+    .btn-edit{background:#2196F3;color:white;}
+    .btn-small{padding:0.4rem 0.85rem;font-size:0.92rem;}
+    table{width:100%;border-collapse:collapse;margin-top:1rem;}
+    th,td{padding:9px 10px;text-align:left;border-bottom:1px solid #f3d9d9;}
+    th{background-color:#FFF0F0;}
+    .toggle-btn{cursor:pointer;padding:0.18rem 1.1rem;}
+    label{display:block;margin-top:1rem;}
+    input,select{padding:0.55rem;border-radius:8px;border:1px solid #EAEAEA;font-size:1rem;}
+</style>
 </head>
 <body>
 <header>
@@ -56,26 +49,22 @@
         </nav>
     </div>
 </header>
-<!-- Floating Owner Verification Modal -->
-<div id="owner-modal" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.37);display:flex;align-items:center;justify-content:center;z-index:9999;">
-    <div class="modal-card" style="position:relative;background:white;padding:2rem 2rem 1.2rem 2rem;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,0.08);min-width:320px;">
-        <button onclick="closeOwnerModal()" style="position:absolute;top:0.6rem;right:0.8rem;background:none;border:none;font-size:1.6rem;color:#ff7a7a;line-height:1;cursor:pointer;">&times;</button>
+<div id="owner-modal">
+    <div class="modal-card">
+        <button onclick="closeOwnerModal()" style="position:absolute;top:0.5rem;right:0.7rem;background:none;border:none;font-size:1.5rem;color:#ff7a7a;line-height:1;cursor:pointer;">&times;</button>
         <h2>🔐 Owner Verification</h2>
         <input type="text" id="owner-uid" placeholder="Enter Owner UID" class="input-field">
-        <button onclick="verifyUID()" class="btn btn-primary full-width">Verify Access</button>
+        <button onclick="verifyUID()" class="btn btn-primary full-width" style="margin-top:15px;">Verify Access</button>
         <div id="uid-error" class="error-message"></div>
     </div>
 </div>
-
 <div class="container" id="admin-dashboard" style="display:none;">
     <h1>Admin Console</h1>
-    <p class="text-muted">Welcome back, Owner! Manage your shop here.</p>
-    <!-- Stats Cards -->
     <div class="stats-grid">
-        <div class="stat-card"><h3 id="total-products">0</h3><p>Total Products</p></div>
-        <div class="stat-card"><h3 id="available-stock">0</h3><p>Available Stock</p></div>
-        <div class="stat-card"><h3 id="pending-orders">0</h3><p>Pending Orders</p></div>
-        <div class="stat-card"><h3 id="total-revenue">₱0</h3><p>Total Revenue</p></div>
+        <div class="stat-card"><h3 id="stat-products">0</h3>Products</div>
+        <div class="stat-card"><h3 id="stat-stock">0</h3>Available Stock</div>
+        <div class="stat-card"><h3 id="stat-pending">0</h3>Pending Orders</div>
+        <div class="stat-card"><h3 id="stat-revenue">₱0</h3>Total Revenue</div>
     </div>
     <div class="tabs" id="admintabs">
         <button class="tab active" data-tab="add-stock">Add Stock</button>
@@ -89,302 +78,134 @@
         <button class="tab" data-tab="reports">Reports</button>
         <button class="tab" data-tab="settings">Settings</button>
     </div>
-
-    <!-- Add Stock Tab -->
-    <div class="panel active" id="panel-add-stock">
+    <div class="panel is-visible" id="panel-add-stock">
         <div class="card">
             <h2>Add Stock</h2>
             <form id="addStockForm">
                 <label>Product
-                    <select id="stock-product" required></select>
+                    <select id="add-product" required></select>
                 </label>
-                <label>Account Type
-                    <select id="stock-type" required></select>
+                <label>Type
+                    <select id="add-type"><option>Solo</option><option>Shared</option></select>
                 </label>
-                <label>Duration
-                    <select id="stock-duration" required></select>
-                </label>
-                <label>Email/Login
-                    <input type="text" id="stock-email" required>
-                </label>
-                <label>Password
-                    <input type="text" id="stock-password" required>
-                </label>
-                <label>Profile (optional)
-                    <input type="text" id="stock-profile">
-                </label>
-                <label>PIN (optional)
-                    <input type="text" id="stock-pin">
-                </label>
-                <label>Quantity
-                    <input type="number" id="stock-quantity" value="1" min="1">
-                </label>
-                <div class="toggle-row">
-                    <span class="toggle-label">Set as Premium?</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="stock-premium" onchange="showPremiumDate()">
-                        <span class="slider"></span>
-                    </label>
-                    <input type="date" id="stock-premium-date" style="display:none;margin-right:20px;">
-                    <span class="toggle-label">Archive?</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="stock-archive" onchange="showArchiveDate()">
-                        <span class="slider"></span>
-                    </label>
-                    <input type="date" id="stock-archive-date" style="display:none">
-                </div>
-                <button type="submit" class="btn btn-primary" style="margin-top:1rem;width:100%">Add to Inventory</button>
+                <label>Duration <select id="add-duration"><option>1m</option><option>3m</option><option>6m</option></select></label>
+                <label>Email/Login <input id="add-email"></label>
+                <label>Password <input id="add-password"></label>
+                <label>Premium? <input type="checkbox" id="add-premium"></label>
+                <label>Premium At <input type="date" id="add-premium-date"></label>
+                <label>Archive? <input type="checkbox" id="add-archive"></label>
+                <label>Archive At <input type="date" id="add-archive-date"></label>
+                <button type="submit" class="btn btn-primary" style="margin-top:1rem;">Add</button>
             </form>
-            <div id="add-stock-msg"></div>
         </div>
     </div>
-
-    <!-- Manage Stocks Tab -->
     <div class="panel" id="panel-manage-stocks">
         <div class="card">
             <h2>Manage Stocks</h2>
-            <div id="stock-cat-btns"></div>
             <div id="manage-stocks-list"></div>
         </div>
     </div>
-
-    <!-- Pending Orders -->
-    <div class="panel" id="panel-pending-orders">
-        <div class="card">
-            <h2>Pending Orders</h2>
-            <div id="pending-orders-list"></div>
-        </div>
-    </div>
-
-    <!-- Sold Accounts -->
-    <div class="panel" id="panel-sold-accounts">
-        <div class="card">
-            <h2>Sold Accounts</h2>
-            <div id="sold-accounts-list"></div>
-        </div>
-    </div>
-
-    <!-- Archived Stocks -->
-    <div class="panel" id="panel-archived-stocks">
-        <div class="card">
-            <h2>Archived Stocks</h2>
-            <div id="archived-stocks-list"></div>
-        </div>
-    </div>
-
-    <!-- Products -->
-    <div class="panel" id="panel-products">
-        <div class="card">
-            <h2>Products Management</h2>
-            <p>Add/edit/remove product functionality coming soon.<br>(Current product list loaded from PRODUCTS constant.)</p>
-        </div>
-    </div>
-
-    <!-- Store Rules -->
-    <div class="panel" id="panel-store-rules">
-        <div class="card">
-            <h2>Store Rules</h2>
-            <p>Edit store rules functionality coming soon.<br>(Current rules loaded from RULES constant.)</p>
-        </div>
-    </div>
-
-    <!-- Add Record -->
-    <div class="panel" id="panel-records">
-        <div class="card">
-            <h2>➕ Add Buyer Record</h2>
-            <div class="add-rec-mode">
-                <button class="btn btn-primary" id="autoModeBtn" onclick="switchRecordMode(true)">Automatic (Site Order)</button>
-                <button class="btn" id="manualModeBtn" onclick="switchRecordMode(false)">Manual (Other Platforms)</button>
-            </div>
-            <form id="record-form" onsubmit="addRecord(event)">
-                <label>Sales/Order ID
-                    <input type="text" id="record-id" readonly>
-                </label>
-                <label>Source
-                    <select id="record-source" onchange="sourceChanged()">
-                        <option value="site">Site (Automatic)</option>
-                        <option value="tg">Telegram</option>
-                        <option value="ig">Instagram</option>
-                        <option value="fb">Facebook</option>
-                        <option value="other">Other</option>
-                    </select>
-                </label>
-                <label>Buyer Name/Email
-                    <input type="text" id="record-buyer" required>
-                </label>
-                <div id="socmed-link-wrap" style="display:none;">
-                    <label>Buyer Social Link
-                        <input type="url" id="record-socmed">
-                    </label>
-                </div>
-                <label>Product
-                    <select id="record-product" required></select>
-                </label>
-                <label>Subs Type
-                    <select id="record-substype" required>
-                        <option value="">Select Type</option>
-                        <option value="solo account">Solo Account</option>
-                        <option value="shared account">Shared Account</option>
-                        <option value="solo profile">Solo Profile</option>
-                        <option value="shared profile">Shared Profile</option>
-                    </select>
-                </label>
-                <label>Email/Login
-                    <input type="text" id="record-email" required>
-                </label>
-                <label>Password
-                    <input type="text" id="record-password" required>
-                </label>
-                <label>PIN
-                    <input type="text" id="record-pin">
-                </label>
-                <label>Profile
-                    <input type="text" id="record-profile">
-                </label>
-                <label>Product Key
-                    <input type="text" id="record-prodkey">
-                </label>
-                <label>Current Expiration
-                    <input type="date" id="record-expiration" required>
-                    <span><button type="button" class="btn btn-warning btn-small" onclick="addDaysSubs()">Add Days/Subs</button></span>
-                </label>
-                <div id="addDaysExpiration" style="display:none;"></div>
-                <label>Notes/Details
-                    <textarea id="record-notes" rows="2"></textarea>
-                </label>
-                <button type="submit" class="btn btn-primary full-width">💾 Save Record</button>
-            </form>
-            <div id="record-message"></div>
-        </div>
-        <div class="card">
-            <h3>Records (Latest)</h3>
-            <div id="records-list"></div>
-        </div>
-    </div>
-
-    <!-- Reports -->
-    <div class="panel" id="panel-reports">
-        <div class="card">
-            <h2>Customer Reports</h2>
-            <div id="reports-list"><p>No reports yet.</p></div>
-        </div>
-    </div>
-
-    <!-- Settings -->
-    <div class="panel" id="panel-settings">
-        <div class="card">
-            <h2>⚙️ Settings</h2>
-            <button onclick="clearCache()" class="btn btn-danger">Clear Cache</button>
-        </div>
-    </div>
+    <div class="panel" id="panel-pending-orders"><div class="card"><h2>Pending Orders</h2><div id="pending-list"></div></div></div>
+    <div class="panel" id="panel-sold-accounts"><div class="card"><h2>Sold Accounts</h2><div id="sold-list"></div></div></div>
+    <div class="panel" id="panel-archived-stocks"><div class="card"><h2>Archived Stocks</h2><div id="archived-list"></div></div></div>
+    <div class="panel" id="panel-products"><div class="card"><h2>Products</h2><div id="products-list"></div></div></div>
+    <div class="panel" id="panel-store-rules"><div class="card"><h2>Store Rules</h2><p>- No password change - 24hr replacement</p></div></div>
+    <div class="panel" id="panel-records"><div class="card"><h2>Add Record</h2>Demo form here...</div></div>
+    <div class="panel" id="panel-reports"><div class="card"><h2>Reports</h2><div id="reports-list">None yet.</div></div></div>
+    <div class="panel" id="panel-settings"><div class="card"><button onclick="localStorage.clear();location.reload();" class="btn btn-danger">Clear Cache</button></div></div>
 </div>
-
 <script>
-// --- Static values ---
-const PRODUCTS = [
- "Netflix Premium","Viu Premium","VIVAMAX VIVAONE","WeTV","IWANT TFC","Crunchyroll","Disney+","Bilibili","Loklok","iQiyi",
-    "HBO Max","Amazon Prime","Youku","NBA League Pass Premium","YouTube Premium","Spotify Premium","Apple Music","ChatGPT Plus",
-    "Blackbox AI","Perplexity AI","Google One + Gemini AI","Quizlet+","Scribd Premium","Studocu Premium","Duolingo Super",
-    "Turnitin Student","Turnitin Instructor","Canva Pro","Picsart Gold","CapCut Pro","Alight Motion Pro","Remini Web",
-    "Grammarly Premium","Quillbot Premium","Microsoft 365","CamScanner Pro","Small PDF Pro","Zoom Pro"
-];
-const ACC_TYPES = ["Solo Account","Shared Account","Solo Profile","Shared Profile"];
-const DURATIONS = ["7d", "14d","1m","2m","3m","4m","5m","6m","7m","8m","9m","10m","11m","12m","24m","NW", "3m W", "6m W", "12m W"];
-
-// --- Persistent DB ---
+// DEMO product list
+const PRODUCTS = ["Netflix Premium","Disney+","Bilibili"];
 let stocks = JSON.parse(localStorage.getItem("admin_stocks")||"[]");
+let sold = JSON.parse(localStorage.getItem("admin_sold")||"[]");
+let pending = JSON.parse(localStorage.getItem("admin_pending")||"[]");
 let archived = JSON.parse(localStorage.getItem("admin_archived")||"[]");
-let soldAccounts = JSON.parse(localStorage.getItem("admin_soldaccts")||"[]");
-let pendingOrders = JSON.parse(localStorage.getItem("admin_orders")||"[]");
-let reports = JSON.parse(localStorage.getItem("admin_reports")||"[]");
-let recordsData = JSON.parse(localStorage.getItem('recordsData')||'[]');
 
-// --- Helpers and initialization (fill product/type dropdowns, tab switching, stats, etc.) ---
-document.addEventListener("DOMContentLoaded",()=>{
-    document.getElementById("stock-product").innerHTML='<option value="">Select Product</option>'+PRODUCTS.map(p=>`<option value="${p}">${p}</option>`).join("");
-    document.getElementById("stock-type").innerHTML='<option value="">Select Type</option>'+ACC_TYPES.map(t=>`<option value="${t}">${t}</option>`).join("");
-    document.getElementById("stock-duration").innerHTML='<option value="">Select Duration</option>'+DURATIONS.map(d=>`<option value="${d}">${d}</option>`).join("");
-    document.querySelectorAll(".tab").forEach(tab=>tab.onclick=function(){
-      document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-      document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
-      tab.classList.add("active");
-      document.getElementById("panel-"+tab.dataset.tab).classList.add("active");
+function saveDB(){
+    localStorage.setItem("admin_stocks",JSON.stringify(stocks));
+    localStorage.setItem("admin_sold",JSON.stringify(sold));
+    localStorage.setItem("admin_pending",JSON.stringify(pending));
+    localStorage.setItem("admin_archived",JSON.stringify(archived));
+}
+
+// Owner modal
+const OWNER_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a';
+function closeOwnerModal(){document.getElementById('owner-modal').style.display='none';}
+function verifyUID(){
+    let uid = document.getElementById('owner-uid').value.trim();
+    if(uid===OWNER_UID){
+        localStorage.setItem('ownerVerified','yes');closeOwnerModal();
+        document.getElementById('admin-dashboard').style.display='block';updateStats();showStocks();
+    }else document.getElementById('uid-error').textContent='❌ Invalid UID.';
+}
+document.addEventListener("DOMContentLoaded",function(){
+    let tabs=document.querySelectorAll(".tab"),panels=document.querySelectorAll(".panel");
+    tabs.forEach(tab=>tab.onclick=function(){
+        tabs.forEach(t=>t.classList.remove("active"));
+        panels.forEach(p=>p.classList.remove("is-visible"));
+        tab.classList.add("active");
+        document.getElementById("panel-"+tab.dataset.tab).classList.add("is-visible");
+        if(tab.dataset.tab==="manage-stocks") showStocks();
+        if(tab.dataset.tab==="pending-orders") showPending();
+        if(tab.dataset.tab==="sold-accounts") showSold();
+        if(tab.dataset.tab==="archived-stocks") showArchived();
+        if(tab.dataset.tab==="products") showProducts();
     });
-    updateStats();
-    showStocksCats();
-    autoMoveExpiredStocks();
+    document.getElementById("add-product").innerHTML=PRODUCTS.map(p=>`<option>${p}</option>`).join('');
+    if(localStorage.getItem('ownerVerified')!=='yes'){
+        document.getElementById('owner-modal').style.display='flex';
+    } else {
+        document.getElementById('admin-dashboard').style.display='block';updateStats();showStocks();
+    }
+    document.getElementById("addStockForm").onsubmit=function(e){
+        e.preventDefault();
+        let o = {
+            id: "STK"+Date.now(),
+            product: document.getElementById("add-product").value,
+            type: document.getElementById("add-type").value, duration: document.getElementById("add-duration").value,
+            email: document.getElementById("add-email").value, password: document.getElementById("add-password").value,
+            premium: document.getElementById("add-premium").checked, premiumAt: document.getElementById("add-premium-date").value,
+            archive: document.getElementById("add-archive").checked, archiveAt: document.getElementById("add-archive-date").value
+        };
+        stocks.push(o);saveDB();this.reset();updateStats();showStocks();
+        alert("Stock added!");
+    };
 });
-function saveDB() {
-  localStorage.setItem("admin_stocks",JSON.stringify(stocks));
-  localStorage.setItem("admin_archived",JSON.stringify(archived));
-  localStorage.setItem("admin_soldaccts",JSON.stringify(soldAccounts));
-  localStorage.setItem("admin_orders",JSON.stringify(pendingOrders));
-  localStorage.setItem("admin_reports",JSON.stringify(reports));
-  localStorage.setItem("recordsData",JSON.stringify(recordsData));
+function showStocks(){
+    let html="<table><tr><th>Product</th><th>Type</th><th>Email</th><th>Premium</th><th>Archive</th><th>Actions</th></tr>";
+    stocks.forEach((s,i)=>html+=`<tr>
+    <td>${s.product}</td><td>${s.type} (${s.duration})</td><td>${s.email}</td>
+    <td>${s.premium?(s.premiumAt?("At: "+s.premiumAt):"✔"):''}</td>
+    <td>${s.archive?(s.archiveAt?("At: "+s.archiveAt):"✔"):''}</td>
+    <td>
+        <button class="btn-edit btn-small" onclick="editStock('${s.id}')">Edit</button>
+        <button class="btn-danger btn-small" onclick="delStock('${s.id}')">Del</button>
+        <button class="btn-small" onclick="archiveStock('${s.id}')">Archive</button>
+    </td></tr>`);
+    html+="</table>";
+    document.getElementById("manage-stocks-list").innerHTML=html;
 }
-document.addEventListener("DOMContentLoaded",()=>{
-  document.getElementById("stock-product").innerHTML='<option value="">Select Product</option>'+PRODUCTS.map(p=>`<option value="${p}">${p}</option>`).join("");
-  document.getElementById("stock-type").innerHTML='<option value="">Select Type</option>'+ACC_TYPES.map(t=>`<option value="${t}">${t}</option>`).join("");
-  document.getElementById("stock-duration").innerHTML='<option value="">Select Duration</option>'+DURATIONS.map(d=>`<option value="${d}">${d}</option>`).join("");
-  document.querySelectorAll(".tab").forEach(tab=>tab.onclick=function(){
-    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
-    tab.classList.add("active");
-    document.getElementById("panel-"+tab.dataset.tab).classList.add("active");
-  });
-  updateStats();
-  showStocksCats();
-  autoArchiveExpired();
-});// --- Premium and archive logic ---
-function showPremiumDate(){
-    let cb = document.getElementById("stock-premium");
-    let dt = document.getElementById("stock-premium-date");
-    dt.style.display = cb.checked ? "" : "none";
-    if(cb.checked&&dt.value=="") {
-      const today = (new Date()).toISOString().slice(0,10);
-      dt.value = today;
-    }
+function editStock(id){
+    alert("TODO: show stock for edit: "+id);
 }
-function showArchiveDate(){
-    let cb = document.getElementById("stock-archive");
-    let dt = document.getElementById("stock-archive-date");
-    dt.style.display = cb.checked ? "" : "none";
-    if(cb.checked&&dt.value=="") {
-      const today = (new Date()).toISOString().slice(0,10);
-      dt.value = today;
-    }
+function delStock(id){stocks=stocks.filter(s=>s.id!==id);saveDB();showStocks();}
+function archiveStock(id){
+    let idx=stocks.findIndex(s=>s.id===id);
+    if(idx>-1){archived.push(stocks[idx]);stocks.splice(idx,1);saveDB();showStocks();}
 }
-document.getElementById("addStockForm").onsubmit=function(e){
-    e.preventDefault();
-    // ... (collect values, including premium/at, archive/at, add to stocks)
-    // ... (move immediately to archived if expired, otherwise keep in stock)
-    // ... (saveDB, updateStats, showCats)
-};
-// --- Archive logic (move to archived if expired) ---
-function autoMoveExpiredStocks(){
-    let today = new Date().toISOString().slice(0,10);
-    stocks = stocks.filter(s=>{
-        if(s.archive && s.archiveDate && s.archiveDate<=today){
-            archived.push(s);
-            return false;
-        }
-        return true;
-    });
-    saveDB(); updateStats(); showStocksCats();
+function showPending(){document.getElementById('pending-list').innerHTML=pending.length?"<ul>"+pending.map(o=>"<li>"+o.id+"</li>").join('')+"</ul>":"None";}
+function showSold(){document.getElementById('sold-list').innerHTML=sold.length?"<ul>"+sold.map(o=>"<li>"+o.id+"</li>").join('')+"</ul>":"None";}
+function showArchived(){document.getElementById('archived-list').innerHTML=archived.length?("<ul>"+archived.map(a=>"<li>"+a.product+" "+a.email+"</li>").join('')+"</ul>"):"None";}
+function showProducts(){
+    document.getElementById('products-list').innerHTML=PRODUCTS.map(p=>"<li>"+p+"</li>").join('');
 }
-
 function updateStats(){
-  document.getElementById("stat-total-sales").textContent = soldAccounts.length;
-  document.getElementById("stat-total-revenue").textContent = "₱"+soldAccounts.reduce((sum,sa)=>sum+(Number(sa.amount)||0),0);
-  document.getElementById("stat-available-stock").textContent = stocks.length;
-  document.getElementById("stat-pending-orders").textContent = pendingOrders.length;
-}
-function showStocksCats(){...}
-function clearCache(){ /* ...clear all relevant storage and reload... */ }
-function closeOwnerModal() {
-  document.getElementById('owner-modal').style.display = 'none';
+    document.getElementById("stat-products").textContent = PRODUCTS.length;
+    document.getElementById("stat-stock").textContent = stocks.length;
+    document.getElementById("stat-pending").textContent = pending.length;
+    document.getElementById("stat-revenue").textContent = "₱"+sold.length*149; // demo only.
 }
 </script>
-
 </body>
 </html>
