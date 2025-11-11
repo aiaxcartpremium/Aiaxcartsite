@@ -714,6 +714,14 @@
             border-radius: 8px;
         }
 
+        /* REPORTS SECTION */
+        .report-item {
+            border: 1px solid #F9E6E4;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+        }
+
         /* SIMPLIFIED FOOTER */
         footer {
             background: #5a3e36;
@@ -784,32 +792,23 @@
             </div>
         </div>
     </header>
-<!-- Add BELOW your header, ABOVE tabs/product section in index.html -->
-<div class="owner-veri-overlay" id="ownerVeriOverlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.37);display:none;align-items:center;justify-content:center;z-index:9999;">
-  <div style="background:white;padding:1.5rem 2rem;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,0.10);">
-    <h2 style="margin-bottom:1rem;">🔐 Owner Verification</h2>
-    <input type="text" id="ownerUidInput" placeholder="Enter Owner UID" style="padding:0.75rem;margin-bottom:1rem;width:100%;">
-    <button onclick="verifyOwnerUID()" style="background:#FFB0B5;color:white;border:none;padding:0.6rem 1.5rem;border-radius:12px;margin-top:0.5rem;width:100%;">Verify Access</button>
-    <div id="ownerVeriMsg" style="color:red;margin-top:0.7rem;"></div>
-  </div>
-</div>
-<script>
-const OWNER_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a';//change to your actual owner UID
-function showOwnerModal() {
-    document.getElementById("ownerVeriOverlay").style.display = "flex";
-}
-function verifyOwnerUID() {
-    let uid = document.getElementById('ownerUidInput').value.trim();
-    if(uid===OWNER_UID){localStorage.setItem('ownerVerified','yes');document.getElementById("ownerVeriOverlay").style.display="none";}
-    else{document.getElementById('ownerVeriMsg').textContent = "❌ Invalid UID.";}
-}
-if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
-</script>
+
+    <!-- Owner Verification Modal (for admin access) -->
+    <div class="owner-veri-overlay" id="ownerVeriOverlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.37);display:none;align-items:center;justify-content:center;z-index:9999;">
+        <div style="background:white;padding:1.5rem 2rem;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,0.10);">
+            <h2 style="margin-bottom:1rem;">🔐 Owner Verification</h2>
+            <input type="text" id="ownerUidInput" placeholder="Enter Owner UID" style="padding:0.75rem;margin-bottom:1rem;width:100%;">
+            <button onclick="verifyOwnerUID()" style="background:#FFB0B5;color:white;border:none;padding:0.6rem 1.5rem;border-radius:12px;margin-top:0.5rem;width:100%;">Verify Access</button>
+            <div id="ownerVeriMsg" style="color:red;margin-top:0.7rem;"></div>
+        </div>
+    </div>
+
     <!-- TABS SECTION -->
     <div class="container">
         <div class="tabs">
             <div class="tab active" data-tab="products">Products</div>
             <div class="tab" data-tab="accounts">My Account</div>
+            <div class="tab" data-tab="reports">Report Issue</div>
             <div class="tab" data-tab="payments">Payments</div>
             <div class="tab" data-tab="rules">Rules</div>
             <div class="tab" data-tab="feedback">Feedback</div>
@@ -839,6 +838,36 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
                 <div class="card">
                     <p>Login to view your account details and order history.</p>
                     <button class="btn-primary" style="margin-top: 1rem; width: auto;" onclick="openAuthModal()">Go to My Account</button>
+                </div>
+            </div>
+
+            <!-- REPORTS TAB -->
+            <div class="tab-content" id="reports-content">
+                <h2 style="margin-bottom: 1rem;">Report an Issue</h2>
+                <div class="card">
+                    <div id="report-login-message" style="margin-bottom: 1rem;">Please login to report an issue.</div>
+                    <div id="report-form-content" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Order ID (if available)</label>
+                            <input type="text" id="report-orderid" class="form-control" placeholder="Enter your order ID">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Product Name</label>
+                            <input type="text" id="report-product" class="form-control" placeholder="Enter product name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Issue Description</label>
+                            <textarea id="report-issue" class="form-control" rows="4" placeholder="Describe the issue you're experiencing..." required></textarea>
+                        </div>
+                        <button class="btn-primary" onclick="submitReport()">Submit Report</button>
+                    </div>
+                </div>
+                
+                <div class="card" id="my-reports-section" style="display: none;">
+                    <h3>My Reports</h3>
+                    <div id="my-reports-list">
+                        <!-- User's reports will be displayed here -->
+                    </div>
                 </div>
             </div>
 
@@ -1031,510 +1060,36 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
     </footer>
 
     <script>
-        // COMPLETE PRODUCTS DATA WITH YOUR PRICING
-        const productsData = [
-            // Entertainment
-            { 
-                id: 'netflix', 
-                name: 'Netflix Premium', 
-                category: 'entertainment', 
-                icon: '📺',
-                stock: 15,
-                sold: 42,
-                pricing: {
-                    "solo profile": { '1m': 160, '2m': 280, '3m': 435, '4m': 565, '6m': 850, '8m': 1090, '12m': 1500 },
-                    "shared profile": { '1m': 80, '2m': 145, '3m': 205, '4m': 270, '6m': 410, '8m': 520, '12m': 800 }
-                }
+        // PRODUCTS DATA WITH PRICING (from your original data)
+        const productsPricing = {
+            "Netflix Premium": {
+                "solo profile": { '1m': 160, '2m': 280, '3m': 435, '4m': 565, '6m': 850, '8m': 1090, '12m': 1500 },
+                "shared profile": { '1m': 80, '2m': 145, '3m': 205, '4m': 270, '6m': 410, '8m': 520, '12m': 800 }
             },
-            { 
-                id: 'viu', 
-                name: 'Viu Premium', 
-                category: 'entertainment', 
-                icon: '🎬',
-                stock: 8,
-                sold: 25,
-                pricing: {
-                    "solo account": { '1m': 70, '2m': 105, '3m': 145, '4m': 170, '6m': 205, '10m': 280, '12m': 310 },
-                    "shared account": { '1m': 30, '2m': 55, '3m': 75, '4m': 90, '6m': 120, '10m': 190, '12m': 220 }
-                }
+            "Viu Premium": {
+                "solo account": { '1m': 70, '2m': 105, '3m': 145, '4m': 170, '6m': 205, '10m': 280, '12m': 310 },
+                "shared account": { '1m': 30, '2m': 55, '3m': 75, '4m': 90, '6m': 120, '10m': 190, '12m': 220 }
             },
-            { 
-                id: 'viva-max', 
-                name: 'VIVAMAX VIVAONE', 
-                category: 'entertainment', 
-                icon: '🎭',
-                stock: 15,
-                sold: 18,
-                pricing: {
-                    "solo account": { '1m': 110, '2m': 145, '3m': 170 },
-                    "shared account": { '1m': 65, '2m': 90, '3m': 120 }
-                }
+            // Add pricing for other products as needed...
+            "YouTube Premium": {
+                "famhead": { '1m': 70, '2m': 90, '3m': 125, '4m': 150, '5m': 175, '6m': 200 },
+                "solo": { '1m': 45, '2m': 60, '3m': 85, '4m': 105, '5m': 125, '6m': 145 },
+                "invite": { '1m': 20, '2m': 35, '3m': 50, '4m': 60, '5m': 70, '6m': 80 }
             },
-            { 
-                id: 'wetv', 
-                name: 'WeTV', 
-                category: 'entertainment', 
-                icon: '📱',
-                stock: 8,
-                sold: 12,
-                pricing: {
-                    "solo account": { '1m': 150 },
-                    "shared account": { '1m': 55, '2m': 95, '3m': 135 }
-                }
+            "Spotify Premium": {
+                "solo fw": { '1m': 60, '2m': 110, '3m': 150, '4m': 200 },
+                "solo nw": { '1m': 45, '2m': 80, '3m': 120, '4m': 150 }
             },
-            { 
-                id: 'iwant-tfc', 
-                name: 'IWANT TFC', 
-                category: 'entertainment', 
-                icon: '📺',
-                stock: 8,
-                sold: 7,
-                pricing: {
-                    "solo account": { '1m': 145 },
-                    "shared account": { '1m': 50, '2m': 90, '3m': 125 }
-                }
+            "ChatGPT Plus": {
+                "solo account": { '1m': 600, '2m': 1050, '3m': 1500 },
+                "shared account": { '1m': 120, '2m': 200, '3m': 290 }
             },
-            { 
-                id: 'crunchyroll', 
-                name: 'Crunchyroll', 
-                category: 'entertainment', 
-                icon: '🎮',
-                stock: 10,
-                sold: 15,
-                pricing: {
-                    "solo profile": { '1m': 75, '2m': 115, '3m': 160, '4m': 195 },
-                    "shared profile": { '1m': 35, '2m': 60, '3m': 90, '4m': 115 }
-                }
-            },
-            { 
-                id: 'disney-plus', 
-                name: 'Disney+', 
-                category: 'entertainment', 
-                icon: '🦁',
-                stock: 12,
-                sold: 28,
-                pricing: {
-                    "solo account": { '1m': 390 },
-                    "solo profile": { '1m': 160, '2m': 315, '4m': 630, '10m': 1480, '12m': 1700 },
-                    "shared profile": { '1m': 85, '2m': 165, '4m': 330, '10m': 720, '12m': 880 }
-                }
-            },
-            { 
-                id: 'bilibili', 
-                name: 'Bilibili', 
-                category: 'entertainment', 
-                icon: '📺',
-                stock: 6,
-                sold: 8,
-                pricing: {
-                    "shared account": { '1m': 45, '2m': 75, '3m': 105 }
-                }
-            },
-            { 
-                id: 'loklok', 
-                name: 'Loklok', 
-                category: 'entertainment', 
-                icon: '📱',
-                stock: 7,
-                sold: 10,
-                pricing: {
-                    "solo account": { '1m': 150 },
-                    "shared account": { '1m': 65, '2m': 115, '3m': 170 }
-                }
-            },
-            { 
-                id: 'iqiyi', 
-                name: 'iQiyi', 
-                category: 'entertainment', 
-                icon: '📺',
-                stock: 8,
-                sold: 11,
-                pricing: {
-                    "shared account": { '1m': 50, '2m': 90, '3m': 135 }
-                }
-            },
-            { 
-                id: 'hbo-max', 
-                name: 'HBO Max', 
-                category: 'entertainment', 
-                icon: '📹',
-                stock: 10,
-                sold: 15,
-                pricing: {
-                    "solo account": { '1m': 240, '2m': 360, '3m': 480 },
-                    "solo profile": { '1m': 135, '2m': 240, '3m': 350 },
-                    "shared profile": { '1m': 70, '2m': 120, '3m': 170 }
-                }
-            },
-            { 
-                id: 'amazon-prime', 
-                name: 'Amazon Prime', 
-                category: 'entertainment', 
-                icon: '🛒',
-                stock: 15,
-                sold: 22,
-                pricing: {
-                    "solo account": { '1m': 80, '2m': 110, '3m': 135, '4m': 160, '5m': 185, '6m': 210 },
-                    "solo profile": { '1m': 50, '2m': 80, '3m': 110, '4m': 135, '5m': 150, '6m': 170 },
-                    "shared profile": { '1m': 30, '2m': 50, '3m': 70, '4m': 80, '5m': 90, '6m': 100 }
-                }
-            },
-            { 
-                id: 'youku', 
-                name: 'Youku', 
-                category: 'entertainment', 
-                icon: '📺',
-                stock: 6,
-                sold: 5,
-                pricing: {
-                    "solo account": { '1m': 125 },
-                    "shared account": { '1m': 50, '2m': 90, '3m': 125 }
-                }
-            },
-            { 
-                id: 'nba-league-pass', 
-                name: 'NBA League Pass Premium', 
-                category: 'entertainment', 
-                icon: '🏀',
-                stock: 5,
-                sold: 3,
-                pricing: {
-                    "solo account": { '1m': 150 },
-                    "shared account": { '1m': 75 }
-                }
-            },
-
-            // Streaming (Music)
-            { 
-                id: 'youtube', 
-                name: 'YouTube Premium', 
-                category: 'streaming', 
-                icon: '📹',
-                stock: 20,
-                sold: 55,
-                pricing: {
-                    "famhead": { '1m': 70, '2m': 90, '3m': 125, '4m': 150, '5m': 175, '6m': 200 },
-                    "solo": { '1m': 45, '2m': 60, '3m': 85, '4m': 105, '5m': 125, '6m': 145 },
-                    "invite": { '1m': 20, '2m': 35, '3m': 50, '4m': 60, '5m': 70, '6m': 80 }
-                }
-            },
-            { 
-                id: 'spotify', 
-                name: 'Spotify Premium', 
-                category: 'streaming', 
-                icon: '🎵',
-                stock: 15,
-                sold: 38,
-                pricing: {
-                    "solo fw": { '1m': 60, '2m': 110, '3m': 150, '4m': 200 },
-                    "solo nw": { '1m': 45, '2m': 80, '3m': 120, '4m': 150 }
-                }
-            },
-            { 
-                id: 'apple-music', 
-                name: 'Apple Music', 
-                category: 'streaming', 
-                icon: '🎧',
-                stock: 12,
-                sold: 20,
-                pricing: {
-                    "solo account": { '1m': 49, '2m': 89, '3m': 129, '4m': 159 }
-                }
-            },
-
-            // AI Tools
-            { 
-                id: 'chatgpt', 
-                name: 'ChatGPT Plus', 
-                category: 'ai', 
-                icon: '🧠',
-                stock: 10,
-                sold: 35,
-                pricing: {
-                    "solo account": { '1m': 600, '2m': 1050, '3m': 1500 },
-                    "shared account": { '1m': 120, '2m': 200, '3m': 290 }
-                }
-            },
-            { 
-                id: 'blackbox-ai', 
-                name: 'Blackbox AI', 
-                category: 'ai', 
-                icon: '🤖',
-                stock: 0,
-                sold: 15,
-                pricing: {
-                    "solo account": { '1m': 90, '2m': 170, '3m': 250 }
-                }
-            },
-            { 
-                id: 'perplexity', 
-                name: 'Perplexity AI', 
-                category: 'ai', 
-                icon: '🔍',
-                stock: 8,
-                sold: 12,
-                pricing: {
-                    "solo account": { '1m': 120, '4m': 200, '6m': 250, '12m': 300, '24m': 450 },
-                    "shared account": { '1m': 55, '4m': 140, '6m': 190, '12m': 230, '24m': 350 }
-                }
-            },
-            { 
-                id: 'google-one', 
-                name: 'Google One + Gemini AI', 
-                category: 'ai', 
-                icon: '☁️',
-                stock: 10,
-                sold: 18,
-                pricing: {
-                    "solo account": { '1m': 50, '2m': 85, '3m': 120, '12m': 280 },
-                    "shared account": { '1m': 30, '2m': 50, '3m': 80, '12m': 150 }
-                }
-            },
-
-            // Educational
-            { 
-                id: 'quizlet', 
-                name: 'Quizlet+', 
-                category: 'educational', 
-                icon: '📚',
-                stock: 6,
-                sold: 8,
-                pricing: {
-                    "solo account": { '1m': 45, '2m': 65, '3m': 100 },
-                    "shared account": { '1m': 20, '2m': 35, '3m': 50 }
-                }
-            },
-            { 
-                id: 'scribd', 
-                name: 'Scribd Premium', 
-                category: 'educational', 
-                icon: '📖',
-                stock: 7,
-                sold: 10,
-                pricing: {
-                    "solo account": { '1m': 50, '2m': 85, '3m': 120 },
-                    "shared account": { '1m': 30, '2m': 50, '3m': 80 }
-                }
-            },
-            { 
-                id: 'studocu', 
-                name: 'Studocu Premium', 
-                category: 'educational', 
-                icon: '🎓',
-                stock: 6,
-                sold: 9,
-                pricing: {
-                    "solo account": { '1m': 50, '2m': 85, '3m': 120 },
-                    "shared account": { '1m': 30, '2m': 50, '3m': 80 }
-                }
-            },
-            { 
-                id: 'duolingo', 
-                name: 'Duolingo Super', 
-                category: 'educational', 
-                icon: '🧑‍🎓',
-                stock: 6,
-                sold: 7,
-                pricing: {
-                    "solo account": { '1m': 80, '2m': 130, '3m': 170 }
-                }
-            },
-            { 
-                id: 'turnitin-student', 
-                name: 'Turnitin Student', 
-                category: 'educational', 
-                icon: '📝',
-                stock: 8,
-                sold: 12,
-                pricing: {
-                    "solo account": { '7d': 35, '14d': 50, '1m': 80, '2m': 140, '3m': 160, '6m': 330, '12m': 580 }
-                }
-            },
-            { 
-                id: 'turnitin-instructor', 
-                name: 'Turnitin Instructor', 
-                category: 'educational', 
-                icon: '👨‍🏫',
-                stock: 5,
-                sold: 3,
-                pricing: {
-                    "solo account": { '1m': 520 },
-                    "shared account": { '7d': 120, '14d': 175, '1m': 280 }
-                }
-            },
-
-            // Editing Tools
-            { 
-                id: 'canva', 
-                name: 'Canva Pro', 
-                category: 'editing', 
-                icon: '🎨',
-                stock: 25,
-                sold: 68,
-                pricing: {
-                    "edu lifetime": {'nw': 19, '3m w': 39, '6m w': 49, '12m w': 69},
-                    "teamhead": {'1m': 45, '2m': 55, '3m': 65, '4m': 75, '5m': 85, '6m': 95},
-                    "solo": { '1m': 25, '2m': 35, '3m': 45, '4m': 55, '5m': 65, '6m': 75 },
-                    "invite": { '1m': 10, '2m': 15, '3m': 20, '4m': 25, '5m': 30, '6m': 35 }
-                }
-            },
-            { 
-                id: 'picsart', 
-                name: 'Picsart Gold', 
-                category: 'editing', 
-                icon: '👏',
-                stock: 12,
-                sold: 22,
-                pricing: {
-                    "teamhead account": { '1m': 70, '2m': 115, '3m': 150 },
-                    "solo account": { '1m': 50, '2m': 85, '3m': 120 },
-                    "shared account": { '1m': 25, '2m': 45, '3m': 70 }
-                }
-            },
-            { 
-                id: 'capcut', 
-                name: 'CapCut Pro', 
-                category: 'editing', 
-                icon: '📝',
-                stock: 10,
-                sold: 18,
-                pricing: {
-                    "solo account": { '7d': 50, '1m': 130, '2m': 190, '3m': 240 },
-                    "shared account": { '1m': 70, '2m': 120, '3m': 155 }
-                }
-            },
-            { 
-                id: 'alight-motion', 
-                name: 'Alight Motion Pro', 
-                category: 'editing', 
-                icon: '📱',
-                stock: 8,
-                sold: 10,
-                pricing: {
-                    "solo account": { '1m': 90, '12m': 149 },
-                    "shared account": { '1m': 35, '12m': 69 }
-                }
-            },
-            { 
-                id: 'remini', 
-                name: 'Remini Web', 
-                category: 'editing', 
-                icon: '✨',
-                stock: 6,
-                sold: 8,
-                pricing: {
-                    "solo account": { '7d': 30, '1m': 50 },
-                    "shared account": { '7d': 15, '1m': 25 }
-                }
-            },
-            { 
-                id: 'grammarly', 
-                name: 'Grammarly Premium', 
-                category: 'educational', 
-                icon: '✍️',
-                stock: 8,
-                sold: 15,
-                pricing: {
-                    "solo account": { '1m': 85 },
-                    "shared account": { '1m': 35, '2m': 65, '3m': 95 }
-                }
-            },
-            { 
-                id: 'quillbot', 
-                name: 'Quillbot Premium', 
-                category: 'educational', 
-                icon: '📝',
-                stock: 8,
-                sold: 12,
-                pricing: {
-                    "solo account": { '1m': 100 },
-                    "shared account": { '1m': 45, '2m': 75, '3m': 110 }
-                }
-            },
-            { 
-                id: 'ms-365', 
-                name: 'Microsoft 365', 
-                category: 'educational', 
-                icon: '🤬',
-                stock: 15,
-                sold: 25,
-                pricing: {
-                    "solo account": { '1m': 55, '2m': 90, '3m': 120 },
-                    "shared account": { '1m': 25, '2m': 45, '3m': 65 }
-                }
-            },
-            { 
-                id: 'cams-canner', 
-                name: 'CamScanner Pro', 
-                category: 'editing', 
-                icon: '📁',
-                stock: 8,
-                sold: 10,
-                pricing: {
-                    "solo account": { '1m': 100, '2m': 180, '3m': 250 },
-                    "shared account": { '1m': 50, '2m': 90, '3m': 120 }
-                }
-            },
-            { 
-                id: 'small-pdf', 
-                name: 'Small PDF Pro', 
-                category: 'editing', 
-                icon: '📁',
-                stock: 7,
-                sold: 9,
-                pricing: {
-                    "solo account": { '1m': 55, '2m': 95, '3m': 130 },
-                    "shared account": { '1m': 30, '2m': 50, '3m': 70 }
-                }
-            },
-            { 
-                id: 'zoom', 
-                name: 'Zoom Pro', 
-                category: 'educational', 
-                icon: '📽️',
-                stock: 6,
-                sold: 8,
-                pricing: {
-                    "solo account": { '14d': 45, '1m': 70, '2m': 120, '3m': 160 }
-                }
+            "Canva Pro": {
+                "edu lifetime": {'nw': 19, '3m w': 39, '6m w': 49, '12m w': 69},
+                "teamhead": {'1m': 45, '2m': 55, '3m': 65, '4m': 75, '5m': 85, '6m': 95},
+                "solo": { '1m': 25, '2m': 35, '3m': 45, '4m': 55, '5m': 65, '6m': 75 },
+                "invite": { '1m': 10, '2m': 15, '3m': 20, '4m': 25, '5m': 30, '6m': 35 }
             }
-        ];
-
-        // RULES DATA
-        const rulesData = {
-            "general": [
-                "All accounts are premium quality and verified",
-                "Replacement guaranteed within 24 hours for any issues",
-                "No refunds after account delivery",
-                "Keep account details confidential",
-                "Contact support for any issues within the warranty period"
-            ],
-            "netflix": [
-                "No password changing allowed",
-                "Use only on one device at a time",
-                "Contact support immediately if kicked out",
-                "Replacement available for 7 days"
-            ],
-            "spotify": [
-                "Download feature may not work on all accounts",
-                "Use only in supported regions",
-                "Account may require relogin after 30 days"
-            ],
-            "youtube": [
-                "Background play and download features included",
-                "Ad-free experience guaranteed",
-                "Family sharing available for famhead accounts"
-            ],
-            "chatgpt": [
-                "Access to GPT-4 included",
-                "No usage limits",
-                "Works on all devices"
-            ],
-            "canva": [
-                "All pro features unlocked",
-                "Access to premium elements and templates",
-                "Team features available for teamhead accounts"
-            ]
         };
 
         // FEEDBACK DATA
@@ -1566,18 +1121,29 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
         let paymentProofFile = null;
         let currentUser = null;
         let expandedCategories = {};
+        let products = [];
 
         // INITIALIZE APP
         document.addEventListener('DOMContentLoaded', function() {
-            loadProducts();
+            loadProductsFromStorage();
             setupTabs();
             setupSearch();
             setupCheckoutListeners();
             setupAuthTabs();
-            loadRules();
+            loadRulesFromStorage();
             loadFeedback();
             checkLoginStatus();
         });
+
+        function loadProductsFromStorage() {
+            products = JSON.parse(localStorage.getItem("products") || "[]");
+            loadProducts();
+        }
+
+        function loadRulesFromStorage() {
+            const rules = JSON.parse(localStorage.getItem("rules") || "[]");
+            loadRules(rules);
+        }
 
         function setupCheckoutListeners() {
             document.getElementById('payment-method').addEventListener('change', showPaymentInstructions);
@@ -1608,22 +1174,22 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
         }
 
         function filterProducts(searchTerm) {
-            const products = document.querySelectorAll('.product-card');
+            const productCards = document.querySelectorAll('.product-card');
             const searchLower = searchTerm.toLowerCase().trim();
             
             if (searchLower === '') {
-                products.forEach(product => {
-                    product.style.display = 'block';
+                productCards.forEach(card => {
+                    card.style.display = 'block';
                 });
                 return;
             }
             
-            products.forEach(product => {
-                const productName = product.querySelector('.product-name').textContent.toLowerCase();
+            productCards.forEach(card => {
+                const productName = card.querySelector('.product-name').textContent.toLowerCase();
                 if (productName.includes(searchLower)) {
-                    product.style.display = 'block';
+                    card.style.display = 'block';
                 } else {
-                    product.style.display = 'none';
+                    card.style.display = 'none';
                 }
             });
         }
@@ -1633,37 +1199,23 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
             const searchLower = searchTerm.toLowerCase().trim();
             
             if (searchLower === '') {
-                loadRules();
+                loadRulesFromStorage();
                 return;
             }
             
+            const rules = JSON.parse(localStorage.getItem("rules") || "[]");
             let html = '<div class="rules-category">';
             html += '<h3>Search Results</h3>';
             
             let foundRules = false;
             
-            // Search in general rules
-            rulesData.general.forEach(rule => {
-                if (rule.toLowerCase().includes(searchLower)) {
-                    html += `<div class="rule-item">${rule}</div>`;
+            // Search in rules
+            rules.forEach(rule => {
+                if (rule.text.toLowerCase().includes(searchLower)) {
+                    html += `<div class="rule-item"><strong>${rule.product === 'general' ? 'General Rule' : rule.product}:</strong> ${rule.text}</div>`;
                     foundRules = true;
                 }
             });
-            
-            // Search in product-specific rules
-            for (const [productId, rules] of Object.entries(rulesData)) {
-                if (productId === 'general') continue;
-                
-                const product = productsData.find(p => p.id === productId);
-                if (product) {
-                    rules.forEach(rule => {
-                        if (rule.toLowerCase().includes(searchLower)) {
-                            html += `<div class="rule-item"><strong>${product.name}:</strong> ${rule}</div>`;
-                            foundRules = true;
-                        }
-                    });
-                }
-            }
             
             if (!foundRules) {
                 html += '<p>No rules found matching your search.</p>';
@@ -1677,21 +1229,21 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
             const productsGrid = document.getElementById('products-grid');
             
             const productsByCategory = {
-                'entertainment': productsData.filter(p => p.category === 'entertainment'),
-                'streaming': productsData.filter(p => p.category === 'streaming'),
-                'educational': productsData.filter(p => p.category === 'educational'),
-                'editing': productsData.filter(p => p.category === 'editing'),
-                'ai': productsData.filter(p => p.category === 'ai')
+                'entertainment': products.filter(p => p.category === 'entertainment'),
+                'streaming': products.filter(p => p.category === 'streaming'),
+                'educational': products.filter(p => p.category === 'educational'),
+                'editing': products.filter(p => p.category === 'editing'),
+                'ai': products.filter(p => p.category === 'ai')
             };
 
             let html = '';
             
-            for (const [category, products] of Object.entries(productsByCategory)) {
-                if (products.length === 0) continue;
+            for (const [category, categoryProducts] of Object.entries(productsByCategory)) {
+                if (categoryProducts.length === 0) continue;
                 
                 const categoryName = formatCategoryName(category);
                 // Show only first 3 products if category is not expanded
-                const displayProducts = expandedCategories[category] ? products : products.slice(0, 3);
+                const displayProducts = expandedCategories[category] ? categoryProducts : categoryProducts.slice(0, 3);
                 const productsHTML = displayProducts.map(product => createProductCard(product)).join('');
                 
                 html += `
@@ -1699,7 +1251,7 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
                         <div class="category-header">
                             <h3 class="category-title">${categoryName}</h3>
                             <button class="view-all-btn" onclick="toggleCategory('${category}')">
-                                ${expandedCategories[category] ? 'Show Less' : `View All (${products.length})`}
+                                ${expandedCategories[category] ? 'Show Less' : `View All (${categoryProducts.length})`}
                             </button>
                         </div>
                         <div class="products-category-grid">
@@ -1722,8 +1274,9 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
             const stockClass = product.stock > 0 ? '' : 'stock-out';
             const soldText = `${product.sold} sold`;
 
-            const accountTypes = Object.keys(product.pricing);
-            const accountTypeButtons = accountTypes.map(type => 
+            // Get available account types for this product
+            const availableAccountTypes = productsPricing[product.name] ? Object.keys(productsPricing[product.name]) : ["solo account"];
+            const accountTypeButtons = availableAccountTypes.map(type => 
                 `<button class="account-type-btn" onclick="selectAccountType(this, '${product.id}', '${type}')">${type}</button>`
             ).join('');
 
@@ -1768,7 +1321,7 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
             buttons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
             
-            const product = productsData.find(p => p.id === productId);
+            const product = products.find(p => p.id === productId);
             if (product) {
                 product.selectedAccountType = accountType;
                 updateDurationOptions(productId, accountType);
@@ -1776,11 +1329,11 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
         }
 
         function updateDurationOptions(productId, accountType) {
-            const product = productsData.find(p => p.id === productId);
+            const product = products.find(p => p.id === productId);
             const durationContainer = document.getElementById(`duration-${productId}`);
             
-            if (product && product.pricing[accountType]) {
-                const durations = Object.keys(product.pricing[accountType]);
+            if (product && productsPricing[product.name] && productsPricing[product.name][accountType]) {
+                const durations = Object.keys(productsPricing[product.name][accountType]);
                 const durationButtons = durations.map(duration => {
                     const durationText = getDurationText(duration);
                     return `<button class="duration-btn" onclick="selectDuration(this, '${productId}', '${duration}')">${durationText}</button>`;
@@ -1803,7 +1356,7 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
             buttons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
             
-            const product = productsData.find(p => p.id === productId);
+            const product = products.find(p => p.id === productId);
             if (product) {
                 product.selectedDuration = durationKey;
                 updatePriceDisplay(productId);
@@ -1811,12 +1364,12 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
         }
 
         function updatePriceDisplay(productId) {
-            const product = productsData.find(p => p.id === productId);
+            const product = products.find(p => p.id === productId);
             const priceDisplay = document.getElementById(`price-${productId}`);
             const orderBtn = document.getElementById(`order-btn-${productId}`);
 
-            if (product.selectedAccountType && product.selectedDuration) {
-                const price = product.pricing[product.selectedAccountType][product.selectedDuration];
+            if (product.selectedAccountType && product.selectedDuration && productsPricing[product.name]) {
+                const price = productsPricing[product.name][product.selectedAccountType][product.selectedDuration];
                 const durationText = getDurationText(product.selectedDuration);
                 
                 priceDisplay.innerHTML = `₱${price} <small>(${product.selectedAccountType} - ${durationText})</small>`;
@@ -2004,6 +1557,8 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
             const userInfo = document.getElementById('user-info');
             const feedbackFormContent = document.getElementById('feedback-form-content');
             const feedbackLoginMessage = document.getElementById('feedback-login-message');
+            const reportFormContent = document.getElementById('report-form-content');
+            const reportLoginMessage = document.getElementById('report-login-message');
             
             if (currentUser) {
                 authButtons.style.display = 'none';
@@ -2015,8 +1570,13 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
                 feedbackFormContent.style.display = 'block';
                 feedbackLoginMessage.style.display = 'none';
                 
+                // Update report form
+                reportFormContent.style.display = 'block';
+                reportLoginMessage.style.display = 'none';
+                
                 // Update My Account tab
                 updateAccountTab();
+                loadUserReports();
             } else {
                 authButtons.style.display = 'block';
                 userInfo.style.display = 'none';
@@ -2024,6 +1584,11 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
                 // Update feedback form
                 feedbackFormContent.style.display = 'none';
                 feedbackLoginMessage.style.display = 'block';
+                
+                // Update report form
+                reportFormContent.style.display = 'none';
+                reportLoginMessage.style.display = 'block';
+                document.getElementById('my-reports-section').style.display = 'none';
                 
                 // Reset My Account tab
                 document.getElementById('accounts-content').innerHTML = `
@@ -2062,7 +1627,7 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
                                         <div>₱${order.product.price}</div>
                                     </div>
                                     <div>
-                                        <span class="stock-status ${order.processed ? 'status-sold' : 'status-reserved'}" style="padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
+                                        <span class="stock-status ${order.processed ? 'status-sold' : 'status-reserved'}" style="padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: ${order.processed ? '#d4edda' : '#fff3cd'}; color: ${order.processed ? '#155724' : '#856404'}">
                                             ${order.processed ? 'Completed' : 'Pending'}
                                         </span>
                                     </div>
@@ -2102,7 +1667,7 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
                 return;
             }
 
-            const product = productsData.find(p => p.id === productId);
+            const product = products.find(p => p.id === productId);
             if (product) {
                 const orderDetails = {
                     productId: productId,
@@ -2214,29 +1779,52 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
             // Simulate API call with timeout
             setTimeout(() => {
                 try {
-                    // In a real app, you would send the data to your server here
+                    const orderId = generateOrderId();
+                    
                     const orderData = {
                         product: pendingOrder,
                         user: currentUser,
                         paymentMethod: paymentMethod,
                         referenceNumber: referenceNumber,
                         timestamp: new Date().toISOString(),
+                        orderId: orderId,
                         processed: false
                     };
                     
-                    // Save to localStorage (simulating database storage)
+                    // Save to localStorage
                     const orders = JSON.parse(localStorage.getItem('aiaxcart_orders') || '[]');
                     orders.push(orderData);
                     localStorage.setItem('aiaxcart_orders', JSON.stringify(orders));
                     
-                    // Update product stock and sold count
-                    const product = productsData.find(p => p.id === pendingOrder.productId);
-                    if (product) {
-                        product.stock = Math.max(0, product.stock - 1);
-                        product.sold += 1;
+                    // Connect with admin panel - update stock and add to pending orders
+                    const adminOrderData = {
+                        productName: pendingOrder.productName,
+                        price: pendingOrder.price,
+                        accountType: pendingOrder.accountType,
+                        duration: pendingOrder.duration,
+                        customer: currentUser.name,
+                        email: currentUser.email,
+                        orderId: orderId
+                    };
+                    
+                    // Try to call admin panel function
+                    try {
+                        if (typeof processWebsiteOrder === 'function') {
+                            processWebsiteOrder(adminOrderData);
+                        }
+                    } catch (e) {
+                        console.log('Admin panel function not available, using fallback');
+                        // Fallback: update product stock directly
+                        const products = JSON.parse(localStorage.getItem('products') || '[]');
+                        const productIndex = products.findIndex(p => p.name === pendingOrder.productName);
+                        if (productIndex > -1) {
+                            products[productIndex].stock = Math.max(0, products[productIndex].stock - 1);
+                            products[productIndex].sold += 1;
+                            localStorage.setItem('products', JSON.stringify(products));
+                        }
                     }
                     
-                    showNotification('Order placed successfully! Please wait for admin confirmation.', 'success');
+                    showNotification(`Order placed successfully! Your Order ID is: ${orderId}. Please wait for admin confirmation.`, 'success');
                     closeCheckout();
                     
                     // Reset form
@@ -2247,7 +1835,7 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
                     paymentProofFile = null;
                     
                     // Reload products to update stock and sold counts
-                    loadProducts();
+                    loadProductsFromStorage();
                     updateAccountTab();
                     
                 } catch (error) {
@@ -2259,31 +1847,44 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
             }, 1500);
         }
 
-        function loadRules() {
+        function generateOrderId() {
+            return 'ORD-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        }
+
+        function loadRules(rules) {
             const rulesContainer = document.getElementById('rules-container');
             let html = '';
             
-            // General Rules
-            html += '<div class="rules-category">';
-            html += '<h3>General Rules & Regulations</h3>';
-            rulesData.general.forEach(rule => {
-                html += `<div class="rule-item">${rule}</div>`;
-            });
-            html += '</div>';
+            // Group rules by product
+            const rulesByProduct = {};
             
-            // Product-specific Rules
-            for (const [productId, rules] of Object.entries(rulesData)) {
-                if (productId === 'general') continue;
-                
-                const product = productsData.find(p => p.id === productId);
-                if (product) {
-                    html += '<div class="rules-category">';
-                    html += `<h3>${product.name} Rules</h3>`;
-                    rules.forEach(rule => {
-                        html += `<div class="rule-item">${rule}</div>`;
-                    });
-                    html += '</div>';
+            rules.forEach(rule => {
+                if (!rulesByProduct[rule.product]) {
+                    rulesByProduct[rule.product] = [];
                 }
+                rulesByProduct[rule.product].push(rule);
+            });
+            
+            // Display general rules first
+            if (rulesByProduct['general']) {
+                html += '<div class="rules-category">';
+                html += '<h3>General Rules & Regulations</h3>';
+                rulesByProduct['general'].forEach(rule => {
+                    html += `<div class="rule-item">${rule.text}</div>`;
+                });
+                html += '</div>';
+            }
+            
+            // Display product-specific rules
+            for (const [productName, productRules] of Object.entries(rulesByProduct)) {
+                if (productName === 'general') continue;
+                
+                html += '<div class="rules-category">';
+                html += `<h3>${productName} Rules</h3>`;
+                productRules.forEach(rule => {
+                    html += `<div class="rule-item">${rule.text}</div>`;
+                });
+                html += '</div>';
             }
             
             rulesContainer.innerHTML = html;
@@ -2353,6 +1954,81 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
             showNotification('Feedback submitted successfully!', 'success');
         }
 
+        // REPORT SYSTEM FUNCTIONS
+        function submitReport() {
+            if (!currentUser) {
+                showNotification('Please login to submit a report.', 'warning');
+                return;
+            }
+
+            const orderId = document.getElementById('report-orderid').value;
+            const product = document.getElementById('report-product').value;
+            const issue = document.getElementById('report-issue').value;
+
+            if (!issue) {
+                showNotification('Please describe the issue.', 'warning');
+                return;
+            }
+
+            const report = {
+                orderId: orderId,
+                product: product,
+                issue: issue,
+                buyer: currentUser.name + ' (' + currentUser.email + ')'
+            };
+
+            // Save to admin panel
+            try {
+                if (typeof addBuyerReport === 'function') {
+                    addBuyerReport(report);
+                }
+            } catch (e) {
+                console.log('Admin panel function not available, using fallback');
+            }
+
+            // Also save to user's personal reports
+            const userReports = JSON.parse(localStorage.getItem('userReports_' + currentUser.email) || '[]');
+            userReports.push({
+                id: Date.now(),
+                orderId: orderId,
+                product: product,
+                issue: issue,
+                status: 'pending',
+                date: new Date().toLocaleDateString()
+            });
+            localStorage.setItem('userReports_' + currentUser.email, JSON.stringify(userReports));
+
+            showNotification('Report submitted successfully! We will get back to you soon.', 'success');
+            document.getElementById('report-orderid').value = '';
+            document.getElementById('report-product').value = '';
+            document.getElementById('report-issue').value = '';
+            
+            loadUserReports();
+        }
+
+        function loadUserReports() {
+            if (!currentUser) return;
+            
+            const userReports = JSON.parse(localStorage.getItem('userReports_' + currentUser.email) || '[]');
+            const myReportsList = document.getElementById('my-reports-list');
+            
+            if (userReports.length > 0) {
+                myReportsList.innerHTML = userReports.map(report => `
+                    <div class="report-item">
+                        <div><strong>Report ID:</strong> ${report.id}</div>
+                        <div><strong>Order ID:</strong> ${report.orderId || 'N/A'}</div>
+                        <div><strong>Product:</strong> ${report.product || 'N/A'}</div>
+                        <div><strong>Issue:</strong> ${report.issue}</div>
+                        <div><strong>Status:</strong> <span style="padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.8rem; background: ${report.status === 'resolved' ? '#d4edda' : '#fff3cd'}; color: ${report.status === 'resolved' ? '#155724' : '#856404'};">${report.status}</span></div>
+                        <div><strong>Date:</strong> ${report.date}</div>
+                    </div>
+                `).join('');
+                document.getElementById('my-reports-section').style.display = 'block';
+            } else {
+                document.getElementById('my-reports-section').style.display = 'none';
+            }
+        }
+
         function formatDate(dateString) {
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             return new Date(dateString).toLocaleDateString('en-US', options);
@@ -2403,15 +2079,43 @@ if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
                     // Add active class to clicked tab and show content
                     this.classList.add('active');
                     
-                    // Special case for products tab
+                    // Special cases
                     if (tabName === 'products') {
                         document.getElementById('products-content').style.display = 'block';
+                    } else if (tabName === 'reports') {
+                        document.getElementById('reports-content').style.display = 'block';
+                        loadUserReports();
                     } else {
                         document.getElementById(`${tabName}-content`).style.display = 'block';
                         document.getElementById('products-content').style.display = 'none';
                     }
                 });
             });
+        }
+
+        // Owner Verification Functions
+        const OWNER_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a';
+        
+        function showOwnerModal() {
+            document.getElementById("ownerVeriOverlay").style.display = "flex";
+        }
+        
+        function verifyOwnerUID() {
+            let uid = document.getElementById('ownerUidInput').value.trim();
+            if(uid === OWNER_UID) {
+                localStorage.setItem('ownerVerified','yes');
+                document.getElementById("ownerVeriOverlay").style.display = "none";
+                showNotification('Owner access granted!', 'success');
+            } else {
+                document.getElementById('ownerVeriMsg').textContent = "❌ Invalid UID.";
+            }
+        }
+        
+        if(localStorage.getItem('ownerVerified') !== 'yes') {
+            // Only show modal if trying to access admin features
+            if (window.location.href.includes('admin.html')) {
+                showOwnerModal();
+            }
         }
 
         // Set up event listeners for buttons
