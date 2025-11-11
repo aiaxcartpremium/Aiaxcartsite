@@ -784,7 +784,27 @@
             </div>
         </div>
     </header>
-
+<!-- Add BELOW your header, ABOVE tabs/product section in index.html -->
+<div class="owner-veri-overlay" id="ownerVeriOverlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.37);display:none;align-items:center;justify-content:center;z-index:9999;">
+  <div style="background:white;padding:1.5rem 2rem;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,0.10);">
+    <h2 style="margin-bottom:1rem;">🔐 Owner Verification</h2>
+    <input type="text" id="ownerUidInput" placeholder="Enter Owner UID" style="padding:0.75rem;margin-bottom:1rem;width:100%;">
+    <button onclick="verifyOwnerUID()" style="background:#FFB0B5;color:white;border:none;padding:0.6rem 1.5rem;border-radius:12px;margin-top:0.5rem;width:100%;">Verify Access</button>
+    <div id="ownerVeriMsg" style="color:red;margin-top:0.7rem;"></div>
+  </div>
+</div>
+<script>
+const OWNER_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a';//change to your actual owner UID
+function showOwnerModal() {
+    document.getElementById("ownerVeriOverlay").style.display = "flex";
+}
+function verifyOwnerUID() {
+    let uid = document.getElementById('ownerUidInput').value.trim();
+    if(uid===OWNER_UID){localStorage.setItem('ownerVerified','yes');document.getElementById("ownerVeriOverlay").style.display="none";}
+    else{document.getElementById('ownerVeriMsg').textContent = "❌ Invalid UID.";}
+}
+if(localStorage.getItem('ownerVerified')!=='yes'){showOwnerModal();}
+</script>
     <!-- TABS SECTION -->
     <div class="container">
         <div class="tabs">
