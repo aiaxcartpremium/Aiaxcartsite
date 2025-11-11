@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aiaxcart Premium Shop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">🛒 Aiaxcart Premium</div>
+            <div class="nav-center">Home</div>
+            <div id="auth-buttons">
+                <button id="login-btn" class="btn-auth">Login / Sign up</button>
+            </div>
+            <div id="user-info" style="display:none;">
+                <a href="account.html" class="btn-primary">My Account</a>
+                <button id="logout-btn" class="btn-auth">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="tabs-container">
+        <div class="tabs">
+            <button class="tab active" data-tab="products">Products</button>
+            <button class="tab" data-tab="account">My Account</button>
+            <button class="tab" data-tab="payments">Payments</button>
+        </div>
+    </div>
+
+    <main class="container">
+        <div id="products-tab" class="tab-content active">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search-input" placeholder="Search products...">
+            </div>
+
+            <h2 class="section-title">Premium Accounts</h2>
+            
+            <div id="categories-container">
+                <!-- Categories will be dynamically loaded -->
+            </div>
+        </div>
+
+        <div id="account-tab" class="tab-content">
+            <h2>My Account</h2>
+            <div class="card">
+                <p>Please login to view your orders and account details.</p>
+                <a href="account.html" class="btn-primary">Go to My Account</a>
+            </div>
+        </div>
+
+        <div id="payments-tab" class="tab-content">
+            <h2>Payment Methods</h2>
+            <div class="card">
+                <h3>GCash</h3>
+                <p><strong>0962 554 4105</strong></p>
+                <p class="text-muted">Please include your order reference.</p>
+            </div>
+            <div class="card">
+                <h3>Maya</h3>
+                <p><strong>0929 984 3629</strong></p>
+                <p class="text-muted">Please include your order reference.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login / Sign Up</h2>
+            <input type="email" id="auth-email" placeholder="Email" class="input-field">
+            <input type="password" id="auth-password" placeholder="Password" class="input-field">
+            <button id="auth-submit" class="btn-primary full-width">Continue</button>
+        </div>
+    </div>
+
+    <script src="supabase.js"></script>
+    <script src="auth.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
