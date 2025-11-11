@@ -6,362 +6,360 @@
     <title>Admin Console - Aiaxcart Premium</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .admin-tabs { display: flex; gap: 1rem; margin: 2rem 0; flex-wrap: wrap; }
-        .admin-tab { padding: 0.75rem 1.5rem; border: none; background: #f0f0f0; cursor: pointer; border-radius: 8px; }
-        .admin-tab.active { background: #FFD3D6; font-weight: bold; }
-        .admin-content { display: none; }
-        .admin-content.active { display: block; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
-        .stat-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
-        .stat-card h3 { font-size: 2rem; margin-bottom: 0.5rem; color: #FFB0B5; }
-        .error-message { color: red; margin-top: 0.5rem; }
-        .success-message { color: green; margin-top: 0.5rem; }
-        .inventory-item, .order-item { background: #f9f9f9; padding: 1rem; margin: 0.5rem 0; border-radius: 8px; }
-        .btn-small { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+        html,body{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;}
+        body{background-color:#fefaf7;color:#5a3e36;line-height:1.6;}
+        .container{max-width:1200px;margin:0 auto;padding:0 20px;}
+        header{background:#FFD3D6;padding:1.2rem 0;box-shadow:0 4px 15px rgba(0,0,0,0.08);}
+        .header-content{display:flex;justify-content:space-between;align-items:center;}
+        .logo{font-size:1.8rem;font-weight:700;display:flex;align-items:center;}
+        nav ul{display:flex;list-style:none;}
+        nav ul li{margin-left:1.5rem;}
+        nav ul li a{color:#5a3e36;text-decoration:none;font-weight:500;padding:0.5rem 1rem;border-radius:8px;}
+        nav ul li a.active,nav ul li a:hover{background:#FFC6CA;font-weight:bold;}
+        .btn{padding:0.6rem 1.5rem;border:none;border-radius:12px;cursor:pointer;font-weight:500;}
+        .btn-primary{background:#FFB0B5;color:white;}
+        .btn-danger{background:#F44336;color:white;}
+        .btn-warning{background:#FF9800;color:white;}
+        .btn-success{background:#4CAF50;color:white;}
+        .btn-edit{background:#2196F3;color:white;}
+        .btn-small{padding:0.4rem 0.8rem;font-size:0.85rem;}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin:2rem 0;}
+        .stat-card{background:white;padding:2rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);text-align:center;}
+        .stat-card h3{font-size:2rem;margin-bottom:0.5rem;color:#FFB0B5;}
+        /* Modal styles */
+        #owner-modal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;}
+        .modal-card{background:white;padding:2rem 2.5rem;border-radius:20px;box-shadow:0 2px 10px rgba(0,0,0,0.1);}
+        .error-message{color:red;margin-top:0.5rem;}
+        .success-message{color:green;margin-top:0.5rem;}
+        /* Tab styles */
+        .tabs{display:flex;gap:1rem;margin:2rem 0;flex-wrap:wrap;}
+        .tab{padding:0.75rem 1.5rem;border:none;background:#f0f0f0;cursor:pointer;border-radius:8px;}
+        .tab.active{background:#FFD3D6;font-weight:bold;}
+        .panel{display:none;}
+        .panel.is-visible{display:block;}
+        /* Stock Items */
+        .stock-item{border:1px solid #FFE5E7;border-radius:12px;padding:1rem;margin-bottom:1rem;background:white;}
+        .stock-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;}
+        .stock-info{flex:1;}
+        .stock-actions{display:flex;gap:0.5rem;}
     </style>
 </head>
 <body>
-    <header>
-        <div class="container header-content">
-            <div class="logo">🛒 Aiaxcart Admin</div>
-            <nav>
-                <a href="index.html">Home</a>
-                <a href="admin.html" class="active">Admin</a>
-            </nav>
-            <button id="admin-logout" class="btn-danger" style="display:none;" onclick="adminLogout()">Logout</button>
-        </div>
-    </header>
+<header>
+    <div class="container header-content">
+        <div class="logo">🛒 Aiaxcart Admin</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="admin.html" class="active">Admin</a></li>
+            </ul>
+        </nav>
+        <button id="admin-logout" class="btn btn-danger" style="display:none;" onclick="adminLogout()">Logout</button>
+    </div>
+</header>
 
-    <!-- UID Login Section -->
-    <div id="admin-login" class="container" style="max-width:500px;margin-top:3rem;">
+<!-- Floating Owner Verification Modal -->
+<div id="owner-modal">
+    <div class="modal-card">
+        <h2>🔐 Owner Verification</h2>
+        <input type="text" id="owner-uid" placeholder="Enter Owner UID" class="input-field">
+        <button onclick="verifyUID()" class="btn btn-primary full-width">Verify Access</button>
+        <div id="uid-error" class="error-message"></div>
+    </div>
+</div>
+
+<div class="container" id="admin-dashboard" style="display:none;">
+    <h1>Admin Console</h1>
+    <p class="text-muted">Welcome back, Owner! Manage your shop here.</p>
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card"><h3 id="total-products">0</h3><p>Total Products</p></div>
+        <div class="stat-card"><h3 id="available-stock">0</h3><p>Available Stock</p></div>
+        <div class="stat-card"><h3 id="pending-orders">0</h3><p>Pending Orders</p></div>
+        <div class="stat-card"><h3 id="total-revenue">₱0</h3><p>Total Revenue</p></div>
+    </div>
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" data-tab="add-stock">Add Stock</button>
+        <button class="tab" data-tab="manage-stocks">Manage Stocks</button>
+        <button class="tab" data-tab="pending-orders">Pending Orders</button>
+        <button class="tab" data-tab="sold-accounts">Sold Accounts</button>
+        <button class="tab" data-tab="archived-stocks">Archived Stocks</button>
+        <button class="tab" data-tab="products">Products</button>
+        <button class="tab" data-tab="store-rules">Store Rules</button>
+    </div>
+    <!-- Panels -->
+    <section id="panel-add-stock" class="panel is-visible">
         <div class="card">
-            <h2>🔐 Owner Verification</h2>
-            <p class="text-muted">Enter your owner UID to access the admin panel</p>
-            <input type="text" id="owner-uid" placeholder="Enter Owner UID" class="input-field">
-            <button onclick="verifyUID()" class="btn-primary full-width">Verify Access</button>
-            <div id="uid-error" class="error-message"></div>
+            <h2>Add Stock</h2>
+            <form id="frm-add-stock">
+                <input type="text" id="stock-product" placeholder="Product" class="input-field" required>
+                <input type="text" id="stock-email" placeholder="Email/Username" class="input-field" required>
+                <input type="text" id="stock-password" placeholder="Password" class="input-field" required>
+                <input type="text" id="stock-profile" placeholder="Profile (optional)" class="input-field">
+                <input type="text" id="stock-pin" placeholder="PIN (optional)" class="input-field">
+                <input type="text" id="stock-type" placeholder="Account Type" class="input-field" required>
+                <input type="text" id="stock-duration" placeholder="Duration" class="input-field" required>
+                <button type="submit" class="btn btn-primary full-width">Add Stock</button>
+            </form>
+            <div id="add-stock-msg"></div>
         </div>
+    </section>
+    <section id="panel-manage-stocks" class="panel">
+        <div class="card">
+            <h2>Available Stocks (Edit/Delete)</h2>
+            <button onclick="loadStocks()" class="btn btn-primary btn-small">Refresh Stocks</button>
+            <div id="stocks-container"></div>
+        </div>
+    </section>
+    <section id="panel-pending-orders" class="panel">
+        <div class="card">
+            <h2>Pending Orders</h2>
+            <button onclick="loadPendingOrders()" class="btn btn-primary btn-small">Refresh Orders</button>
+            <div id="pending-orders-container"></div>
+        </div>
+    </section>
+    <section id="panel-sold-accounts" class="panel">
+        <div class="card">
+            <h2>Sold Accounts</h2>
+            <div id="sold-accounts-container"></div>
+        </div>
+    </section>
+    <section id="panel-archived-stocks" class="panel">
+        <div class="card">
+            <h2>Archived Stocks</h2>
+            <button onclick="loadArchivedStocks()" class="btn btn-primary btn-small">Refresh Archived</button>
+            <div id="archived-stocks-container"></div>
+        </div>
+    </section>
+    <section id="panel-products" class="panel">
+        <div class="card">
+            <h2>Products Management</h2>
+            <div id="products-list"></div>
+        </div>
+    </section>
+    <section id="panel-store-rules" class="panel">
+        <div class="card">
+            <h2>Store Rules Management</h2>
+            <div id="store-rules-list"></div>
+        </div>
+    </section>
+</div>
+<!-- Edit Stock Modal -->
+<div id="edit-modal" style="display:none;">
+    <div class="modal-card">
+        <h2>Edit Stock</h2>
+        <input type="text" id="edit-product" class="input-field">
+        <input type="text" id="edit-email" class="input-field">
+        <input type="text" id="edit-password" class="input-field">
+        <input type="text" id="edit-profile" class="input-field">
+        <input type="text" id="edit-pin" class="input-field">
+        <input type="text" id="edit-type" class="input-field">
+        <input type="text" id="edit-duration" class="input-field">
+        <button onclick="saveEditStock()" class="btn btn-primary full-width">Save Changes</button>
+        <button onclick="closeEditModal()" class="btn btn-danger full-width">Cancel</button>
+        <div id="edit-stock-msg"></div>
     </div>
+</div>
+<script>
+const ADMIN_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a'; // Replace with your UID
+let stocksData = [];
+let ordersData = [];
+let soldAccountsData = [];
+let currentEditId = null;
 
-    <!-- Admin Dashboard -->
-    <div id="admin-dashboard" class="container" style="display:none;">
-        <h1>Admin Console</h1>
-        <p class="text-muted">Welcome back, Owner! Manage your shop here.</p>
-        
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3 id="total-products">0</h3>
-                <p>Total Products</p>
-            </div>
-            <div class="stat-card">
-                <h3 id="available-stock">0</h3>
-                <p>Available Stock</p>
-            </div>
-            <div class="stat-card">
-                <h3 id="pending-orders">0</h3>
-                <p>Pending Orders</p>
-            </div>
-            <div class="stat-card">
-                <h3 id="total-revenue">₱0</h3>
-                <p>Total Revenue</p>
-            </div>
-        </div>
+// Floating owner verification
+function verifyUID() {
+    const inputUID = document.getElementById('owner-uid').value.trim();
+    if (inputUID === ADMIN_UID) {
+        document.getElementById('owner-modal').style.display = 'none';
+        document.getElementById('admin-dashboard').style.display = 'block';
+        document.getElementById('admin-logout').style.display = 'block';
+        loadAllData();
+    } else {
+        document.getElementById('uid-error').textContent = '❌ Invalid UID. Access denied.';
+    }
+}
 
-        <!-- Admin Tabs -->
-        <div class="admin-tabs">
-            <button class="admin-tab active" onclick="switchTab('orders')">📋 Orders</button>
-            <button class="admin-tab" onclick="switchTab('inventory')">📦 Inventory</button>
-            <button class="admin-tab" onclick="switchTab('products')">🛍️ Products</button>
-            <button class="admin-tab" onclick="switchTab('records')">➕ Add Record</button>
-            <button class="admin-tab" onclick="switchTab('reports')">📊 Reports</button>
-            <button class="admin-tab" onclick="switchTab('settings')">⚙️ Settings</button>
-        </div>
+// Save and load data via LocalStorage (change as needed)
+function loadAllData(){
+    stocksData = JSON.parse(localStorage.getItem('stocksData')||'[]');
+    ordersData = JSON.parse(localStorage.getItem('ordersData')||'[]');
+    soldAccountsData = JSON.parse(localStorage.getItem('soldAccountsData')||'[]');
+    updateStats();
+    loadStocks();
+    loadPendingOrders();
+    loadSoldAccounts();
+    loadArchivedStocks();
+    loadProductsList();
+    loadStoreRules();
+}
+function saveAllData(){
+    localStorage.setItem('stocksData', JSON.stringify(stocksData));
+    localStorage.setItem('ordersData', JSON.stringify(ordersData));
+    localStorage.setItem('soldAccountsData', JSON.stringify(soldAccountsData));
+}
+// Tabs
+for (const tab of document.querySelectorAll('.tab')) {
+    tab.onclick = function(){
+        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(c=>c.classList.remove('is-visible'));
+        tab.classList.add('active');
+        document.getElementById('panel-'+tab.dataset.tab).classList.add('is-visible');
+    }
+}
 
-        <!-- Orders Tab -->
-        <div id="orders-content" class="admin-content active">
-            <div class="card">
-                <h2>📋 Pending Orders</h2>
-                <button onclick="refreshOrders()" class="btn-primary">🔄 Refresh Orders</button>
-                <div id="orders-list" style="margin-top:1.5rem;">
-                    <p class="text-muted">No pending orders.</p>
+// Add Stock
+document.getElementById('frm-add-stock').onsubmit = function(e){
+    e.preventDefault();
+    const stock = {
+        id: Date.now(),
+        product: document.getElementById('stock-product').value,
+        email: document.getElementById('stock-email').value,
+        password: document.getElementById('stock-password').value,
+        profile: document.getElementById('stock-profile').value,
+        pin: document.getElementById('stock-pin').value,
+        type: document.getElementById('stock-type').value,
+        duration: document.getElementById('stock-duration').value,
+        status: 'available',
+        addedDate: new Date().toLocaleDateString()
+    };
+    stocksData.push(stock);
+    saveAllData();
+    document.getElementById('add-stock-msg').innerHTML='<p class="success-message">✅ Added stock successfully!</p>';
+    setTimeout(()=>document.getElementById('add-stock-msg').innerHTML='',2500);
+    this.reset();
+    loadStocks();
+    updateStats();
+};
+
+// Stocks List with Edit
+function loadStocks(){
+    const container = document.getElementById('stocks-container');
+    if(stocksData.length===0){container.innerHTML='<p class="text-muted">No stocks yet.</p>';return;}
+    container.innerHTML = stocksData.filter(s=>s.status==='available').map(s=>`
+        <div class="stock-item">
+            <div class="stock-header">
+                <div class="stock-info">
+                    <strong>${s.product}</strong> | ${s.type} (${s.duration})
+                    <br><small>Email: ${s.email}</small>
+                </div>
+                <div class="stock-actions">
+                    <button class="btn btn-edit btn-small" onclick="showEditModal(${s.id})">Edit</button>
+                    <button class="btn btn-danger btn-small" onclick="deleteStock(${s.id})">Delete</button>
                 </div>
             </div>
         </div>
-
-        <!-- Inventory Tab -->
-        <div id="inventory-content" class="admin-content">
-            <div class="card">
-                <h2>📦 Add to Inventory</h2>
-                <form id="inventory-form" onsubmit="addInventory(event)">
-                    <select id="inv-product" class="input-field" required>
-                        <option value="">Select Product</option>
-                        <option value="netflix">Netflix Premium</option>
-                        <option value="spotify">Spotify Premium</option>
-                        <option value="disney">Disney+</option>
-                        <option value="youtube">YouTube Premium</option>
-                    </select>
-                    <input type="text" id="inv-email" placeholder="Email/Username" class="input-field" required>
-                    <input type="text" id="inv-password" placeholder="Password" class="input-field" required>
-                    <input type="text" id="inv-profile" placeholder="Profile (optional)" class="input-field">
-                    <input type="text" id="inv-pin" placeholder="PIN (optional)" class="input-field">
-                    <select id="inv-type" class="input-field" required>
-                        <option value="">Account Type</option>
-                        <option value="solo account">Solo Account</option>
-                        <option value="shared account">Shared Account</option>
-                        <option value="solo profile">Solo Profile</option>
-                        <option value="shared profile">Shared Profile</option>
-                    </select>
-                    <select id="inv-duration" class="input-field" required>
-                        <option value="">Duration</option>
-                        <option value="1m">1 Month</option>
-                        <option value="2m">2 Months</option>
-                        <option value="3m">3 Months</option>
-                        <option value="6m">6 Months</option>
-                        <option value="12m">12 Months</option>
-                    </select>
-                    <button type="submit" class="btn-primary full-width">➕ Add to Inventory</button>
-                </form>
-                <div id="inv-message"></div>
-            </div>
-            <div class="card">
-                <h2>Current Inventory</h2>
-                <button onclick="loadInventory()" class="btn-primary btn-small">🔄 Refresh</button>
-                <div id="inventory-list" style="margin-top:1rem;">
-                    <p class="text-muted">Loading inventory...</p>
-                </div>
-            </div>
+    `).join('');
+}
+function deleteStock(id){
+    stocksData = stocksData.filter(s=>s.id!==id);
+    saveAllData();
+    loadStocks();
+    updateStats();
+}
+function showEditModal(id){
+    currentEditId = id;
+    const s = stocksData.find(s=>s.id===id);
+    document.getElementById('edit-product').value=s.product;
+    document.getElementById('edit-email').value=s.email;
+    document.getElementById('edit-password').value=s.password;
+    document.getElementById('edit-profile').value=s.profile;
+    document.getElementById('edit-pin').value=s.pin;
+    document.getElementById('edit-type').value=s.type;
+    document.getElementById('edit-duration').value=s.duration;
+    document.getElementById('edit-modal').style.display='flex';
+}
+function saveEditStock(){
+    const s = stocksData.find(s=>s.id===currentEditId);
+    s.product = document.getElementById('edit-product').value;
+    s.email = document.getElementById('edit-email').value;
+    s.password = document.getElementById('edit-password').value;
+    s.profile = document.getElementById('edit-profile').value;
+    s.pin = document.getElementById('edit-pin').value;
+    s.type = document.getElementById('edit-type').value;
+    s.duration = document.getElementById('edit-duration').value;
+    saveAllData();
+    document.getElementById('edit-stock-msg').innerHTML='<p class="success-message">Saved successfully!</p>';
+    setTimeout(()=>closeEditModal(),800);
+    loadStocks();
+}
+function closeEditModal(){
+    document.getElementById('edit-modal').style.display='none';
+    document.getElementById('edit-stock-msg').innerHTML='';
+}
+// Orders
+function loadPendingOrders(){
+    const container = document.getElementById('pending-orders-container');
+    if(ordersData.length===0){container.innerHTML='<p class="text-muted">No pending orders.</p>';return;}
+    container.innerHTML = ordersData.map(o=>`
+        <div class="stock-item">
+            <strong>Order #${o.id}</strong> - ${o.product}
+            <br><small>Buyer: ${o.email} | Amount: ₱${o.amount}</small>
+            <br>
+            <button class="btn btn-success btn-small" onclick="approveOrder(${o.id})">Approve</button>
+            <button class="btn btn-danger btn-small" onclick="cancelOrder(${o.id})">Cancel</button>
         </div>
-
-        <!-- Products Tab -->
-        <div id="products-content" class="admin-content">
-            <div class="card">
-                <h2>🛍️ Products Management</h2>
-                <p class="text-muted">View and manage all products</p>
-                <div id="products-list" style="margin-top:1.5rem;">
-                    <p>Product management coming soon...</p>
-                </div>
-            </div>
+    `).join('');
+}
+function approveOrder(id){
+    ordersData = ordersData.filter(o=>o.id!==id);
+    saveAllData();
+    loadPendingOrders();
+    updateStats();
+}
+function cancelOrder(id){
+    ordersData = ordersData.filter(o=>o.id!==id);
+    saveAllData();
+    loadPendingOrders();
+    updateStats();
+}
+// Sold Accounts
+function loadSoldAccounts(){
+    const container = document.getElementById('sold-accounts-container');
+    if(soldAccountsData.length===0){container.innerHTML='<p class="text-muted">No sold accounts yet.</p>';return;}
+    container.innerHTML = soldAccountsData.map(s=>`
+        <div class="stock-item">
+            <strong>${s.product}</strong> - ${s.type} (${s.duration})
+            <br><small>Sold to: ${s.email} | Amount: ₱${s.amount}</small>
+            <div>Sold Date: ${s.soldDate || '-'}</div>
         </div>
+    `).join('');
+}
+// Archived Stocks
+function loadArchivedStocks(){
+    const container = document.getElementById('archived-stocks-container');
+    container.innerHTML = '<p class="text-muted">Archived stocks feature coming soon.</p>';
+}
+// Products/Rules
+function loadProductsList(){
+    document.getElementById('products-list').innerHTML='<p class="text-muted">Product management coming soon.</p>';
+}
+function loadStoreRules(){
+    document.getElementById('store-rules-list').innerHTML='<p class="text-muted">Rules management coming soon.</p>';
+}
 
-        <!-- Add Manual Record Tab -->
-        <div id="records-content" class="admin-content">
-            <div class="card">
-                <h2>➕ Add Manual Buyer Record</h2>
-                <p class="text-muted">For transactions outside the website</p>
-                <form id="manual-record-form" onsubmit="addManualRecord(event)">
-                    <input type="email" id="record-buyer-email" placeholder="Buyer Email" class="input-field" required>
-                    <input type="text" id="record-buyer-name" placeholder="Buyer Name" class="input-field" required>
-                    <select id="record-product" class="input-field" required>
-                        <option value="">Select Product</option>
-                        <option value="netflix">Netflix Premium</option>
-                        <option value="spotify">Spotify Premium</option>
-                        <option value="disney">Disney+</option>
-                    </select>
-                    <input type="number" id="record-amount" placeholder="Amount Paid (₱)" class="input-field" required>
-                    <select id="record-status" class="input-field" required>
-                        <option value="completed">Completed</option>
-                        <option value="pending">Pending</option>
-                    </select>
-                    <textarea id="record-notes" placeholder="Additional Notes (optional)" class="input-field" rows="3"></textarea>
-                    <button type="submit" class="btn-primary full-width">💾 Save Record</button>
-                </form>
-                <div id="record-message"></div>
-            </div>
-        </div>
 
-        <!-- Reports Tab -->
-        <div id="reports-content" class="admin-content">
-            <div class="card">
-                <h2>📊 Customer Reports & Issues</h2>
-                <button onclick="loadReports()" class="btn-primary btn-small">🔄 Refresh</button>
-                <div id="reports-list" style="margin-top:1.5rem;">
-                    <p class="text-muted">No reports yet.</p>
-                </div>
-            </div>
-        </div>
+// Stats
+function updateStats(){
+    document.getElementById('total-products').textContent = stocksData.length;
+    document.getElementById('available-stock').textContent = stocksData.filter(s=>s.status==='available').length;
+    document.getElementById('pending-orders').textContent = ordersData.length;
+    const sales = soldAccountsData.reduce((sum, a) => sum + (parseFloat(a.amount)||0), 0);
+    document.getElementById('total-revenue').textContent = '₱'+sales.toLocaleString();
+}
+// Logout
+function adminLogout(){
+    localStorage.clear();
+    location.reload();
+}
 
-        <!-- Settings Tab -->
-        <div id="settings-content" class="admin-content">
-            <div class="card">
-                <h2>⚙️ Settings</h2>
-                <p><strong>Owner UID:</strong> 26baf1ad-64b1-436c-9758-c415949dfa0a</p>
-                <p><strong>Session:</strong> Active</p>
-                <button onclick="clearCache()" class="btn-danger">🗑️ Clear Cache</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const OWNER_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a';
-        let inventory = [];
-        let orders = [];
-        let reports = [];
-        
-        // UID Verification
-        function verifyUID() {
-            const inputUID = document.getElementById('owner-uid').value.trim();
-            if (inputUID === OWNER_UID) {
-                document.getElementById('admin-login').style.display = 'none';
-                document.getElementById('admin-dashboard').style.display = 'block';
-                document.getElementById('admin-logout').style.display = 'block';
-                localStorage.setItem('adminAuth', 'true');
-                loadAdminData();
-            } else {
-                document.getElementById('uid-error').textContent = '❌ Invalid UID. Access denied.';
-            }
-        }
-
-        // Check if already authenticated
-        window.onload = function() {
-            if (localStorage.getItem('adminAuth') === 'true') {
-                document.getElementById('admin-login').style.display = 'none';
-                document.getElementById('admin-dashboard').style.display = 'block';
-                document.getElementById('admin-logout').style.display = 'block';
-                loadAdminData();
-            }
-        };
-
-        function adminLogout() {
-            localStorage.removeItem('adminAuth');
-            location.reload();
-        }
-
-        // Tab Switching
-        function switchTab(tabName) {
-            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.admin-content').forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById(tabName + '-content').classList.add('active');
-        }
-
-        // Load Admin Data
-        function loadAdminData() {
-            loadInventory();
-            refreshOrders();
-            loadReports();
-            updateStats();
-        }
-
-        function updateStats() {
-            document.getElementById('total-products').textContent = '45';
-            document.getElementById('available-stock').textContent = inventory.length || '127';
-            document.getElementById('pending-orders').textContent = orders.length || '8';
-            document.getElementById('total-revenue').textContent = '₱12,450';
-        }
-
-        // Add Inventory
-        function addInventory(e) {
-            e.preventDefault();
-            const item = {
-                id: Date.now(),
-                product: document.getElementById('inv-product').value,
-                email: document.getElementById('inv-email').value,
-                password: document.getElementById('inv-password').value,
-                profile: document.getElementById('inv-profile').value,
-                pin: document.getElementById('inv-pin').value,
-                type: document.getElementById('inv-type').value,
-                duration: document.getElementById('inv-duration').value,
-                status: 'available',
-                addedDate: new Date().toLocaleDateString()
-            };
-            inventory.push(item);
-            document.getElementById('inventory-form').reset();
-            document.getElementById('inv-message').innerHTML = '<p class="success-message">✅ Added to inventory successfully!</p>';
-            setTimeout(() => document.getElementById('inv-message').innerHTML = '', 3000);
-            loadInventory();
-            updateStats();
-        }
-
-        function loadInventory() {
-            const list = document.getElementById('inventory-list');
-            if (inventory.length === 0) {
-                list.innerHTML = '<p class="text-muted">No items in inventory yet.</p>';
-                return;
-            }
-            list.innerHTML = inventory.map(item => `
-                <div class="inventory-item">
-                    <strong>${item.product}</strong> - ${item.type} (${item.duration})
-                    <br><small>Email: ${item.email} | Status: ${item.status}</small>
-                    <br><button class="btn-danger btn-small" onclick="deleteInventory(${item.id})">Delete</button>
-                </div>
-            `).join('');
-        }
-
-        function deleteInventory(id) {
-            inventory = inventory.filter(item => item.id !== id);
-            loadInventory();
-            updateStats();
-        }
-
-        // Orders
-        function refreshOrders() {
-            const list = document.getElementById('orders-list');
-            if (orders.length === 0) {
-                list.innerHTML = '<p class="text-muted">No pending orders.</p>';
-                return;
-            }
-            list.innerHTML = orders.map(order => `
-                <div class="order-item">
-                    <strong>Order #${order.id}</strong> - ${order.product}
-                    <br><small>Buyer: ${order.buyer} | Amount: ₱${order.amount}</small>
-                    <br><button class="btn-primary btn-small" onclick="approveOrder(${order.id})">Approve</button>
-                </div>
-            `).join('');
-        }
-
-        function approveOrder(id) {
-            orders = orders.filter(o => o.id !== id);
-            alert('Order approved and delivered!');
-            refreshOrders();
-            updateStats();
-        }
-
-        // Manual Record
-        function addManualRecord(e) {
-            e.preventDefault();
-            const record = {
-                buyerEmail: document.getElementById('record-buyer-email').value,
-                buyerName: document.getElementById('record-buyer-name').value,
-                product: document.getElementById('record-product').value,
-                amount: document.getElementById('record-amount').value,
-                status: document.getElementById('record-status').value,
-                notes: document.getElementById('record-notes').value,
-                date: new Date().toLocaleDateString()
-            };
-            console.log('Manual record added:', record);
-            document.getElementById('manual-record-form').reset();
-            document.getElementById('record-message').innerHTML = '<p class="success-message">✅ Record saved successfully!</p>';
-            setTimeout(() => document.getElementById('record-message').innerHTML = '', 3000);
-        }
-
-        // Reports
-        function loadReports() {
-            const list = document.getElementById('reports-list');
-            if (reports.length === 0) {
-                list.innerHTML = '<p class="text-muted">No customer reports yet.</p>';
-                return;
-            }
-            list.innerHTML = reports.map(report => `
-                <div class="order-item">
-                    <strong>${report.customer}</strong> - ${report.issue}
-                    <br><small>${report.date}</small>
-                    <br><button class="btn-primary btn-small">Respond</button>
-                </div>
-            `).join('');
-        }
-
-        function clearCache() {
-            if(confirm('Clear all cached data?')) {
-                localStorage.clear();
-                alert('Cache cleared!');
-            }
-        }
-    </script>
-    <script src="config.js"></script>
-<script src="config.private.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script src="supabase.js"></script>
-
+// On page load: hide dashboard
+window.onload=function(){
+    document.getElementById('admin-dashboard').style.display='none';
+    document.getElementById('edit-modal').style.display='none';
+    // Modal will be shown by default
+};
+</script>
 </body>
 </html>
