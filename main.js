@@ -1,11 +1,31 @@
-// ============================================
-// COMPLETE PRODUCT DATA - AIAXCART PREMIUM
-// ============================================
+// ==================== AUTHENTICATION FUNCTIONS ====================
+function getCurrentUser() {
+    return JSON.parse(localStorage.getItem('user') || 'null');
+}
 
-const PRODUCTS_DATA = [
-    // ==================== ENTERTAINMENT ====================
-    { 
-        id: 'netflix', 
+function setCurrentUser(user) {
+    localStorage.setItem('user', JSON.stringify(user));
+}
+
+function logout() {
+    localStorage.removeItem('user');
+    window.location.reload();
+}
+
+function login(email, password) {
+    // Demo login: save user locally
+    const user = {
+        email: email,
+        id: Date.now(),
+        name: email.split('@')[0]
+    };
+    setCurrentUser(user);
+    window.location.reload();
+    return user;
+}
+
+// ==================== PRODUCTS DATA (FULL LIST) ====================
+const PRODUCTS_DATA = [id: 'netflix', 
         name: 'Netflix Premium', 
         category: 'entertainment', 
         icon: '📺',
@@ -474,67 +494,85 @@ const PRODUCTS_DATA = [
 let currentUser = null;
 let selectedProducts = {};
 
-// ==================== INITIALIZATION ====================
-document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
-});
-
-function initializeApp() {
+// ==================== MAIN INITIALIZATION ====================
+document.addEventListener('DOMContentLoaded', function () {
     currentUser = getCurrentUser();
+    checkAuth();
+    initializeTabs();
     updateAuthUI();
     renderAllProducts();
     initializeEventListeners();
+});
+
+function checkAuth() {
+    const user = getCurrentUser();
+    if (user) {
+        document.getElementById('auth-section').style.display = 'none';
+        document.getElementById('user-section').style.display = 'flex';
+        document.getElementById('current-user').textContent = user.email;
+    } else {
+        document.getElementById('auth-section').style.display = 'block';
+        document.getElementById('user-section').style.display = 'none';
+    }
 }
 
-// ==================== AUTH UI ====================
 function updateAuthUI() {
-    if (currentUser) {
-        document.getElementById('auth-section')?.style.setProperty('display', 'none');
-        document.getElementById('user-section')?.style.setProperty('display', 'flex');
-    } else {
-        document.getElementById('auth-section')?.style.setProperty('display', 'block');
-        document.getElementById('user-section')?.style.setProperty('display', 'none');
-    }
+    checkAuth();
 }
 
 // ==================== EVENT LISTENERS ====================
 function initializeEventListeners() {
-    // Login button
-    document.getElementById('login-btn')?.addEventListener('click', () => {
-        const email = prompt('Enter email:');
-        const password = prompt('Enter password:');
-        if (email && password) {
-            login(email, password);
-            location.reload();
-        }
-    });
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        loginBtn.onclick = function () {
+            const email = prompt('Enter email:');
+            const password = prompt('Enter password:');
+            if (email && password) {
+                login(email, password);
+            }
+        };
+    }
 
-    // Logout button
-    document.getElementById('logout-btn')?.addEventListener('click', logout);
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.onclick = logout;
+    }
 
-    // Search
-    document.getElementById('search-input')?.addEventListener('input', handleSearch);
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', handleSearch);
+    }
+}
+
+// ==================== TABS ====================
+function initializeTabs() {
+    window.switchTab = function (tabName) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById(tabName + '-tab').classList.add('active');
+    };
 }
 
 // ==================== PRODUCT RENDERING ====================
 function renderAllProducts() {
+    const categoriesWrapper = document.querySelector('.categories-wrapper');
+    if (!categoriesWrapper) return;
+    categoriesWrapper.innerHTML = '';
     const categories = [...new Set(PRODUCTS_DATA.map(p => p.category))];
-    
     categories.forEach(category => {
         const categoryProducts = PRODUCTS_DATA.filter(p => p.category === category);
-        renderCategorySection(category, categoryProducts);
+        categoriesWrapper.appendChild(renderCategorySection(category, categoryProducts));
     });
 }
 
 function renderCategorySection(category, products) {
-    const container = document.getElementById('entertainment-grid')?.parentElement.parentElement;
-    if (!container) return;
+    const section = document.createElement('div');
+    section.className = 'category-section';
 
     const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
     const categoryIcon = getCategoryIcon(category);
-    
-    const section = document.createElement('div');
-    section.className = 'category-section';
+
     section.innerHTML = `
         <div class="category-header">
             <h3 class="category-title">${categoryIcon} ${categoryName}</h3>
@@ -542,21 +580,12 @@ function renderCategorySection(category, products) {
         </div>
         <div class="products-grid" id="${category}-grid"></div>
     `;
-    
-    const parentDiv = document.querySelector('.category-section')?.parentElement;
-    if (parentDiv) {
-        parentDiv.appendChild(section);
-    }
-
-    renderProducts(category, products);
+    renderProducts(category, products, section.querySelector('.products-grid'));
+    return section;
 }
 
-function renderProducts(category, products) {
-    const grid = document.getElementById(`${category}-grid`);
-    if (!grid) return;
-    
+function renderProducts(category, products, grid) {
     grid.innerHTML = '';
-
     products.forEach(product => {
         const card = createProductCard(product);
         grid.appendChild(card);
@@ -571,11 +600,11 @@ function createProductCard(product) {
     const defaultType = accountTypes[0];
     const durations = Object.keys(product.pricing[defaultType]);
 
-    const accountTypesHTML = accountTypes.map(type => 
+    const accountTypesHTML = accountTypes.map(type =>
         `<button class="account-btn" onclick="selectAccountType('${product.id}', '${type}')">${type}</button>`
     ).join('');
 
-    const durationsHTML = durations.map(dur => 
+    const durationsHTML = durations.map(dur =>
         `<button class="duration-btn" onclick="selectDuration('${product.id}', '${defaultType}', '${dur}')">${dur}</button>`
     ).join('');
 
@@ -604,12 +633,11 @@ function createProductCard(product) {
             </button>
         </div>
     `;
-    
     return card;
 }
 
 // ==================== PRODUCT SELECTION ====================
-function selectAccountType(productId, type) {
+window.selectAccountType = function (productId, type) {
     const product = PRODUCTS_DATA.find(p => p.id === productId);
     if (!product) return;
 
@@ -618,47 +646,43 @@ function selectAccountType(productId, type) {
 
     const durations = Object.keys(product.pricing[type]);
     const durationsContainer = document.getElementById(`${productId}-durations`);
-    durationsContainer.innerHTML = durations.map(dur => 
+    durationsContainer.innerHTML = durations.map(dur =>
         `<button class="duration-btn" onclick="selectDuration('${productId}', '${type}', '${dur}')">${dur}</button>`
     ).join('');
 
     selectedProducts[productId] = { type, duration: null, price: null };
     document.getElementById(`${productId}-price`).innerHTML = '<em style="color:#999;font-size:0.9rem;">Select duration</em>';
     document.getElementById(`${productId}-checkout`).disabled = true;
-}
+};
 
-function selectDuration(productId, type, duration) {
+window.selectDuration = function (productId, type, duration) {
     const product = PRODUCTS_DATA.find(p => p.id === productId);
     if (!product) return;
 
     const price = product.pricing[type][duration];
     document.querySelectorAll(`#${productId}-durations .duration-btn`).forEach(btn => btn.classList.remove('active'));
     event.target.classList.add('active');
-    
+
     document.getElementById(`${productId}-price`).innerHTML = `₱${price}`;
-    
+
     const checkoutBtn = document.getElementById(`${productId}-checkout`);
     checkoutBtn.disabled = false;
     checkoutBtn.textContent = 'Checkout';
     checkoutBtn.onclick = () => checkout(productId, type, duration, price);
 
     selectedProducts[productId] = { type, duration, price };
-}
+};
 
-// ==================== CHECKOUT ====================
+// ==================== CHECKOUT (DEMO) ====================
 function checkout(productId, type, duration, price) {
-    if (!currentUser) {
+    if (!getCurrentUser()) {
         alert('Please login first to checkout');
         return;
     }
-
     const product = PRODUCTS_DATA.find(p => p.id === productId);
     const confirmed = confirm(`Proceed to checkout?\n\nProduct: ${product.name}\nType: ${type}\nDuration: ${duration}\nPrice: ₱${price}`);
-    
     if (confirmed) {
-        // Create order
-        const order = createOrder(product.name, currentUser.email, price);
-        alert(`Order created! Order ID: ${order.id}\n\nPlease proceed to payment.`);
+        alert(`Order created!\n\nPlease proceed to payment.`);
     }
 }
 
@@ -666,7 +690,6 @@ function checkout(productId, type, duration, price) {
 function handleSearch(e) {
     const query = e.target.value.toLowerCase();
     const allProducts = document.querySelectorAll('.product-card');
-    
     allProducts.forEach(card => {
         const productName = card.querySelector('.product-name').textContent.toLowerCase();
         card.style.display = productName.includes(query) ? 'block' : 'none';
@@ -684,13 +707,3 @@ function getCategoryIcon(category) {
     };
     return icons[category] || '📦';
 }
-
-// Export for global use
-window.selectAccountType = selectAccountType;
-window.selectDuration = selectDuration;
-window.switchTab = function(tabName) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById(tabName + '-tab').classList.add('active');
-};
