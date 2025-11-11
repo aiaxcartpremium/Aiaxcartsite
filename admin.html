@@ -1,282 +1,365 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Console - Aiaxcart Premium</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { background: #fefaf7; color: #5a3e36; font-family: 'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
-    .container{max-width:1200px;margin:0 auto;padding:0 20px;}
-    header{background:#FFD3D6;padding:1rem 0;box-shadow:0 4px 15px rgba(0,0,0,0.08);}
-    .header-content{display:flex;justify-content:space-between;align-items:center;}
-    .logo{font-size:1.8rem;font-weight:700;}
-    nav ul{display:flex;list-style:none;}
-    nav ul li{margin-left:1.5rem;}
-    nav ul li a{color:#5a3e36;text-decoration:none;font-weight:500;padding:0.5rem 1rem;border-radius:8px;}
-    nav ul li a.active,nav ul li a:hover{background:#FFC6CA;font-weight:bold;}
-    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1.3rem;margin:2rem 0;}
-    .stat-card{background:white;padding:1.1rem 1.5rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.09);text-align:center;}
-    .stat-card h3{font-size:2rem;margin-bottom:0.25rem;color:#FFB0B5;font-family:inherit;}
-    .tabs{display:flex;gap:1rem;margin:0 0 2rem 0;flex-wrap:wrap;}
-    .tab{padding:0.7rem 1.2rem;cursor:pointer;border-radius:8px;background:#f0f0f0;border:none;}
-    .tab.active{background:#FFD3D6;font-weight:bold;}
-    .panel{display:none;}
-    .panel.active{display:block;}
-    .card{background:white;border-radius:12px;padding:1.5rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,0,0,0.07);}
-    .btn{padding:0.53rem 1.18rem;border-radius:8px;border:none;font-size:1rem;cursor:pointer;font-weight:500;}
-    .btn-primary{background:#FFB0B5;color:white;}
-    .btn-danger{background:#F44336;color:white;}
-    .btn-warning{background:#FDB42A;color:white;}
-    .btn-edit{background:#2196F3;color:white;}
-    .btn-small{padding:0.35rem 0.85rem;font-size:0.91rem;}
-    input,select,textarea{padding:0.6rem;border-radius:8px;border:1px solid #EAEAEA;font-size:1rem;margin:.17rem 0;width:100%;}
-    input[type="number"],input[type="date"]{max-width:150px;}
-    label{margin:0.57rem 0 0.2rem;display:block;}
-    .toggle-row{display:flex;align-items:center;gap:1.6rem;margin:0.7rem 0;}
-    .toggle-label{font-size:1rem;}
-    .toggle-switch{width:46px;height:25px;position:relative;display:inline-block;}
-    .toggle-switch input{display:none;}
-    .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ccc;transition:.4s;border-radius:25px;}
-    .slider:before{position:absolute;content:"";height:18px;width:18px;left:4px;bottom:3.5px;background:white;transition:.4s;border-radius:50%;}
-    input:checked+.slider{background:#FFB0B5;}
-    input:checked+.slider:before{transform:translateX(21px);}
-    .cat-btn{margin:0.35rem 0.75rem 0.35rem 0;padding:0.4rem 1.1rem;border-radius:8px;background:#f5f5f5;border:none;font-size:1rem;}
-    .cat-btn.active{background:#FFD3D6;}
-    .stock-item{padding:0.7rem 0;border-bottom:1px solid #EEE;}
-    .stock-actions{margin-top:0.45rem;display:flex;gap:10px;}
-    .error-message{color:red;margin-top:0.5rem;}
-    .success-message{color:green;margin-top:0.6rem;}
-    .premium-label{color:#FF6B81;font-weight:700;margin-left:8px;}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Console - Aiaxcart Premium</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        html,body{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;}
+        body{background-color:#fefaf7;color:#5a3e36;line-height:1.6;}
+        .container{max-width:1200px;margin:0 auto;padding:0 20px;}
+        header{background:#FFD3D6;padding:1.2rem 0;box-shadow:0 4px 15px rgba(0,0,0,0.08);}
+        .header-content{display:flex;justify-content:space-between;align-items:center;}
+        .logo{font-size:1.8rem;font-weight:700;display:flex;align-items:center;}
+        nav ul{display:flex;list-style:none;}
+        nav ul li{margin-left:1.5rem;}
+        nav ul li a{color:#5a3e36;text-decoration:none;font-weight:500;padding:0.5rem 1rem;border-radius:8px;}
+        nav ul li a.active,nav ul li a:hover{background:#FFC6CA;font-weight:bold;}
+        .btn{padding:0.6rem 1.5rem;border:none;border-radius:12px;cursor:pointer;font-weight:500;}
+        .btn-primary{background:#FFB0B5;color:white;}
+        .btn-danger{background:#F44336;color:white;}
+        .btn-warning{background:#FF9800;color:white;}
+        .btn-success{background:#4CAF50;color:white;}
+        .btn-edit{background:#2196F3;color:white;}
+        .btn-small{padding:0.4rem 0.8rem;font-size:0.85rem;}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin:2rem 0;}
+        .stat-card{background:white;padding:2rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);text-align:center;}
+        .stat-card h3{font-size:2rem;margin-bottom:0.5rem;color:#FFB0B5;}
+        /* Modal styles */
+        #owner-modal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;}
+        .modal-card{background:white;padding:2rem 2.5rem;border-radius:20px;box-shadow:0 2px 10px rgba(0,0,0,0.1);}
+        .error-message{color:red;margin-top:0.5rem;}
+        .success-message{color:green;margin-top:0.5rem;}
+        /* Tab styles */
+        .tabs{display:flex;gap:1rem;margin:2rem 0;flex-wrap:wrap;}
+        .tab{padding:0.75rem 1.5rem;border:none;background:#f0f0f0;cursor:pointer;border-radius:8px;}
+        .tab.active{background:#FFD3D6;font-weight:bold;}
+        .panel{display:none;}
+        .panel.is-visible{display:block;}
+        /* Stock Items */
+        .stock-item{border:1px solid #FFE5E7;border-radius:12px;padding:1rem;margin-bottom:1rem;background:white;}
+        .stock-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;}
+        .stock-info{flex:1;}
+        .stock-actions{display:flex;gap:0.5rem;}
+    </style>
 </head>
 <body>
 <header>
-  <div class="container header-content">
-    <div class="logo">🛒 Aiaxcart Premium</div>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="admin.html" class="active" id="admin-nav-link">Admin</a></li>
-      </ul>
-    </nav>
-  </div>
+    <div class="container header-content">
+        <div class="logo">🛒 Aiaxcart Admin</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="admin.html" class="active">Admin</a></li>
+            </ul>
+        </nav>
+        <button id="admin-logout" class="btn btn-danger" style="display:none;" onclick="adminLogout()">Logout</button>
+    </div>
 </header>
-<div class="container">
-  <h1 style="margin-top:2rem;">Admin Console</h1>
-  <div class="stats-grid">
-    <div class="stat-card"><h3 id="stat-total-sales">0</h3><div>Total Sales</div></div>
-    <div class="stat-card"><h3 id="stat-total-revenue">₱0</h3><div>Total Revenue</div></div>
-    <div class="stat-card"><h3 id="stat-available-stock">0</h3><div>Available Stock</div></div>
-    <div class="stat-card"><h3 id="stat-pending-orders">0</h3><div>Pending Orders</div></div>
-  </div>
-  <div class="tabs" id="admintabs">
-    <button class="tab active" data-tab="add-stock">Add Stock</button>
-    <button class="tab" data-tab="manage-stocks">Manage Stocks</button>
-    <button class="tab" data-tab="pending-orders">Pending Orders</button>
-    <button class="tab" data-tab="sold-accounts">Sold Accounts</button>
-    <button class="tab" data-tab="archived-stocks">Archived Stocks</button>
-    <button class="tab" data-tab="products">Products</button>
-    <button class="tab" data-tab="store-rules">Store Rules</button>
-    <button class="tab" data-tab="records">Add Record</button>
-    <button class="tab" data-tab="reports">Reports</button>
-    <button class="tab" data-tab="settings">Settings</button>
-  </div>
 
-  <!-- Add Stock Panel -->
-  <div class="panel active" id="panel-add-stock">
-    <div class="card">
-      <h2>Add Stock</h2>
-      <form id="addStockForm">
-        <label>Product
-          <select id="stock-product" required></select>
-        </label>
-        <label>Account Type
-          <select id="stock-type" required></select>
-        </label>
-        <label>Duration
-          <select id="stock-duration" required></select>
-        </label>
-        <label>Email/Login
-          <input type="text" id="stock-email" required>
-        </label>
-        <label>Password
-          <input type="text" id="stock-password" required>
-        </label>
-        <label>Profile (optional)
-          <input type="text" id="stock-profile">
-        </label>
-        <label>PIN (optional)
-          <input type="text" id="stock-pin">
-        </label>
-        <label>Quantity
-          <input type="number" id="stock-quantity" value="1" min="1">
-        </label>
-        <div class="toggle-row">
-          <span class="toggle-label">Set as Premium?</span>
-          <label class="toggle-switch">
-            <input type="checkbox" id="stock-premium">
-            <span class="slider"></span>
-          </label>
-          <span class="toggle-label">Archive?</span>
-          <label class="toggle-switch">
-            <input type="checkbox" id="stock-archive" onchange="showArchiveDate()">
-            <span class="slider"></span>
-          </label>
-          <input type="date" id="stock-archive-date" min="" style="display:none">
+<!-- Floating Owner Verification Modal -->
+<div id="owner-modal">
+    <div class="modal-card">
+        <h2>🔐 Owner Verification</h2>
+        <input type="text" id="owner-uid" placeholder="Enter Owner UID" class="input-field">
+        <button onclick="verifyUID()" class="btn btn-primary full-width">Verify Access</button>
+        <div id="uid-error" class="error-message"></div>
+    </div>
+</div>
+
+<div class="container" id="admin-dashboard" style="display:none;">
+    <h1>Admin Console</h1>
+    <p class="text-muted">Welcome back, Owner! Manage your shop here.</p>
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card"><h3 id="total-products">0</h3><p>Total Products</p></div>
+        <div class="stat-card"><h3 id="available-stock">0</h3><p>Available Stock</p></div>
+        <div class="stat-card"><h3 id="pending-orders">0</h3><p>Pending Orders</p></div>
+        <div class="stat-card"><h3 id="total-revenue">₱0</h3><p>Total Revenue</p></div>
+    </div>
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" data-tab="add-stock">Add Stock</button>
+        <button class="tab" data-tab="manage-stocks">Manage Stocks</button>
+        <button class="tab" data-tab="pending-orders">Pending Orders</button>
+        <button class="tab" data-tab="sold-accounts">Sold Accounts</button>
+        <button class="tab" data-tab="archived-stocks">Archived Stocks</button>
+        <button class="tab" data-tab="products">Products</button>
+        <button class="tab" data-tab="store-rules">Store Rules</button>
+    </div>
+    <!-- Panels -->
+    <section id="panel-add-stock" class="panel is-visible">
+        <div class="card">
+            <h2>Add Stock</h2>
+            <form id="frm-add-stock">
+                <input type="text" id="stock-product" placeholder="Product" class="input-field" required>
+                <input type="text" id="stock-email" placeholder="Email/Username" class="input-field" required>
+                <input type="text" id="stock-password" placeholder="Password" class="input-field" required>
+                <input type="text" id="stock-profile" placeholder="Profile (optional)" class="input-field">
+                <input type="text" id="stock-pin" placeholder="PIN (optional)" class="input-field">
+                <input type="text" id="stock-type" placeholder="Account Type" class="input-field" required>
+                <input type="text" id="stock-duration" placeholder="Duration" class="input-field" required>
+                <button type="submit" class="btn btn-primary full-width">Add Stock</button>
+            </form>
+            <div id="add-stock-msg"></div>
         </div>
-        <button type="submit" class="btn btn-primary" style="margin-top:1rem;width:100%">Add to Inventory</button>
-      </form>
-      <div id="add-stock-msg"></div>
+    </section>
+    <section id="panel-manage-stocks" class="panel">
+        <div class="card">
+            <h2>Available Stocks (Edit/Delete)</h2>
+            <button onclick="loadStocks()" class="btn btn-primary btn-small">Refresh Stocks</button>
+            <div id="stocks-container"></div>
+        </div>
+    </section>
+    <section id="panel-pending-orders" class="panel">
+        <div class="card">
+            <h2>Pending Orders</h2>
+            <button onclick="loadPendingOrders()" class="btn btn-primary btn-small">Refresh Orders</button>
+            <div id="pending-orders-container"></div>
+        </div>
+    </section>
+    <section id="panel-sold-accounts" class="panel">
+        <div class="card">
+            <h2>Sold Accounts</h2>
+            <div id="sold-accounts-container"></div>
+        </div>
+    </section>
+    <section id="panel-archived-stocks" class="panel">
+        <div class="card">
+            <h2>Archived Stocks</h2>
+            <button onclick="loadArchivedStocks()" class="btn btn-primary btn-small">Refresh Archived</button>
+            <div id="archived-stocks-container"></div>
+        </div>
+    </section>
+    <section id="panel-products" class="panel">
+        <div class="card">
+            <h2>Products Management</h2>
+            <div id="products-list"></div>
+        </div>
+    </section>
+    <section id="panel-store-rules" class="panel">
+        <div class="card">
+            <h2>Store Rules Management</h2>
+            <div id="store-rules-list"></div>
+        </div>
+    </section>
+</div>
+<!-- Edit Stock Modal -->
+<div id="edit-modal" style="display:none;">
+    <div class="modal-card">
+        <h2>Edit Stock</h2>
+        <input type="text" id="edit-product" class="input-field">
+        <input type="text" id="edit-email" class="input-field">
+        <input type="text" id="edit-password" class="input-field">
+        <input type="text" id="edit-profile" class="input-field">
+        <input type="text" id="edit-pin" class="input-field">
+        <input type="text" id="edit-type" class="input-field">
+        <input type="text" id="edit-duration" class="input-field">
+        <button onclick="saveEditStock()" class="btn btn-primary full-width">Save Changes</button>
+        <button onclick="closeEditModal()" class="btn btn-danger full-width">Cancel</button>
+        <div id="edit-stock-msg"></div>
     </div>
-  </div>
-
-  <div class="panel" id="panel-manage-stocks">
-    <div class="card">
-      <h2>Manage Stocks</h2>
-      <div id="stock-cat-btns"></div>
-      <div id="manage-stocks-list"></div>
-    </div>
-  </div>
-  <!-- The rest of your panels... Pending Orders, Sold, Archived, etc -->
 </div>
 <script>
-const PRODUCTS = [
-  "Netflix Premium","Viu Premium","VIVAMAX VIVAONE","WeTV","IWANT TFC","Crunchyroll",
-  "Disney+","Bilibili","Loklok","iQiyi","HBO Max","Amazon Prime","Youku",
-  "NBA League Pass Premium","YouTube Premium","Spotify Premium","Apple Music",
-  "ChatGPT Plus","Blackbox AI","Perplexity AI","Google One + Gemini AI","Quizlet+",
-  "Scribd Premium","Studocu Premium","Duolingo Super","Turnitin Student","Turnitin Instructor",
-  "Canva Pro","Picsart Gold","CapCut Pro","Alight Motion Pro","Remini Web",
-  "Grammarly Premium","Quillbot Premium","Microsoft 365","CamScanner Pro","Small PDF Pro","Zoom Pro"
-];
-const ACC_TYPES = ["Solo Account","Shared Account","Solo Profile","Shared Profile"];
-const DURATIONS = ["1m","2m","3m","6m","12m"];
-let stocks = JSON.parse(localStorage.getItem("admin_stocks")||"[]");
-let archived = JSON.parse(localStorage.getItem("admin_archived")||"[]");
-let soldAccounts = JSON.parse(localStorage.getItem("admin_soldaccts")||"[]");
-let pendingOrders = JSON.parse(localStorage.getItem("admin_orders")||"[]");
-let reports = JSON.parse(localStorage.getItem("admin_reports")||"[]");
-let recordsData = JSON.parse(localStorage.getItem('recordsData')||'[]');
+const ADMIN_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a'; // Replace with your UID
+let stocksData = [];
+let ordersData = [];
+let soldAccountsData = [];
+let currentEditId = null;
 
-function saveDB() {
-  localStorage.setItem("admin_stocks",JSON.stringify(stocks));
-  localStorage.setItem("admin_archived",JSON.stringify(archived));
-  localStorage.setItem("admin_soldaccts",JSON.stringify(soldAccounts));
-  localStorage.setItem("admin_orders",JSON.stringify(pendingOrders));
-  localStorage.setItem("admin_reports",JSON.stringify(reports));
-  localStorage.setItem("recordsData",JSON.stringify(recordsData));
-}
-document.addEventListener("DOMContentLoaded",()=>{
-  document.getElementById("stock-product").innerHTML='<option value="">Select Product</option>'+PRODUCTS.map(p=>`<option value="${p}">${p}</option>`).join("");
-  document.getElementById("stock-type").innerHTML='<option value="">Select Type</option>'+ACC_TYPES.map(t=>`<option value="${t}">${t}</option>`).join("");
-  document.getElementById("stock-duration").innerHTML='<option value="">Select Duration</option>'+DURATIONS.map(d=>`<option value="${d}">${d}</option>`).join("");
-  document.querySelectorAll(".tab").forEach(tab=>tab.onclick=function(){
-    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
-    tab.classList.add("active");
-    document.getElementById("panel-"+tab.dataset.tab).classList.add("active");
-  });
-  updateStats();
-  showStocksCats();
-  autoArchiveExpired();
-});
-// ARCHIVE INPUT
-function showArchiveDate(){
-  let cb = document.getElementById("stock-archive");
-  let dt = document.getElementById("stock-archive-date");
-  dt.style.display = cb.checked ? "" : "none";
-  if(cb.checked){
-    let today = new Date();
-    dt.min = today.toISOString().split('T')[0];
-    dt.value = dt.value || today.toISOString().split('T')[0];
-  }
-}
-// ADD STOCK (with premium, archive)
-document.getElementById("addStockForm").onsubmit = function(e){
-  e.preventDefault();
-  let prod = document.getElementById("stock-product").value;
-  let type = document.getElementById("stock-type").value;
-  let dur = document.getElementById("stock-duration").value;
-  let premium = document.getElementById("stock-premium").checked;
-  let archive = document.getElementById("stock-archive").checked;
-  let archiveDate = archive ? document.getElementById("stock-archive-date").value : null;
-  let qty = Number(document.getElementById("stock-quantity").value)||1;
-  let now = new Date();
-  for(let i=0;i<qty;i++){
-    stocks.push({
-      id: 'STK'+now.getTime()+Math.floor(1000*Math.random()),
-      product: prod, type, duration: dur,
-      email: document.getElementById("stock-email").value,
-      password: document.getElementById("stock-password").value,
-      profile: document.getElementById("stock-profile").value,
-      pin: document.getElementById("stock-pin").value,
-      premium: premium,
-      archive: archive,
-      archiveDate: archiveDate,
-      status: 'available',
-      date: now.toLocaleDateString()
-    });
-  }
-  saveDB();
-  this.reset();
-  document.getElementById("stock-archive-date").style.display = "none";
-  document.getElementById("add-stock-msg").innerHTML = `<span class="success-message">✅ ${qty} stock/s added!</span>`;
-  setTimeout(()=>document.getElementById("add-stock-msg").innerHTML='',2000);
-  updateStats(); showStocksCats();
-  autoArchiveExpired();
-};
-// AUTO REMOVE ARCHIVED STOCKS after expiry date
-function autoArchiveExpired(){
-  let today = new Date();
-  stocks = stocks.filter(s=>{
-    if(s.archive&&s.archiveDate){
-      let exp = new Date(s.archiveDate + "T23:59")
-      if(today > exp){
-        archived.push(s);
-        return false;
-      }
+// Floating owner verification
+function verifyUID() {
+    const inputUID = document.getElementById('owner-uid').value.trim();
+    if (inputUID === ADMIN_UID) {
+        document.getElementById('owner-modal').style.display = 'none';
+        document.getElementById('admin-dashboard').style.display = 'block';
+        document.getElementById('admin-logout').style.display = 'block';
+        loadAllData();
+    } else {
+        document.getElementById('uid-error').textContent = '❌ Invalid UID. Access denied.';
     }
-    return true;
-  });
-  saveDB(); updateStats(); showStocksCats();
 }
-// CATEGORIZED STOCKS
-function showStocksCats() {
-  let byProd = {};
-  stocks.forEach(s=>{if (!byProd[s.product]) byProd[s.product]=[];byProd[s.product].push(s);});
-  let catBtns = Object.keys(byProd).sort().map(prod=>`<button class="cat-btn" onclick="expandStockCat('${prod.replace(/'/g,"\\'")}')">${prod} (${byProd[prod].length})</button>`).join(" ");
-  document.getElementById("stock-cat-btns").innerHTML=(catBtns||"<p>No stocks yet.</p>");
-  document.getElementById("manage-stocks-list").innerHTML="";
+
+// Save and load data via LocalStorage (change as needed)
+function loadAllData(){
+    stocksData = JSON.parse(localStorage.getItem('stocksData')||'[]');
+    ordersData = JSON.parse(localStorage.getItem('ordersData')||'[]');
+    soldAccountsData = JSON.parse(localStorage.getItem('soldAccountsData')||'[]');
+    updateStats();
+    loadStocks();
+    loadPendingOrders();
+    loadSoldAccounts();
+    loadArchivedStocks();
+    loadProductsList();
+    loadStoreRules();
 }
-function expandStockCat(prod){
-  let items = stocks.filter(s=>s.product===prod);
-  document.getElementById("manage-stocks-list").innerHTML =
-    `<div class="stock-list-head">${prod} <button class="btn btn-small btn-danger" onclick="closeStockCat()">Close</button></div>` +
-    items.map((s,i)=>`
-      <div class="stock-item">
-        <b>${s.type}</b> (${s.duration}) — ${s.email} ${s.premium?'<span class="premium-label">Premium</span>':''}
-        <div class="stock-actions">
-          <button class="btn btn-edit btn-small" onclick="editStock('${s.id}')">Edit</button>
-          <button class="btn btn-danger btn-small" onclick="deleteStock('${s.id}')">Delete</button>
+function saveAllData(){
+    localStorage.setItem('stocksData', JSON.stringify(stocksData));
+    localStorage.setItem('ordersData', JSON.stringify(ordersData));
+    localStorage.setItem('soldAccountsData', JSON.stringify(soldAccountsData));
+}
+// Tabs
+for (const tab of document.querySelectorAll('.tab')) {
+    tab.onclick = function(){
+        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(c=>c.classList.remove('is-visible'));
+        tab.classList.add('active');
+        document.getElementById('panel-'+tab.dataset.tab).classList.add('is-visible');
+    }
+}
+
+// Add Stock
+document.getElementById('frm-add-stock').onsubmit = function(e){
+    e.preventDefault();
+    const stock = {
+        id: Date.now(),
+        product: document.getElementById('stock-product').value,
+        email: document.getElementById('stock-email').value,
+        password: document.getElementById('stock-password').value,
+        profile: document.getElementById('stock-profile').value,
+        pin: document.getElementById('stock-pin').value,
+        type: document.getElementById('stock-type').value,
+        duration: document.getElementById('stock-duration').value,
+        status: 'available',
+        addedDate: new Date().toLocaleDateString()
+    };
+    stocksData.push(stock);
+    saveAllData();
+    document.getElementById('add-stock-msg').innerHTML='<p class="success-message">✅ Added stock successfully!</p>';
+    setTimeout(()=>document.getElementById('add-stock-msg').innerHTML='',2500);
+    this.reset();
+    loadStocks();
+    updateStats();
+};
+
+// Stocks List with Edit
+function loadStocks(){
+    const container = document.getElementById('stocks-container');
+    if(stocksData.length===0){container.innerHTML='<p class="text-muted">No stocks yet.</p>';return;}
+    container.innerHTML = stocksData.filter(s=>s.status==='available').map(s=>`
+        <div class="stock-item">
+            <div class="stock-header">
+                <div class="stock-info">
+                    <strong>${s.product}</strong> | ${s.type} (${s.duration})
+                    <br><small>Email: ${s.email}</small>
+                </div>
+                <div class="stock-actions">
+                    <button class="btn btn-edit btn-small" onclick="showEditModal(${s.id})">Edit</button>
+                    <button class="btn btn-danger btn-small" onclick="deleteStock(${s.id})">Delete</button>
+                </div>
+            </div>
         </div>
-      </div>
     `).join('');
 }
-function closeStockCat() {
-  document.getElementById("manage-stocks-list").innerHTML="";
-}
-function updateStats(){
-  document.getElementById("stat-total-sales").textContent = soldAccounts.length;
-  document.getElementById("stat-total-revenue").textContent = "₱"+soldAccounts.reduce((sum,sa)=>sum+(Number(sa.amount)||0),0);
-  document.getElementById("stat-available-stock").textContent = stocks.length;
-  document.getElementById("stat-pending-orders").textContent = pendingOrders.length;
-}
 function deleteStock(id){
-  stocks=stocks.filter(s=>s.id!==id);saveDB();updateStats();showStocksCats();
+    stocksData = stocksData.filter(s=>s.id!==id);
+    saveAllData();
+    loadStocks();
+    updateStats();
 }
-function editStock(id){
-  // Implement your edit flow here.
+function showEditModal(id){
+    currentEditId = id;
+    const s = stocksData.find(s=>s.id===id);
+    document.getElementById('edit-product').value=s.product;
+    document.getElementById('edit-email').value=s.email;
+    document.getElementById('edit-password').value=s.password;
+    document.getElementById('edit-profile').value=s.profile;
+    document.getElementById('edit-pin').value=s.pin;
+    document.getElementById('edit-type').value=s.type;
+    document.getElementById('edit-duration').value=s.duration;
+    document.getElementById('edit-modal').style.display='flex';
 }
+function saveEditStock(){
+    const s = stocksData.find(s=>s.id===currentEditId);
+    s.product = document.getElementById('edit-product').value;
+    s.email = document.getElementById('edit-email').value;
+    s.password = document.getElementById('edit-password').value;
+    s.profile = document.getElementById('edit-profile').value;
+    s.pin = document.getElementById('edit-pin').value;
+    s.type = document.getElementById('edit-type').value;
+    s.duration = document.getElementById('edit-duration').value;
+    saveAllData();
+    document.getElementById('edit-stock-msg').innerHTML='<p class="success-message">Saved successfully!</p>';
+    setTimeout(()=>closeEditModal(),800);
+    loadStocks();
+}
+function closeEditModal(){
+    document.getElementById('edit-modal').style.display='none';
+    document.getElementById('edit-stock-msg').innerHTML='';
+}
+// Orders
+function loadPendingOrders(){
+    const container = document.getElementById('pending-orders-container');
+    if(ordersData.length===0){container.innerHTML='<p class="text-muted">No pending orders.</p>';return;}
+    container.innerHTML = ordersData.map(o=>`
+        <div class="stock-item">
+            <strong>Order #${o.id}</strong> - ${o.product}
+            <br><small>Buyer: ${o.email} | Amount: ₱${o.amount}</small>
+            <br>
+            <button class="btn btn-success btn-small" onclick="approveOrder(${o.id})">Approve</button>
+            <button class="btn btn-danger btn-small" onclick="cancelOrder(${o.id})">Cancel</button>
+        </div>
+    `).join('');
+}
+function approveOrder(id){
+    ordersData = ordersData.filter(o=>o.id!==id);
+    saveAllData();
+    loadPendingOrders();
+    updateStats();
+}
+function cancelOrder(id){
+    ordersData = ordersData.filter(o=>o.id!==id);
+    saveAllData();
+    loadPendingOrders();
+    updateStats();
+}
+// Sold Accounts
+function loadSoldAccounts(){
+    const container = document.getElementById('sold-accounts-container');
+    if(soldAccountsData.length===0){container.innerHTML='<p class="text-muted">No sold accounts yet.</p>';return;}
+    container.innerHTML = soldAccountsData.map(s=>`
+        <div class="stock-item">
+            <strong>${s.product}</strong> - ${s.type} (${s.duration})
+            <br><small>Sold to: ${s.email} | Amount: ₱${s.amount}</small>
+            <div>Sold Date: ${s.soldDate || '-'}</div>
+        </div>
+    `).join('');
+}
+// Archived Stocks
+function loadArchivedStocks(){
+    const container = document.getElementById('archived-stocks-container');
+    container.innerHTML = '<p class="text-muted">Archived stocks feature coming soon.</p>';
+}
+// Products/Rules
+function loadProductsList(){
+    document.getElementById('products-list').innerHTML='<p class="text-muted">Product management coming soon.</p>';
+}
+function loadStoreRules(){
+    document.getElementById('store-rules-list').innerHTML='<p class="text-muted">Rules management coming soon.</p>';
+}
+
+
+// Stats
+function updateStats(){
+    document.getElementById('total-products').textContent = stocksData.length;
+    document.getElementById('available-stock').textContent = stocksData.filter(s=>s.status==='available').length;
+    document.getElementById('pending-orders').textContent = ordersData.length;
+    const sales = soldAccountsData.reduce((sum, a) => sum + (parseFloat(a.amount)||0), 0);
+    document.getElementById('total-revenue').textContent = '₱'+sales.toLocaleString();
+}
+// Logout
+function adminLogout(){
+    localStorage.clear();
+    location.reload();
+}
+
+// On page load: hide dashboard
+window.onload=function(){
+    document.getElementById('admin-dashboard').style.display='none';
+    document.getElementById('edit-modal').style.display='none';
+    // Modal will be shown by default
+};
 </script>
 </body>
 </html>
