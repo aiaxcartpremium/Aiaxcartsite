@@ -37,16 +37,21 @@
     select,input[type="text"],input[type="number"],input[type="email"],input[type="date"],textarea {
         padding:0.65rem 0.9rem;border-radius:8px;border:1px solid #E8E8E8;font-size:1rem;width:100%;font-family:inherit;
     }
-    .btn {padding: 0.65rem 1.55rem; border:none; border-radius:9px; font-weight:500; font-size: 1rem; cursor:pointer;}
+    .btn {padding: 0.65rem 1.55rem; border:none; border-radius:9px; font-weight:500; font-size: 1rem; cursor:pointer; transition: all 0.3s ease;}
     .btn-primary {background: #FFB0B5; color:white;}
-    .btn-danger {background: #F44336; color:white;}
-    .btn-warning {background: #FF9800; color:white;}
-    .btn-success {background: #43b87a; color:white;}
-    .btn-info {background: #2196F3; color:white;}
+    .btn-primary:hover {background: #FF8A90;}
+    .btn-danger {background: #FF6B6B; color:white;}
+    .btn-danger:hover {background: #FF5252;}
+    .btn-warning {background: #FFA726; color:white;}
+    .btn-warning:hover {background: #FF9800;}
+    .btn-success {background: #66BB6A; color:white;}
+    .btn-success:hover {background: #4CAF50;}
+    .btn-info {background: #42A5F5; color:white;}
+    .btn-info:hover {background: #2196F3;}
     .btn-small {padding:0.3rem 0.8rem;font-size:0.95rem;margin-top:0.25rem;}
     .stock-list {display:flex;flex-direction:column;gap:1.2rem;}
     .stock-card {background:#fff5; border-radius:8px; padding:1rem 1.2rem; box-shadow:0 1px 7px rgba(0,0,0,0.04);}
-    .stock-actions {margin-top:0.5rem;}
+    .stock-actions {margin-top:0.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;}
     .badge {display:inline-block;padding:0.18rem 0.9rem;border-radius:12px;font-size:0.90rem; font-weight:500;}
     .badge-premium {background:#ffe3ed;color:#CC348D;}
     .badge-archived {background:#e7e6ef;color:#8c73b1;}
@@ -66,6 +71,8 @@
     .records-table tr:hover {background: #f9f9f9;}
     .report-card {background: #fff; border-left: 4px solid #FFB0B5; padding: 1rem; margin-bottom: 1rem; border-radius: 8px;}
     .report-actions {margin-top: 0.5rem;}
+    .category-filter {margin-bottom: 1rem;}
+    .category-filter select {width: auto; display: inline-block; margin-right: 1rem;}
     @media(max-width:1000px){.stats-grid{grid-template-columns:1fr 1fr;}}
     @media(max-width:700px){.stats-grid{grid-template-columns:1fr;}.tabs{gap:0.45rem;}}
 </style>
@@ -171,14 +178,53 @@
         </div>
     </div>
 
+    <!-- PRODUCTS PANEL -->
     <div id="panel-products" class="panel">
         <div class="card">
+            <h2>Add Product</h2>
+            <form id="addProductForm">
+                <input type="hidden" id="product-edit-id" value="">
+                <label>Product Name
+                    <input type="text" id="product-name" placeholder="Enter product name" required>
+                </label>
+                <label>Category
+                    <select id="product-category" required>
+                        <option value="">Select Category</option>
+                        <option value="entertainment">🎬 Entertainment</option>
+                        <option value="streaming">🎵 Music & Streaming</option>
+                        <option value="educational">📚 Educational</option>
+                        <option value="editing">🎨 Editing Tools</option>
+                        <option value="ai">🤖 AI Tools</option>
+                    </select>
+                </label>
+                <label>Icon
+                    <input type="text" id="product-icon" placeholder="e.g., 📺, 🎵, 🎨" required>
+                </label>
+                <button type="submit" class="btn btn-primary" style="margin-top:1rem;" id="product-submit-btn">Add Product</button>
+                <button type="button" class="btn btn-warning" style="margin-top:1rem; display:none;" id="product-cancel-btn" onclick="cancelEditProduct()">Cancel Edit</button>
+            </form>
+            <div id="add-product-msg"></div>
+        </div>
+
+        <div class="card">
             <h2>Products Management</h2>
+            <div class="category-filter">
+                <label>Filter by Category:
+                    <select id="product-category-filter" onchange="filterProductsByCategory()">
+                        <option value="all">All Categories</option>
+                        <option value="entertainment">🎬 Entertainment</option>
+                        <option value="streaming">🎵 Music & Streaming</option>
+                        <option value="educational">📚 Educational</option>
+                        <option value="editing">🎨 Editing Tools</option>
+                        <option value="ai">🤖 AI Tools</option>
+                    </select>
+                </label>
+            </div>
             <div id="products-list"></div>
         </div>
     </div>
 
-    <!-- STORE RULES PANEL - UPDATED FOR PER-PRODUCT RULES -->
+    <!-- STORE RULES PANEL -->
     <div id="panel-store-rules" class="panel">
         <div class="card">
             <h2>Add Store Rule</h2>
@@ -289,7 +335,7 @@
         </div>
     </div>
 
-    <!-- REPORTS PANEL - UPDATED FOR BUYER REPORTS -->
+    <!-- REPORTS PANEL -->
     <div id="panel-reports" class="panel">
         <div class="card">
             <h2>Buyer Reports</h2>
@@ -309,17 +355,50 @@
 
 <script>
 // Constants
-const PRODUCTS = [
-    "Netflix Premium","Viu Premium","VIVAMAX VIVAONE","WeTV","IWANT TFC","Crunchyroll","Disney+","Bilibili","Loklok","iQiyi",
-    "HBO Max","Amazon Prime","Youku","NBA League Pass Premium","YouTube Premium","Spotify Premium","Apple Music","ChatGPT Plus",
-    "Blackbox AI","Perplexity AI","Google One + Gemini AI","Quizlet+","Scribd Premium","Studocu Premium","Duolingo Super",
-    "Turnitin Student","Turnitin Instructor","Canva Pro","Picsart Gold","CapCut Pro","Alight Motion Pro","Remini Web",
-    "Grammarly Premium","Quillbot Premium","Microsoft 365","CamScanner Pro","Small PDF Pro","Zoom Pro"
-];
-
 const ACC_TYPES = ["Solo Account","Shared Account","Solo Profile","Shared Profile","Fam Head","Invite","Solo FW","Solo NW","Teamhead Account","Edu Lifetime","Teamhead"];
-
 const DURATIONS = ["7d","14d","1m","2m","3m","4m","5m","6m","7m","8m","9m","10m","11m","12m","24m","NW","3m W","6m W","12m W"];
+
+// DEFAULT PRODUCTS DATA with stock set to 0
+const DEFAULT_PRODUCTS = [
+    { id: 'netflix', name: 'Netflix Premium', category: 'entertainment', icon: '📺', stock: 0, sold: 0 },
+    { id: 'viu', name: 'Viu Premium', category: 'entertainment', icon: '🎬', stock: 0, sold: 0 },
+    { id: 'viva-max', name: 'VIVAMAX VIVAONE', category: 'entertainment', icon: '🎭', stock: 0, sold: 0 },
+    { id: 'wetv', name: 'WeTV', category: 'entertainment', icon: '📱', stock: 0, sold: 0 },
+    { id: 'iwant-tfc', name: 'IWANT TFC', category: 'entertainment', icon: '📺', stock: 0, sold: 0 },
+    { id: 'crunchyroll', name: 'Crunchyroll', category: 'entertainment', icon: '🎮', stock: 0, sold: 0 },
+    { id: 'disney-plus', name: 'Disney+', category: 'entertainment', icon: '🦁', stock: 0, sold: 0 },
+    { id: 'bilibili', name: 'Bilibili', category: 'entertainment', icon: '📺', stock: 0, sold: 0 },
+    { id: 'loklok', name: 'Loklok', category: 'entertainment', icon: '📱', stock: 0, sold: 0 },
+    { id: 'iqiyi', name: 'iQiyi', category: 'entertainment', icon: '📺', stock: 0, sold: 0 },
+    { id: 'hbo-max', name: 'HBO Max', category: 'entertainment', icon: '📹', stock: 0, sold: 0 },
+    { id: 'amazon-prime', name: 'Amazon Prime', category: 'entertainment', icon: '🛒', stock: 0, sold: 0 },
+    { id: 'youku', name: 'Youku', category: 'entertainment', icon: '📺', stock: 0, sold: 0 },
+    { id: 'nba-league-pass', name: 'NBA League Pass Premium', category: 'entertainment', icon: '🏀', stock: 0, sold: 0 },
+    { id: 'youtube', name: 'YouTube Premium', category: 'streaming', icon: '📹', stock: 0, sold: 0 },
+    { id: 'spotify', name: 'Spotify Premium', category: 'streaming', icon: '🎵', stock: 0, sold: 0 },
+    { id: 'apple-music', name: 'Apple Music', category: 'streaming', icon: '🎧', stock: 0, sold: 0 },
+    { id: 'chatgpt', name: 'ChatGPT Plus', category: 'ai', icon: '🧠', stock: 0, sold: 0 },
+    { id: 'blackbox-ai', name: 'Blackbox AI', category: 'ai', icon: '🤖', stock: 0, sold: 0 },
+    { id: 'perplexity', name: 'Perplexity AI', category: 'ai', icon: '🔍', stock: 0, sold: 0 },
+    { id: 'google-one', name: 'Google One + Gemini AI', category: 'ai', icon: '☁️', stock: 0, sold: 0 },
+    { id: 'quizlet', name: 'Quizlet+', category: 'educational', icon: '📚', stock: 0, sold: 0 },
+    { id: 'scribd', name: 'Scribd Premium', category: 'educational', icon: '📖', stock: 0, sold: 0 },
+    { id: 'studocu', name: 'Studocu Premium', category: 'educational', icon: '🎓', stock: 0, sold: 0 },
+    { id: 'duolingo', name: 'Duolingo Super', category: 'educational', icon: '🧑‍🎓', stock: 0, sold: 0 },
+    { id: 'turnitin-student', name: 'Turnitin Student', category: 'educational', icon: '📝', stock: 0, sold: 0 },
+    { id: 'turnitin-instructor', name: 'Turnitin Instructor', category: 'educational', icon: '👨‍🏫', stock: 0, sold: 0 },
+    { id: 'canva', name: 'Canva Pro', category: 'editing', icon: '🎨', stock: 0, sold: 0 },
+    { id: 'picsart', name: 'Picsart Gold', category: 'editing', icon: '👏', stock: 0, sold: 0 },
+    { id: 'capcut', name: 'CapCut Pro', category: 'editing', icon: '📝', stock: 0, sold: 0 },
+    { id: 'alight-motion', name: 'Alight Motion Pro', category: 'editing', icon: '📱', stock: 0, sold: 0 },
+    { id: 'remini', name: 'Remini Web', category: 'editing', icon: '✨', stock: 0, sold: 0 },
+    { id: 'grammarly', name: 'Grammarly Premium', category: 'educational', icon: '✍️', stock: 0, sold: 0 },
+    { id: 'quillbot', name: 'Quillbot Premium', category: 'educational', icon: '📝', stock: 0, sold: 0 },
+    { id: 'ms-365', name: 'Microsoft 365', category: 'educational', icon: '🤬', stock: 0, sold: 0 },
+    { id: 'cams-canner', name: 'CamScanner Pro', category: 'editing', icon: '📁', stock: 0, sold: 0 },
+    { id: 'small-pdf', name: 'Small PDF Pro', category: 'editing', icon: '📁', stock: 0, sold: 0 },
+    { id: 'zoom', name: 'Zoom Pro', category: 'educational', icon: '📽️', stock: 0, sold: 0 }
+];
 
 // Data Storage
 let stocks = JSON.parse(localStorage.getItem("stocks") || "[]");
@@ -333,7 +412,7 @@ let buyerReports = JSON.parse(localStorage.getItem("buyerReports") || "[]");
 
 // Initialize default products if empty
 if (products.length === 0) {
-    products = PRODUCTS;
+    products = DEFAULT_PRODUCTS;
     localStorage.setItem("products", JSON.stringify(products));
 }
 
@@ -341,7 +420,10 @@ if (products.length === 0) {
 if (rules.length === 0) {
     rules = [
         { id: generateId(), product: "general", text: "All accounts are premium quality" },
-        { id: generateId(), product: "general", text: "No refunds after delivery" }
+        { id: generateId(), product: "general", text: "No refunds after delivery" },
+        { id: generateId(), product: "general", text: "Replacement guaranteed within 24 hours for any issues" },
+        { id: generateId(), product: "Netflix Premium", text: "No password changing allowed" },
+        { id: generateId(), product: "Netflix Premium", text: "Use only on one device at a time" }
     ];
     localStorage.setItem("rules", JSON.stringify(rules));
 }
@@ -393,7 +475,7 @@ function formatAccountDetails(record) {
     return details.join('<br>');
 }
 
-// Owner Verification
+// Owner Verification - FIXED SECURITY
 const OWNER_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a';
 
 function openOwnerModal() {
@@ -412,6 +494,7 @@ function verifyOwnerUID() {
         localStorage.setItem('ownerVerified', 'yes');
         closeOwnerModal();
         showAdminPanel();
+        initializeAdmin();
     } else {
         document.getElementById('ownerVeriMsg').textContent = '❌ Invalid UID.';
     }
@@ -430,8 +513,8 @@ function showAdminPanel() {
     showSold();
 }
 
-// Tab Switching
-document.addEventListener("DOMContentLoaded", function() {
+// Initialize admin after verification
+function initializeAdmin() {
     // Setup tab switching
     let tabs = document.querySelectorAll(".tab");
     let panels = document.querySelectorAll(".panel");
@@ -451,21 +534,26 @@ document.addEventListener("DOMContentLoaded", function() {
         select.innerHTML = options.map(x => `<option value="${x}">${x}</option>`).join('');
     }
 
-    populateSelect("stock-product", products);
     populateSelect("stock-type", ACC_TYPES);
     populateSelect("stock-duration", DURATIONS);
-    populateSelect("record-product", products);
     populateSelect("record-type", ACC_TYPES);
     populateSelect("record-duration", DURATIONS);
     
+    // Populate product dropdowns
+    updateProductDropdowns();
+    
     // Populate rule product dropdown
-    const ruleProductSelect = document.getElementById("rule-product");
-    ruleProductSelect.innerHTML = '<option value="general">General (All Products)</option>' + 
-        products.map(p => `<option value="${p}">${p}</option>`).join('');
+    updateRuleProductDropdown();
 
     // Set today's date as default for purchase date
     document.getElementById("record-purchasedate").value = new Date().toISOString().split('T')[0];
 
+    // Setup form submissions
+    setupFormSubmissions();
+}
+
+// Setup form submissions separately
+function setupFormSubmissions() {
     // Add Stock Form
     document.getElementById("addStockForm").onsubmit = function(e) {
         e.preventDefault();
@@ -518,10 +606,61 @@ document.addEventListener("DOMContentLoaded", function() {
             this.reset();
             updateStats();
             showStocks();
-            document.getElementById("add-stock-msg").textContent = "✔ Added!";
+            document.getElementById("add-stock-msg").textContent = "✔ Stock Added!";
         }
         
         setTimeout(() => document.getElementById("add-stock-msg").textContent = '', 1500);
+    };
+
+    // Add Product Form
+    document.getElementById("addProductForm").onsubmit = function(e) {
+        e.preventDefault();
+        
+        const editId = document.getElementById("product-edit-id").value;
+        const name = document.getElementById("product-name").value;
+        const category = document.getElementById("product-category").value;
+        const icon = document.getElementById("product-icon").value;
+        
+        if (editId) {
+            // Update existing product
+            const productIndex = products.findIndex(p => p.id === editId);
+            if (productIndex > -1) {
+                products[productIndex] = {
+                    ...products[productIndex],
+                    name: name,
+                    category: category,
+                    icon: icon
+                };
+                
+                saveAll();
+                updateProductDropdowns();
+                updateRuleProductDropdown();
+                showProducts();
+                document.getElementById("add-product-msg").textContent = "✔ Product Updated!";
+                cancelEditProduct();
+            }
+        } else {
+            // Add new product
+            const product = {
+                id: generateId(),
+                name: name,
+                category: category,
+                icon: icon,
+                stock: 0,
+                sold: 0
+            };
+
+            products.push(product);
+            saveAll();
+            this.reset();
+            updateProductDropdowns();
+            updateRuleProductDropdown();
+            showProducts();
+            
+            document.getElementById("add-product-msg").textContent = "✔ Product Added!";
+        }
+        
+        setTimeout(() => document.getElementById("add-product-msg").textContent = '', 1500);
     };
 
     // Add Record Form
@@ -638,14 +777,28 @@ document.addEventListener("DOMContentLoaded", function() {
         
         setTimeout(() => document.getElementById("add-rule-msg").textContent = '', 1500);
     };
+}
 
-    // Check owner verification
-    if (localStorage.getItem('ownerVerified') !== 'yes') {
-        openOwnerModal();
-    } else {
-        showAdminPanel();
+// Update product dropdowns
+function updateProductDropdowns() {
+    const stockProductSelect = document.getElementById("stock-product");
+    const recordProductSelect = document.getElementById("record-product");
+    
+    if (stockProductSelect) {
+        stockProductSelect.innerHTML = products.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
     }
-});
+    if (recordProductSelect) {
+        recordProductSelect.innerHTML = products.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+    }
+}
+
+function updateRuleProductDropdown() {
+    const ruleProductSelect = document.getElementById("rule-product");
+    if (ruleProductSelect) {
+        ruleProductSelect.innerHTML = '<option value="general">General (All Products)</option>' + 
+            products.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+    }
+}
 
 // Panel Display Functions
 function updateStats() {
@@ -673,6 +826,29 @@ function showStocks() {
                 </div>
             </div>
         `).join('') : "No available stocks.";
+}
+
+function showProducts() {
+    const categoryFilter = document.getElementById("product-category-filter").value;
+    const filteredProducts = categoryFilter === 'all' ? 
+        products : products.filter(p => p.category === categoryFilter);
+    
+    document.getElementById("products-list").innerHTML = filteredProducts.length ? 
+        filteredProducts.map(product => `
+            <div class="stock-card">
+                <div><b>${product.icon} ${product.name}</b></div>
+                <div>Category: ${product.category} | Stock: ${product.stock} | Sold: ${product.sold}</div>
+                <div class="stock-actions">
+                    <button class="btn btn-info btn-small" onclick="editProduct('${product.id}')">Edit</button>
+                    <button class="btn btn-danger btn-small" onclick="delProduct('${product.id}')">Delete</button>
+                </div>
+            </div>
+        `).join('') : 
+        "No products found for this category.";
+}
+
+function filterProductsByCategory() {
+    showProducts();
 }
 
 function showRecords() {
@@ -771,13 +947,7 @@ function showSold() {
         "No sold accounts yet";
 }
 
-function showProducts() {
-    document.getElementById("products-list").innerHTML = products.length ? 
-        products.map((p, i) => `<div>${i + 1}. ${p} <button class="btn btn-danger btn-small" onclick="delProd(${i})">Delete</button></div>`).join('') : 
-        "No products.";
-}
-
-// Action Functions
+// Action Functions - FIXED EDIT BUTTON AND MARK AS SOLD
 function editStock(id) {
     const stock = stocks.find(s => s.id === id);
     if (stock) {
@@ -814,6 +984,32 @@ function cancelEditStock() {
     document.getElementById("stock-cancel-btn").style.display = "none";
     document.getElementById("stock-qty").style.display = "block";
     document.querySelector('label[for="stock-qty"]').style.display = "block";
+}
+
+function editProduct(id) {
+    const product = products.find(p => p.id === id);
+    if (product) {
+        document.getElementById("product-edit-id").value = product.id;
+        document.getElementById("product-name").value = product.name;
+        document.getElementById("product-category").value = product.category;
+        document.getElementById("product-icon").value = product.icon;
+
+        document.getElementById("product-submit-btn").textContent = "Update Product";
+        document.getElementById("product-cancel-btn").style.display = "inline-block";
+        
+        // Switch to products tab
+        document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach(panel => panel.classList.remove("active"));
+        document.querySelector('.tab[data-tab="products"]').classList.add("active");
+        document.getElementById("panel-products").classList.add("active");
+    }
+}
+
+function cancelEditProduct() {
+    document.getElementById("product-edit-id").value = "";
+    document.getElementById("addProductForm").reset();
+    document.getElementById("product-submit-btn").textContent = "Add Product";
+    document.getElementById("product-cancel-btn").style.display = "none";
 }
 
 function editRecord(id) {
@@ -880,6 +1076,17 @@ function delStock(id) {
     }
 }
 
+function delProduct(id) {
+    if (confirm('Are you sure you want to delete this product?')) {
+        products = products.filter(p => p.id !== id);
+        saveAll();
+        updateProductDropdowns();
+        updateRuleProductDropdown();
+        showProducts();
+        updateStats();
+    }
+}
+
 function archiveStock(id) {
     let idx = stocks.findIndex(s => s.id == id);
     if (idx > -1) {
@@ -894,6 +1101,7 @@ function archiveStock(id) {
     }
 }
 
+// FIXED: Mark as Sold function - now properly moves stock to sold without deleting
 function markSold(id) {
     let stock = stocks.find(s => s.id == id);
     if (stock) {
@@ -920,20 +1128,17 @@ function markSold(id) {
         };
         
         records.push(record);
-        sold.push({ ...stock, price: 199 });
-        delStock(id);
+        sold.push({ ...stock, price: 199, soldDate: new Date().toLocaleDateString() });
+        
+        // Remove from stocks
+        stocks = stocks.filter(s => s.id !== id);
+        
         saveAll();
         updateStats();
+        showStocks();
         showSold();
         showRecords();
     }
-}
-
-function delProd(idx) {
-    products.splice(idx, 1);
-    saveAll();
-    showProducts();
-    updateStats();
 }
 
 function delRule(id) {
@@ -981,6 +1186,46 @@ function addBuyerReport(report) {
     saveAll();
     showReports();
 }
+
+// Function to process order from website (to be called from index.html)
+function processWebsiteOrder(orderData) {
+    // Add to pending orders
+    pending.push({
+        id: generateId(),
+        ...orderData,
+        timestamp: new Date().toISOString(),
+        status: 'pending'
+    });
+    
+    // Update product stock
+    const product = products.find(p => p.name === orderData.productName);
+    if (product) {
+        product.stock = Math.max(0, product.stock - 1);
+        product.sold += 1;
+    }
+    
+    saveAll();
+    updateStats();
+    showPending();
+    showProducts();
+    
+    return {
+        success: true,
+        orderId: orderData.orderId,
+        message: 'Order processed successfully'
+    };
+}
+
+// Initialize the page - FIXED SECURITY CHECK
+document.addEventListener("DOMContentLoaded", function() {
+    // Check owner verification FIRST before setting up anything else
+    if (localStorage.getItem('ownerVerified') !== 'yes') {
+        openOwnerModal();
+    } else {
+        showAdminPanel();
+        initializeAdmin();
+    }
+});
 </script>
 </body>
 </html>
