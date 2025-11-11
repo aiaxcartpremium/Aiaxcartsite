@@ -2,85 +2,76 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Aiaxcart Premium Shop — Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Console - Aiaxcart Premium</title>
-    <link rel="stylesheet" href="style.css">
     <style>
-        html,body{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;}
-        body{background-color:#fefaf7;color:#5a3e36;line-height:1.6;}
-        .container{max-width:1200px;margin:0 auto;padding:0 20px;}
-        header{background:#FFD3D6;padding:1.2rem 0;box-shadow:0 4px 15px rgba(0,0,0,0.08);}
-        .header-content{display:flex;justify-content:space-between;align-items:center;}
-        .logo{font-size:1.8rem;font-weight:700;display:flex;align-items:center;}
-        nav ul{display:flex;list-style:none;}
-        nav ul li{margin-left:1.5rem;}
-        nav ul li a{color:#5a3e36;text-decoration:none;font-weight:500;padding:0.5rem 1rem;border-radius:8px;}
-        nav ul li a.active,nav ul li a:hover{background:#FFC6CA;font-weight:bold;}
-        .btn{padding:0.6rem 1.5rem;border:none;border-radius:12px;cursor:pointer;font-weight:500;}
-        .btn-primary{background:#FFB0B5;color:white;}
-        .btn-danger{background:#F44336;color:white;}
-        .btn-warning{background:#FF9800;color:white;}
-        .btn-success{background:#4CAF50;color:white;}
-        .btn-edit{background:#2196F3;color:white;}
-        .btn-small{padding:0.4rem 0.8rem;font-size:0.85rem;}
-        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin:2rem 0;}
-        .stat-card{background:white;padding:2rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);text-align:center;}
-        .stat-card h3{font-size:2rem;margin-bottom:0.5rem;color:#FFB0B5;}
-        /* Modal styles */
-        #owner-modal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;}
-        .modal-card{background:white;padding:2rem 2.5rem;border-radius:20px;box-shadow:0 2px 10px rgba(0,0,0,0.1);}
-        .error-message{color:red;margin-top:0.5rem;}
-        .success-message{color:green;margin-top:0.5rem;}
-        /* Tab styles */
-        .tabs{display:flex;gap:1rem;margin:2rem 0;flex-wrap:wrap;}
-        .tab{padding:0.75rem 1.5rem;border:none;background:#f0f0f0;cursor:pointer;border-radius:8px;}
-        .tab.active{background:#FFD3D6;font-weight:bold;}
-        .panel{display:none;}
-        .panel.is-visible{display:block;}
-        /* Stock Items */
-        .stock-item{border:1px solid #FFE5E7;border-radius:12px;padding:1rem;margin-bottom:1rem;background:white;}
-        .stock-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;}
-        .stock-info{flex:1;}
-        .stock-actions{display:flex;gap:0.5rem;}
+    html,body{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;}
+    body{background-color:#fefaf7;color:#5a3e36;line-height:1.6;}
+    .container{max-width:1200px;margin:0 auto;padding:0 20px;}
+    header{background:#FFD3D6;padding:1.2rem 0;box-shadow:0 4px 15px rgba(0,0,0,0.08);}
+    .header-content{display:flex;justify-content:space-between;align-items:center;}
+    .logo{font-size:1.8rem;font-weight:700;display:flex;align-items:center;}
+    nav ul{display:flex;list-style:none;}
+    nav ul li{margin-left:1.5rem;}
+    nav ul li a{color:#5a3e36;text-decoration:none;font-weight:500;padding:0.5rem 1rem;border-radius:8px;}
+    nav ul li a.active,nav ul li a:hover{background:#FFC6CA;font-weight:bold;}
+    .btn{padding:0.6rem 1.5rem;border:none;border-radius:12px;cursor:pointer;font-weight:500;}
+    .btn-primary{background:#FFB0B5;color:white;}
+    .btn-danger{background:#F44336;color:white;}
+    .btn-warning{background:#FF9800;color:white;}
+    .btn-success{background:#4CAF50;color:white;}
+    .btn-edit{background:#2196F3;color:white;}
+    .btn-small{padding:0.4rem 0.8rem;font-size:0.85rem;}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin:2rem 0;}
+    .stat-card{background:white;padding:2rem;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);text-align:center;}
+    .stat-card h3{font-size:2rem;margin-bottom:0.5rem;color:#FFB0B5;}
+    #owner-modal{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;}
+    .modal-card{background:white;padding:2rem 2.5rem;border-radius:20px;box-shadow:0 2px 10px rgba(0,0,0,0.1);position:relative;}
+    .error-message{color:red;margin-top:0.5rem;}
+    .success-message{color:green;margin-top:0.5rem;}
+    .tabs{display:flex;gap:1rem;margin:2rem 0;flex-wrap:wrap;}
+    .tab{padding:0.75rem 1.5rem;border:none;background:#f0f0f0;cursor:pointer;border-radius:8px;}
+    .tab.active{background:#FFD3D6;font-weight:bold;}
+    .panel{display:none;}
+    .panel.is-visible{display:block;}
+    .card{background:white;padding:2rem;border-radius:15px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+    /* others for content... */
     </style>
 </head>
 <body>
 <header>
     <div class="container header-content">
-        <div class="logo">🛒 Aiaxcart Admin</div>
+        <div class="logo">🛒 Aiaxcart Premium</div>
         <nav>
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="admin.html" class="active">Admin</a></li>
             </ul>
         </nav>
-        <button id="admin-logout" class="btn btn-danger" style="display:none;" onclick="adminLogout()">Logout</button>
     </div>
 </header>
 
-<div class="owner-veri-overlay" id="ownerVeriOverlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.37);display:none;align-items:center;justify-content:center;z-index:9999;">
-  <div style="background:white;padding:1.5rem 2rem;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,0.10);">
-  <div style="position:relative;background:white;padding:1.5rem 2rem;border-radius:18px;box-shadow:0 2px 8px rgba(0,0,0,0.10);min-width:300px;">
-    <button onclick="closeOwnerModal()" style="position:absolute;top:0.5rem;right:0.5rem;border:none;background:none;font-size:1.5rem;line-height:1;cursor:pointer;color: #ff7a7a;">&times;</button>
-    <h2 style="margin-bottom:1rem;">🔐 Owner Verification</h2>
-    <input type="text" id="ownerUidInput" placeholder="Enter Owner UID" style="padding:0.75rem;margin-bottom:1rem;width:100%;">
-    <button onclick="verifyOwnerUID()" style="background:#FFB0B5;color:white;border:none;padding:0.6rem 1.5rem;border-radius:12px;margin-top:0.5rem;width:100%;">Verify Access</button>
-    <div id="ownerVeriMsg" style="color:red;margin-top:0.7rem;"></div>
-  </div>
+<!-- Owner Modal -->
+<div id="owner-modal" style="display:none;">
+    <div class="modal-card" style="min-width:300px;">
+        <button onclick="closeOwnerModal()" style="position:absolute;top:0.6rem;right:0.8rem;background:none;border:none;font-size:1.6rem;color:#ff7a7a;line-height:1;cursor:pointer;">&times;</button>
+        <h2>🔐 Owner Verification</h2>
+        <input type="text" id="owner-uid" placeholder="Enter Owner UID" class="input-field">
+        <button onclick="verifyUID()" class="btn btn-primary full-width" style="margin-top:1rem;">Verify Access</button>
+        <div id="uid-error" class="error-message"></div>
+    </div>
 </div>
 
 <div class="container" id="admin-dashboard" style="display:none;">
     <h1>Admin Console</h1>
     <p class="text-muted">Welcome back, Owner! Manage your shop here.</p>
-    <!-- Stats Cards -->
     <div class="stats-grid">
         <div class="stat-card"><h3 id="total-products">0</h3><p>Total Products</p></div>
         <div class="stat-card"><h3 id="available-stock">0</h3><p>Available Stock</p></div>
         <div class="stat-card"><h3 id="pending-orders">0</h3><p>Pending Orders</p></div>
         <div class="stat-card"><h3 id="total-revenue">₱0</h3><p>Total Revenue</p></div>
     </div>
-    <!-- Tabs -->
-    <div class="tabs">
+    <div class="tabs" id="admintabs">
         <button class="tab active" data-tab="add-stock">Add Stock</button>
         <button class="tab" data-tab="manage-stocks">Manage Stocks</button>
         <button class="tab" data-tab="pending-orders">Pending Orders</button>
@@ -88,279 +79,123 @@
         <button class="tab" data-tab="archived-stocks">Archived Stocks</button>
         <button class="tab" data-tab="products">Products</button>
         <button class="tab" data-tab="store-rules">Store Rules</button>
+        <button class="tab" data-tab="records">Add Record</button>
+        <button class="tab" data-tab="reports">Reports</button>
+        <button class="tab" data-tab="settings">Settings</button>
     </div>
-    <!-- Panels -->
-    <section id="panel-add-stock" class="panel is-visible">
+    <div class="panel is-visible" id="panel-add-stock">
         <div class="card">
             <h2>Add Stock</h2>
-            <form id="frm-add-stock">
-                <input type="text" id="stock-product" placeholder="Product" class="input-field" required>
-                <input type="text" id="stock-email" placeholder="Email/Username" class="input-field" required>
-                <input type="text" id="stock-password" placeholder="Password" class="input-field" required>
-                <input type="text" id="stock-profile" placeholder="Profile (optional)" class="input-field">
-                <input type="text" id="stock-pin" placeholder="PIN (optional)" class="input-field">
-                <input type="text" id="stock-type" placeholder="Account Type" class="input-field" required>
-                <input type="text" id="stock-duration" placeholder="Duration" class="input-field" required>
-                <button type="submit" class="btn btn-primary full-width">Add Stock</button>
+            <form id="addStockForm">
+                <label>Product
+                    <select id="stock-product" required></select>
+                </label>
+                <label>Account Type
+                    <select id="stock-type" required></select>
+                </label>
+                <label>Duration
+                    <select id="stock-duration" required></select>
+                </label>
+                <label>Email/Login
+                    <input type="text" id="stock-email" required>
+                </label>
+                <label>Password
+                    <input type="text" id="stock-password" required>
+                </label>
+                <label>Profile (optional)
+                    <input type="text" id="stock-profile">
+                </label>
+                <label>PIN (optional)
+                    <input type="text" id="stock-pin">
+                </label>
+                <label>Quantity
+                    <input type="number" id="stock-quantity" value="1" min="1">
+                </label>
+                <div style="display:flex;align-items:center;gap:20px;margin-top:16px;">
+                    <label><input type="checkbox" id="stock-premium" style="vertical-align:middle;" onchange="showPremiumDate()"> Premium?</label>
+                    <input type="date" id="stock-premium-date" style="display:none;">
+                    <label><input type="checkbox" id="stock-archive" style="vertical-align:middle;" onchange="showArchiveDate()"> Archive?</label>
+                    <input type="date" id="stock-archive-date" style="display:none;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-top:1rem;width:100%">Add to Inventory</button>
             </form>
             <div id="add-stock-msg"></div>
         </div>
-    </section>
-    <section id="panel-manage-stocks" class="panel">
+    </div>
+    <div class="panel" id="panel-manage-stocks">
         <div class="card">
-            <h2>Available Stocks (Edit/Delete)</h2>
-            <button onclick="loadStocks()" class="btn btn-primary btn-small">Refresh Stocks</button>
-            <div id="stocks-container"></div>
+            <h2>Manage Stocks</h2>
+            <div id="manage-stocks-list">No stocks yet.</div>
         </div>
-    </section>
-    <section id="panel-pending-orders" class="panel">
-        <div class="card">
-            <h2>Pending Orders</h2>
-            <button onclick="loadPendingOrders()" class="btn btn-primary btn-small">Refresh Orders</button>
-            <div id="pending-orders-container"></div>
-        </div>
-    </section>
-    <section id="panel-sold-accounts" class="panel">
-        <div class="card">
-            <h2>Sold Accounts</h2>
-            <div id="sold-accounts-container"></div>
-        </div>
-    </section>
-    <section id="panel-archived-stocks" class="panel">
-        <div class="card">
-            <h2>Archived Stocks</h2>
-            <button onclick="loadArchivedStocks()" class="btn btn-primary btn-small">Refresh Archived</button>
-            <div id="archived-stocks-container"></div>
-        </div>
-    </section>
-    <section id="panel-products" class="panel">
-        <div class="card">
-            <h2>Products Management</h2>
-            <div id="products-list"></div>
-        </div>
-    </section>
-    <section id="panel-store-rules" class="panel">
-        <div class="card">
-            <h2>Store Rules Management</h2>
-            <div id="store-rules-list"></div>
-        </div>
-    </section>
-</div>
-<!-- Edit Stock Modal -->
-<div id="edit-modal" style="display:none;">
-    <div class="modal-card">
-        <h2>Edit Stock</h2>
-        <input type="text" id="edit-product" class="input-field">
-        <input type="text" id="edit-email" class="input-field">
-        <input type="text" id="edit-password" class="input-field">
-        <input type="text" id="edit-profile" class="input-field">
-        <input type="text" id="edit-pin" class="input-field">
-        <input type="text" id="edit-type" class="input-field">
-        <input type="text" id="edit-duration" class="input-field">
-        <button onclick="saveEditStock()" class="btn btn-primary full-width">Save Changes</button>
-        <button onclick="closeEditModal()" class="btn btn-danger full-width">Cancel</button>
-        <div id="edit-stock-msg"></div>
+    </div>
+    <div class="panel" id="panel-pending-orders">
+        <div class="card"><h2>Pending Orders</h2><div id="pending-orders-list">No pending orders.</div></div>
+    </div>
+    <div class="panel" id="panel-sold-accounts">
+        <div class="card"><h2>Sold Accounts</h2><div id="sold-accounts-list">No sold accounts.</div></div>
+    </div>
+    <div class="panel" id="panel-archived-stocks">
+        <div class="card"><h2>Archived Stocks</h2><div id="archived-stocks-list">No archived stocks.</div></div>
+    </div>
+    <div class="panel" id="panel-products">
+        <div class="card"><h2>Products Management</h2><p>Products management coming soon.</p></div>
+    </div>
+    <div class="panel" id="panel-store-rules">
+        <div class="card"><h2>Store Rules</h2><p>Store rules management coming soon.</p></div>
+    </div>
+    <div class="panel" id="panel-records">
+        <div class="card"><h2>Add Buyer Record</h2><p>Add buyer record form coming soon.</p></div>
+    </div>
+    <div class="panel" id="panel-reports">
+        <div class="card"><h2>Customer Reports</h2><div id="reports-list">No reports yet.</div></div>
+    </div>
+    <div class="panel" id="panel-settings">
+        <div class="card"><h2>⚙️ Settings</h2><button onclick="clearCache()" class="btn btn-danger">Clear Cache</button></div>
     </div>
 </div>
 <script>
-const ADMIN_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a'; // Replace with your UID
-let stocksData = [];
-let ordersData = [];
-let soldAccountsData = [];
-let currentEditId = null;
-
-// Floating owner verification
-function verifyUID() {
-    const inputUID = document.getElementById('owner-uid').value.trim();
-    if (inputUID === ADMIN_UID) {
-        document.getElementById('owner-modal').style.display = 'none';
-        document.getElementById('admin-dashboard').style.display = 'block';
-        document.getElementById('admin-logout').style.display = 'block';
-        loadAllData();
-    } else {
-        document.getElementById('uid-error').textContent = '❌ Invalid UID. Access denied.';
+const OWNER_UID = '26baf1ad-64b1-436c-9758-c415949dfa0a';
+function openOwnerModal() {document.getElementById('owner-modal').style.display='flex';}
+function closeOwnerModal(){document.getElementById('owner-modal').style.display='none';}
+function verifyUID(){
+    let uid = document.getElementById('owner-uid').value.trim();
+    if(uid===OWNER_UID){
+        localStorage.setItem('ownerVerified','yes');
+        document.getElementById('uid-error').textContent='';
+        closeOwnerModal();
+        showAdminPanel();
+    }else{
+        document.getElementById('uid-error').textContent='❌ Invalid UID.';
     }
 }
-
-// Save and load data via LocalStorage (change as needed)
-function loadAllData(){
-    stocksData = JSON.parse(localStorage.getItem('stocksData')||'[]');
-    ordersData = JSON.parse(localStorage.getItem('ordersData')||'[]');
-    soldAccountsData = JSON.parse(localStorage.getItem('soldAccountsData')||'[]');
-    updateStats();
-    loadStocks();
-    loadPendingOrders();
-    loadSoldAccounts();
-    loadArchivedStocks();
-    loadProductsList();
-    loadStoreRules();
+function showAdminPanel(){
+    document.getElementById('owner-modal').style.display='none';
+    document.getElementById('admin-dashboard').style.display='block';
 }
-function saveAllData(){
-    localStorage.setItem('stocksData', JSON.stringify(stocksData));
-    localStorage.setItem('ordersData', JSON.stringify(ordersData));
-    localStorage.setItem('soldAccountsData', JSON.stringify(soldAccountsData));
-}
-// Tabs
-for (const tab of document.querySelectorAll('.tab')) {
-    tab.onclick = function(){
-        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(c=>c.classList.remove('is-visible'));
-        tab.classList.add('active');
-        document.getElementById('panel-'+tab.dataset.tab).classList.add('is-visible');
-    }
-}
-
-// Add Stock
-document.getElementById('frm-add-stock').onsubmit = function(e){
-    e.preventDefault();
-    const stock = {
-        id: Date.now(),
-        product: document.getElementById('stock-product').value,
-        email: document.getElementById('stock-email').value,
-        password: document.getElementById('stock-password').value,
-        profile: document.getElementById('stock-profile').value,
-        pin: document.getElementById('stock-pin').value,
-        type: document.getElementById('stock-type').value,
-        duration: document.getElementById('stock-duration').value,
-        status: 'available',
-        addedDate: new Date().toLocaleDateString()
-    };
-    stocksData.push(stock);
-    saveAllData();
-    document.getElementById('add-stock-msg').innerHTML='<p class="success-message">✅ Added stock successfully!</p>';
-    setTimeout(()=>document.getElementById('add-stock-msg').innerHTML='',2500);
-    this.reset();
-    loadStocks();
-    updateStats();
-};
-
-// Stocks List with Edit
-function loadStocks(){
-    const container = document.getElementById('stocks-container');
-    if(stocksData.length===0){container.innerHTML='<p class="text-muted">No stocks yet.</p>';return;}
-    container.innerHTML = stocksData.filter(s=>s.status==='available').map(s=>`
-        <div class="stock-item">
-            <div class="stock-header">
-                <div class="stock-info">
-                    <strong>${s.product}</strong> | ${s.type} (${s.duration})
-                    <br><small>Email: ${s.email}</small>
-                </div>
-                <div class="stock-actions">
-                    <button class="btn btn-edit btn-small" onclick="showEditModal(${s.id})">Edit</button>
-                    <button class="btn btn-danger btn-small" onclick="deleteStock(${s.id})">Delete</button>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-function deleteStock(id){
-    stocksData = stocksData.filter(s=>s.id!==id);
-    saveAllData();
-    loadStocks();
-    updateStats();
-}
-function showEditModal(id){
-    currentEditId = id;
-    const s = stocksData.find(s=>s.id===id);
-    document.getElementById('edit-product').value=s.product;
-    document.getElementById('edit-email').value=s.email;
-    document.getElementById('edit-password').value=s.password;
-    document.getElementById('edit-profile').value=s.profile;
-    document.getElementById('edit-pin').value=s.pin;
-    document.getElementById('edit-type').value=s.type;
-    document.getElementById('edit-duration').value=s.duration;
-    document.getElementById('edit-modal').style.display='flex';
-}
-function saveEditStock(){
-    const s = stocksData.find(s=>s.id===currentEditId);
-    s.product = document.getElementById('edit-product').value;
-    s.email = document.getElementById('edit-email').value;
-    s.password = document.getElementById('edit-password').value;
-    s.profile = document.getElementById('edit-profile').value;
-    s.pin = document.getElementById('edit-pin').value;
-    s.type = document.getElementById('edit-type').value;
-    s.duration = document.getElementById('edit-duration').value;
-    saveAllData();
-    document.getElementById('edit-stock-msg').innerHTML='<p class="success-message">Saved successfully!</p>';
-    setTimeout(()=>closeEditModal(),800);
-    loadStocks();
-}
-function closeEditModal(){
-    document.getElementById('edit-modal').style.display='none';
-    document.getElementById('edit-stock-msg').innerHTML='';
-}
-// Orders
-function loadPendingOrders(){
-    const container = document.getElementById('pending-orders-container');
-    if(ordersData.length===0){container.innerHTML='<p class="text-muted">No pending orders.</p>';return;}
-    container.innerHTML = ordersData.map(o=>`
-        <div class="stock-item">
-            <strong>Order #${o.id}</strong> - ${o.product}
-            <br><small>Buyer: ${o.email} | Amount: ₱${o.amount}</small>
-            <br>
-            <button class="btn btn-success btn-small" onclick="approveOrder(${o.id})">Approve</button>
-            <button class="btn btn-danger btn-small" onclick="cancelOrder(${o.id})">Cancel</button>
-        </div>
-    `).join('');
-}
-function approveOrder(id){
-    ordersData = ordersData.filter(o=>o.id!==id);
-    saveAllData();
-    loadPendingOrders();
-    updateStats();
-}
-function cancelOrder(id){
-    ordersData = ordersData.filter(o=>o.id!==id);
-    saveAllData();
-    loadPendingOrders();
-    updateStats();
-}
-// Sold Accounts
-function loadSoldAccounts(){
-    const container = document.getElementById('sold-accounts-container');
-    if(soldAccountsData.length===0){container.innerHTML='<p class="text-muted">No sold accounts yet.</p>';return;}
-    container.innerHTML = soldAccountsData.map(s=>`
-        <div class="stock-item">
-            <strong>${s.product}</strong> - ${s.type} (${s.duration})
-            <br><small>Sold to: ${s.email} | Amount: ₱${s.amount}</small>
-            <div>Sold Date: ${s.soldDate || '-'}</div>
-        </div>
-    `).join('');
-}
-// Archived Stocks
-function loadArchivedStocks(){
-    const container = document.getElementById('archived-stocks-container');
-    container.innerHTML = '<p class="text-muted">Archived stocks feature coming soon.</p>';
-}
-// Products/Rules
-function loadProductsList(){
-    document.getElementById('products-list').innerHTML='<p class="text-muted">Product management coming soon.</p>';
-}
-function loadStoreRules(){
-    document.getElementById('store-rules-list').innerHTML='<p class="text-muted">Rules management coming soon.</p>';
-}
-
-
-// Stats
-function updateStats(){
-    document.getElementById('total-products').textContent = stocksData.length;
-    document.getElementById('available-stock').textContent = stocksData.filter(s=>s.status==='available').length;
-    document.getElementById('pending-orders').textContent = ordersData.length;
-    const sales = soldAccountsData.reduce((sum, a) => sum + (parseFloat(a.amount)||0), 0);
-    document.getElementById('total-revenue').textContent = '₱'+sales.toLocaleString();
-}
-// Logout
-function adminLogout(){
-    localStorage.clear();
-    location.reload();
-}
-
-// On page load: hide dashboard
-window.onload=function(){
-    document.getElementById('admin-dashboard').style.display='none';
-    document.getElementById('edit-modal').style.display='none';
-    // Modal will be shown by default
-};
+//--- Tab logic
+document.addEventListener("DOMContentLoaded",function(){
+    let tabs=document.querySelectorAll(".tab"),panels=document.querySelectorAll(".panel");
+    tabs.forEach(tab=>tab.onclick=function(){
+        tabs.forEach(t=>t.classList.remove("active"));
+        panels.forEach(p=>p.classList.remove("is-visible"));
+        tab.classList.add("active");
+        document.getElementById("panel-"+tab.dataset.tab).classList.add("is-visible");
+    });
+    //--- Fill selects
+    const products=["Netflix Premium","Viu Premium","VIVAMAX VIVAONE","WeTV","IWANT TFC","Crunchyroll","Disney+","Bilibili","Loklok","iQiyi"];
+    const types=["Solo Account","Shared Account","Solo Profile","Shared Profile"];
+    const durs=["7d","14d","1m","2m","3m","4m","5m","6m"];
+    document.getElementById("stock-product").innerHTML='<option value="">Select Product</option>'+products.map(p=>`<option>${p}</option>`).join('');
+    document.getElementById("stock-type").innerHTML='<option value="">Select Type</option>'+types.map(t=>`<option>${t}</option>`).join('');
+    document.getElementById("stock-duration").innerHTML='<option value="">Select Duration</option>'+durs.map(d=>`<option>${d}</option>`).join('');
+    //--- Owner modal protection
+    if(localStorage.getItem('ownerVerified')!=='yes'){openOwnerModal();}else{showAdminPanel();}
+});
+//--- Premium/archive logic
+function showPremiumDate(){document.getElementById("stock-premium-date").style.display=document.getElementById("stock-premium").checked?'':'none';}
+function showArchiveDate(){document.getElementById("stock-archive-date").style.display=document.getElementById("stock-archive").checked?'':'none';}
+//--- Save/Cache/Clear/Update functions
+function clearCache(){localStorage.clear();alert("Cache cleared!");location.reload();}
 </script>
 </body>
 </html>
